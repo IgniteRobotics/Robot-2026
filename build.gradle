@@ -118,17 +118,27 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
-// Create a wrapper task that runs spotlessCheck but logs warnings instead of failing
+// Track if spotlessCheck failed
+ext.spotlessCheckFailed = false
+
+// Hook into task graph to detect and handle spotlessCheck failures
+gradle.taskGraph.afterTask { Task task ->
+    if (task.name == 'spotlessCheck' && task.state.failure) {
+        ext.spotlessCheckFailed = true
+        // Clear the failure so build continues
+        task.state.@failure = null
+    }
+}
+
+// Create a task that reports on formatting but runs after spotlessCheck
 task checkCodeFormatting {
     group = 'verification'
     description = 'Check code formatting (warnings only, does not fail build)'
 
-    doFirst {
-        // Execute spotlessCheck manually and handle failures
-        try {
-            project.tasks.spotlessCheck.execute()
-        } catch (Exception e) {
-            // Catch the exception and log as warning
+    dependsOn spotlessCheck
+
+    doLast {
+        if (project.ext.spotlessCheckFailed) {
             logger.warn('')
             logger.warn('=' * 80)
             logger.warn('⚠️  WARNING: Code formatting issues detected!')
@@ -136,7 +146,8 @@ task checkCodeFormatting {
             logger.warn('   This will automatically fix all formatting issues.')
             logger.warn('=' * 80)
             logger.warn('')
-            // Don't re-throw - let build continue
+        } else {
+            logger.lifecycle('✓ Code formatting check passed')
         }
     }
 }

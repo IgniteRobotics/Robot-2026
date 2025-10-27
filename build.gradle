@@ -1,11 +1,26 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2025.3.2"
+    id "com.diffplug.spotless" version "6.25.0"
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+spotless {
+    // Don't automatically enforce check during build (we'll add it manually)
+    enforceCheck false
+
+    java {
+        target 'src/**/*.java'
+        // Use Google Java Format with default style (2-space indentation, matching WPILib standard)
+        googleJavaFormat('1.19.2').reflowLongStrings()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
@@ -102,3 +117,29 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+// Create a wrapper task that runs spotlessCheck but logs warnings instead of failing
+task checkCodeFormatting {
+    group = 'verification'
+    description = 'Check code formatting (warnings only, does not fail build)'
+
+    doFirst {
+        // Execute spotlessCheck manually and handle failures
+        try {
+            project.tasks.spotlessCheck.execute()
+        } catch (Exception e) {
+            // Catch the exception and log as warning
+            logger.warn('')
+            logger.warn('=' * 80)
+            logger.warn('⚠️  WARNING: Code formatting issues detected!')
+            logger.warn('   Run: ./gradlew spotlessApply')
+            logger.warn('   This will automatically fix all formatting issues.')
+            logger.warn('=' * 80)
+            logger.warn('')
+            // Don't re-throw - let build continue
+        }
+    }
+}
+
+// Add formatting check to build task
+build.dependsOn checkCodeFormatting

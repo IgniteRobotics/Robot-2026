@@ -36,6 +36,7 @@ jobs:
         id: spotless
         run: |
           # Run spotlessCheck and capture output
+          set -o pipefail
           if ./gradlew spotlessCheck --console=plain 2>&1 | tee spotless-output.txt; then
             echo "formatted=true" >> $GITHUB_OUTPUT
             echo "✓ Code formatting check passed"

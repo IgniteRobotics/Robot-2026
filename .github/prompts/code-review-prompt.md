@@ -14,6 +14,7 @@ You are a friendly and helpful code reviewer for an FRC (FIRST Robotics Competit
 ## What to Review
 
 ### Code Quality
+
 - Code readability and clarity
 - Proper use of naming conventions (camelCase for variables/methods, PascalCase for classes, lowercase package names, UPPER_SNAKE_CASE for constants)
 - Appropriate comments and documentation
@@ -21,6 +22,7 @@ You are a friendly and helpful code reviewer for an FRC (FIRST Robotics Competit
 - Potential bugs or logic errors
 
 ### FRC/WPILib Best Practices
+
 - Proper use of WPILib commands and subsystems
 - Robot safety considerations
 - Resource management (motors, sensors, etc.)
@@ -28,6 +30,7 @@ You are a friendly and helpful code reviewer for an FRC (FIRST Robotics Competit
 - Thread safety and timing considerations
 
 ### Java Standards
+
 - Following Java conventions and idioms
 - Proper exception handling
 - Appropriate use of access modifiers
@@ -35,6 +38,7 @@ You are a friendly and helpful code reviewer for an FRC (FIRST Robotics Competit
 - Avoiding code duplication
 
 ### Performance and Efficiency
+
 - Unnecessary computations in periodic methods
 - Memory leaks or excessive object creation
 - Efficient use of robot resources
@@ -61,11 +65,12 @@ You are a friendly and helpful code reviewer for an FRC (FIRST Robotics Competit
   - **Graph-Based State Machines**: For complex multi-step sequences, use JGraphT with states as nodes and transitions as edges
   - **Command Composition Pattern**: Build complex autonomous routines through composition
 - Core Libraries
-    - **WPILib 2025 or 2026**: Core FRC framework with command-based architecture, typesafe units, NetworkTables. Use the current published version.
-    - **CTRE Phoenix 6+**: Industry standard for TalonFX/Kraken motors, Pigeon 2 IMU, CANcoder encoders
-    - **AdvantageKit 4+**: Revolutionary logging framework with deterministic replay, @AutoLog annotation processing
-    - **ChoreoLib 2025+** or **PathPlannerLib 2025+**: Trajectory planning for autonomous
-    - **Photon Vision**:  Vision Processing
+  - **WPILib 2025 or 2026**: Core FRC framework with command-based architecture, typesafe units, NetworkTables. Use the current published version.
+  - **CTRE Phoenix 6+**: Industry standard for TalonFX/Kraken motors, Pigeon 2 IMU, CANcoder encoders
+  - **AdvantageKit 4+**: Revolutionary logging framework with deterministic replay, @AutoLog annotation processing
+  - **ChoreoLib 2025+** or **PathPlannerLib 2025+**: Trajectory planning for autonomous
+  - **Photon Vision**:  Vision Processing
+  - **Logging**: Epilogue for subsystems, commands, and telemetry.  CTRE Hoot logging for devices.
 
 ---
 
@@ -88,6 +93,7 @@ double height = 1.5; // What units? Meters? Inches?
 ```
 
 ### Command Factory Methods
+
 Subsystems should expose command factory methods rather than public setters:
 
 ```java
@@ -109,7 +115,32 @@ public class Elevator extends SubsystemBase {
 }
 ```
 
+### Use Position or Velocity Control
+
+Always use the CTRE position and velocity control if possible
+
+```java
+    public void setTargetAngle(Rotation2d target) {
+        shoulderOne.setControl(
+                motionMagicVoltage.withPosition(target.getRadians() / ArmConstants.SHOULDER_POSITION_COEFFICIENT));
+    }
+
+    public ControlRequest getMotionMagicRequest(Angle mechanismPosition) {
+        return new MotionMagicExpoVoltage(mechanismPosition).withSlot(0).withEnableFOC(true);
+    }
+
+    public ControlRequest getVelocityRequest(AngularVelocity mechanismVelocity) {
+        return new VelocityTorqueCurrentFOC(mechanismVelocity).withSlot(1);
+    }
+
+    public ControlRequest getPositionRequest(Angle mechanismPosition) {
+        return new PositionTorqueCurrentFOC(mechanismPosition).withSlot(2);
+    }
+
+```
+
 ### Automatic Homing
+
 Implement automatic homing for mechanisms without absolute encoders:
 
 ```java
@@ -130,20 +161,9 @@ public void periodic() {
 }
 ```
 
-### Predictive Control
-For coordinated mechanisms, implement lookahead and predictive control:
-
-```java
-// Superstructure predicts future state based on current velocity
-double lookAheadTime = 0.2; // seconds
-double predictedHeight = currentHeight + (currentVelocity * lookAheadTime);
-
-if (predictedHeight > Constants.SAFE_HEIGHT) {
-    arm.retract(); // Retract arm preemptively
-}
-```
 
 ### Thread Priority Management
+
 Elevate critical threads for consistent control loop timing:
 
 ```java
@@ -152,6 +172,7 @@ Thread.currentThread().setPriority(4); // Elevated priority
 ```
 
 ### Cached Sensor Reads
+
 Prevent redundant CAN bus calls with cached values:
 
 ```java
@@ -179,23 +200,9 @@ public class CachedDouble {
 // Call reset() once per periodic cycle
 ```
 
-### Telemetry Logging
-Every subsystem must publish comprehensive telemetry:
-
-```java
-@Override
-public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Elevator", inputs);
-
-    // Additional telemetry
-    Logger.recordOutput("Elevator/Setpoint", setpoint);
-    Logger.recordOutput("Elevator/AtSetpoint", atSetpoint());
-    Logger.recordOutput("Elevator/HomingState", homingState.toString());
-}
-```
 
 ### Javadoc Documentation
+
 Document public APIs, especially base classes and interfaces:
 
 ```java
@@ -212,6 +219,80 @@ public abstract class ServoMotorSubsystem<IO extends MotorIO> extends SubsystemB
      * @return Command that completes when position is reached
      */
     public Command setPositionCommand(double position) { ... }
+}
+```
+
+12. Safety & Error Handling
+
+### Mechanism Limits
+
+Use device built in limits if available:
+
+```java
+public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
+            SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
+            newConfigs.ForwardSoftLimitEnable = false;
+            newConfigs.ReverseSoftLimitEnable = false;
+            newConfigs.ForwardSoftLimitThreshold = CLIMBER_FORWARD_SOFT_LIMIT;
+             newConfigs.ReverseSoftLimitThreshold = CLIMBER_REVERSE_SOFT_LIMIT;
+                return newConfigs;
+        }
+```
+
+If no built in limits, then enforce software limits:
+
+```java
+public void setPosition(double position) {
+    // Clamp to safe range
+    position = MathUtil.clamp(position, MIN_POSITION, MAX_POSITION);
+    setpoint = position;
+}
+```
+
+### Current Limiting
+
+Protect motors from overcurrent:
+
+```java
+TalonFXConfiguration config = new TalonFXConfiguration();
+config.CurrentLimits.SupplyCurrentLimit = 40.0;
+config.CurrentLimits.SupplyCurrentThreshold = 60.0;
+config.CurrentLimits.SupplyTimeThreshold = 0.1;
+config.CurrentLimits.SupplyCurrentLimitEnable = true;
+motor.getConfigurator().apply(config);
+```
+
+### Fault Detection
+
+Monitor and log hardware faults:
+
+```java
+@Override
+public void periodic() {
+    if (inputs.motorFaults != 0 || inputs.motorStickyFaults != 0) {
+        Logger.recordOutput("Elevator/Faults", true);
+        DriverStation.reportWarning(
+            "Elevator motor fault detected: " + inputs.motorFaults,
+            false
+        );
+    }
+}
+```
+
+### Match Logging
+
+Explicity log match events
+
+```java
+@Override
+public void autonomousInit() {
+    Logger.recordOutput("Match/AutonomousStart", Timer.getFPGATimestamp());
+    Logger.recordOutput("Match/SelectedAuto", autoChooser.getSelected().getName());
+}
+
+@Override
+public void teleopInit() {
+    Logger.recordOutput("Match/TeleopStart", Timer.getFPGATimestamp());
 }
 ```
 

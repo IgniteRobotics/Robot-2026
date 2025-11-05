@@ -6,6 +6,7 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
+import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.DriveState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -37,22 +38,24 @@ public class VisionSubsystem extends SubsystemBase {
 
         //camera1
         CameraConstants.photonPoseEstimator1.setReferencePose(driveState.getCurrentRobotPose());
+        //This is FIFO, so the oldest is given first and the newest last
         var camera1Results = CameraConstants.photonCamera1.getAllUnreadResults();
 
         for(var result: camera1Results){
             Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimator1.update(result);
             if(!estimatedPose.isEmpty()){
-                calculateVisionMeasurement(estimatedPose.get());
+                calculateVisionMeasurement(estimatedPose.get(), CameraConstants.photonCameraName1);
             }
         }
 
+        //camera 2
         CameraConstants.photonPoseEstimator2.setReferencePose(driveState.getCurrentRobotPose());
         var camera2Results = CameraConstants.photonCamera2.getAllUnreadResults();
 
         for(var result: camera2Results){
             Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimator2.update(result);
             if(!estimatedPose.isEmpty()){
-                calculateVisionMeasurement(estimatedPose.get());
+                calculateVisionMeasurement(estimatedPose.get(), CameraConstants.photonCameraName2);
             }
         }
     }
@@ -62,10 +65,10 @@ public class VisionSubsystem extends SubsystemBase {
         CameraConstants.photonCamera1.setPipelineIndex(index);
     }
 
-    public void calculateVisionMeasurement(EstimatedRobotPose pose){
+    public void calculateVisionMeasurement(EstimatedRobotPose pose, String cameraName){
         double xyStds = 0.5;
         double thetaStd = 0.5;
-        driveState.addVisionEstimate(new VisionMeasurement(pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd)));
+        driveState.addVisionEstimate(new VisionMeasurement(pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd)), cameraName);
     }
     
 }

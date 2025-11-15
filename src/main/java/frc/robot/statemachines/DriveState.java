@@ -3,8 +3,12 @@ package frc.robot.statemachines;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.vision.CameraConstants;
@@ -14,14 +18,14 @@ public class DriveState {
 
     private static DriveState single_instance = null; 
      
-    private final int maxMeasurementsPerCamera = 8;
-    private HashMap<String, ArrayList<VisionMeasurement>> controlledListMap;
+    private HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>> concurrentQueueMap;
     
-    private Pose2d currentRobotPose = null;
+    private SwerveDriveState currentDriveStats = null;
 
     private DriveState() {
-        controlledListMap.put(CameraConstants.photonCameraName1, new ArrayList<VisionMeasurement>());
-        controlledListMap.put(CameraConstants.photonCameraName2, new ArrayList<VisionMeasurement>());
+        concurrentQueueMap = new HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>>();
+        concurrentQueueMap.put(CameraConstants.photonCameraName1, new ConcurrentLinkedQueue<VisionMeasurement>());
+        concurrentQueueMap.put(CameraConstants.photonCameraName2, new ConcurrentLinkedQueue<VisionMeasurement>());
     }
 
     public static synchronized DriveState getInstance()
@@ -37,19 +41,28 @@ public class DriveState {
     }
 
     public void addVisionEstimate(VisionMeasurement estimate, String cameraName){
-        ArrayList<VisionMeasurement> tempPointer = controlledListMap.get(cameraName);
-        if(tempPointer.size() == maxMeasurementsPerCamera){
-            tempPointer.remove(maxMeasurementsPerCamera-1);
-        }
-        tempPointer.add(0, estimate);
+        ConcurrentLinkedQueue<VisionMeasurement> tempPointer =  concurrentQueueMap.get(cameraName);
+        tempPointer.add(estimate);
     }
 
     public ArrayList<VisionMeasurement> grabVisionEstimateList(String cameraName){
-        ArrayList<VisionMeasurement> tempPointer = controlledListMap.get(cameraName);
-        controlledListMap.replace(cameraName, new ArrayList<VisionMeasurement>());
-        return tempPointer;
+        ConcurrentLinkedQueue<VisionMeasurement> tempPointer = concurrentQueueMap.get(cameraName);
+        ArrayList<VisionMeasurement> dataToExport = new ArrayList<VisionMeasurement>();
+        int exportSize = tempPointer.size();
+        try{
+            for(int i = 0; i < exportSize; i++){
+                dataToExport.add(tempPointer.remove());
+            }
+        }
+        //TODO add to log
+        catch(Exception e){
+            System.out.println("EXCEPTION IN grabVisionEstimateList!");
+            System.out.println(e.getMessage());
+        }
+        return dataToExport;
     }
 
-    public void adjustRobotPose(Pose2d newPose){currentRobotPose = newPose;}
-    public Pose2d getCurrentRobotPose(){return currentRobotPose;}
+    public void adjustCurrentDriveStats(SwerveDriveState newStats){currentDriveStats = newStats;}
+    public boolean hasDriveStats(){return currentDriveStats != null;}
+    public SwerveDriveState getCurrentDriveStats(){return currentDriveStats;}
 }

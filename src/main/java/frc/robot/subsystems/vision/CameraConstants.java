@@ -26,5 +26,7 @@ public class CameraConstants {
     public static final Transform3d photonCameraTransform2 = new Transform3d(new Translation3d(0,0,0), new Rotation3d(0, 0, 0));
     public static final PhotonCamera photonCamera2 = new PhotonCamera(photonCameraName2);
     public static final PhotonPoseEstimator photonPoseEstimator2 = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransform2);
+
+    public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.2;
 }
 

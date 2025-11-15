@@ -7,10 +7,10 @@ import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.vision.CameraConstants;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 
-public class IgniteDrivetrain extends CommandSwerveDrivetrain
+public class DrivetrainSubsystem extends CommandSwerveDrivetrain
 {
     private DriveState driveState = DriveState.getInstance();
-    public IgniteDrivetrain(){
+    public DrivetrainSubsystem(){
         super(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
     }
 
@@ -23,10 +23,6 @@ public class IgniteDrivetrain extends CommandSwerveDrivetrain
         for(VisionMeasurement estimate : driveState.grabVisionEstimateList(CameraConstants.photonCameraName2)){
             addVisionMeasurement(estimate.getEstimatedPose().estimatedPose.toPose2d(), estimate.getTimestamp(), estimate.getTrust());
         }
-        driveState.adjustRobotPose(getPose());
-    }
-
-    public Pose2d getPose(){
-        return this.getState().Pose;
+        driveState.adjustCurrentDriveStats(this.getStateCopy());
     }
 }

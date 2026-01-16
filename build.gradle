@@ -1,26 +1,11 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2025.3.2"
-    id "com.diffplug.spotless" version "6.25.0"
+    id "edu.wpi.first.GradleRIO" version "2026.1.1"
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-spotless {
-    // Don't automatically enforce check during build (we'll add it manually)
-    enforceCheck false
-
-    java {
-        target 'src/**/*.java'
-        // Use Google Java Format with default style (2-space indentation, matching WPILib standard)
-        googleJavaFormat('1.19.2').reflowLongStrings()
-        removeUnusedImports()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
 }
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
@@ -58,7 +43,8 @@ deploy {
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
-// Set to true to use debug for JNI.
+// Set to true to use debug for all targets including JNI, which will drastically impact
+// performance.
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
@@ -103,7 +89,9 @@ wpi.sim.addDriverstation()
 // knows where to look for our Robot Class.
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    from sourceSets.main.allSource
+    from('src') { into 'backup/src' }
+    from('vendordeps') { into 'backup/vendordeps' }
+    from('build.gradle') { into 'backup' }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

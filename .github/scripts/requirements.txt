@@ -1,3 +1,0 @@
-# Dependencies for AI Code Review GitHub Action
-google-generativeai>=0.3.0
-PyGithub>=2.1.0

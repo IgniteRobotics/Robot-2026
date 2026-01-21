@@ -12,7 +12,7 @@ import google.generativeai as genai
 from github import Github, GithubException
 
 # Configuration
-GEMINI_MODEL = "gemini-2.0-flash-exp"
+GEMINI_MODEL = "gemini-2.5-flash"
 MAX_FILES_TO_REVIEW = 50
 MAX_FILE_SIZE = 100000  # 100KB per file
 REVIEW_COMMENT_MARKER = "<!-- ai-code-review-bot -->"

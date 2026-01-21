@@ -1,11 +1,26 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.1.1"
+    id "com.diffplug.spotless" version "6.25.0"
+    id "edu.wpi.first.GradleRIO" version "2026.2.1"
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+spotless {
+    // Don't automatically enforce check during build (we'll add it manually)
+    enforceCheck false
+
+    java {
+        target 'src/**/*.java'
+        // Use Google Java Format with default style (2-space indentation, matching WPILib standard)
+        googleJavaFormat('1.19.2').reflowLongStrings()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"

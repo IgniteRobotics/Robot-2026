@@ -1,4 +1,4 @@
-package frc.robot.PreferenceTypes;
+package frc.robot.preferences;
 
 import edu.wpi.first.wpilibj.Preferences;
 

@@ -11,4 +11,30 @@ public class IntakeSubsystem {
         m_intakeExtensionMotor = new TalonFX(IntakeConstants.kIntakeExtensionMotor);
     }
 
+    public void spinRoller(){
+        m_intakeRollerMotor.set(IntakePreferences.rollerIntakeSpeed.getValue());
+    }
+
+    public void stopRoller(){
+        m_intakeRollerMotor.stopMotor();
+    }
+
+    public void setIntakePosition(double position){
+        m_intakeExtensionMotor.setPosition(position);
+    }
+
+    public void collect(){
+        spinRoller();
+        setIntakePosition(IntakePreferences.intakeCollectPosition.getValue());
+    }
+
+    public void stow(){
+        stopRoller();
+        setIntakePosition(0);
+    }
+
+
+
+
+
 }

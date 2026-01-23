@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -9,13 +8,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class IntakeSubsystem extends SubsystemBase{
     private final TalonFX rollerMotor;
     private final TalonFX extensionMotor;
 
     private double currentPositionTarget;
+    private PositionTorqueCurrentFOC positionControl;
 
     public IntakeSubsystem(){
         rollerMotor = new TalonFX(IntakeConstants.ROLLER_MOTOR_ID);
@@ -23,6 +22,12 @@ public class IntakeSubsystem extends SubsystemBase{
         extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot0Configs());
         extensionMotor.setPosition(0);
         currentPositionTarget = 0;
+        positionControl = new PositionTorqueCurrentFOC(0);
+    }
+
+    @Override
+    public void periodic(){
+        extensionMotor.setControl(positionControl.withPosition(currentPositionTarget));
     }
 
     public Command spinRollerCommand(){
@@ -38,8 +43,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public Command setIntakePositionCommand(double position){
-        currentPositionTarget = position;
-        return runOnce(() -> extensionMotor.setControl(new PositionTorqueCurrentFOC(position))).andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
+        return runOnce(() -> currentPositionTarget = position).andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
     }
 
     public Command collectCommand(){
@@ -47,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public Command stowCommand(){
-        return stopRollerCommand().andThen(setIntakePositionCommand(0.0)).withName("Stow Intake");
+        return stopRollerCommand().andThen(setIntakePositionCommand(0)).withName("Stow Intake");
     }
 
 

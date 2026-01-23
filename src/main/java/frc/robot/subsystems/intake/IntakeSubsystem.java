@@ -31,9 +31,14 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerControl = new VelocityVoltage(0);
 
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot0Configs());
+    extensionMotor
+        .getConfigurator()
+        .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
+
+    homeIntake();
   }
 
   @Override
@@ -76,5 +81,24 @@ public class IntakeSubsystem extends SubsystemBase {
     return stopRollerCommand()
         .andThen(setIntakeExtensionCommand(Rotations.of(0)))
         .withName("Stow Intake");
+  }
+
+  private void homeIntake() {
+    while (extensionMotor.getStatorCurrent().getValueAsDouble()
+        > IntakeConstants.SAFE_STATOR_LIMIT) {
+      extensionMotor.set(IntakeConstants.SAFE_HOMING_EFFORT);
+    }
+    extensionMotor.setPosition(0);
+  }
+
+  public Command homeIntakeCommand() {
+    return runEnd(
+            () -> extensionMotor.set(IntakeConstants.SAFE_HOMING_EFFORT),
+            () -> extensionMotor.setPosition(0))
+        .until(
+            () -> {
+              return extensionMotor.getStatorCurrent().getValueAsDouble()
+                  > IntakeConstants.SAFE_STATOR_LIMIT;
+            });
   }
 }

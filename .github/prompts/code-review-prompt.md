@@ -222,7 +222,7 @@ public abstract class ServoMotorSubsystem<IO extends MotorIO> extends SubsystemB
 }
 ```
 
-12. Safety & Error Handling
+## Safety & Error Handling
 
 ### Mechanism Limits
 

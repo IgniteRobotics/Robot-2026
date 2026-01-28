@@ -6,39 +6,86 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.intake.IntakeConstants;
 
-public class ShooterSubsystem extends SubsystemBase{
-    private final TalonFX flywheelMotor;
-    private final TalonFX hoodMotor;
+public class ShooterSubsystem extends SubsystemBase {
+  private final TalonFX flywheelMotor;
+  private final TalonFX hoodMotor;
 
-    private AngularVelocity launchVelocityTarget; //Rotations Per Second
-    private VelocityVoltage launchControl;
+  private AngularVelocity launchVelocityTarget; // Rotations Per Second
+  private VelocityVoltage launchControl;
 
-    private Angle hoodTarget; //Rotations
-    private PositionTorqueCurrentFOC hoodControl;
+  private Angle hoodTarget; // Rotations
+  private PositionTorqueCurrentFOC hoodControl;
 
+  public ShooterSubsystem() {
+    flywheelMotor = new TalonFX(ShooterConstants.FLYWHEEL_MOTOR_ID);
+    hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
 
-    public ShooterSubsystem(){
-        flywheelMotor = new TalonFX(ShooterConstants.FLYWHEEL_MOTOR_ID);
-        hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
+    flywheelMotor.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    launchVelocityTarget = RotationsPerSecond.of(0);
+    launchControl = new VelocityVoltage(0);
 
-        flywheelMotor.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-        launchVelocityTarget = RotationsPerSecond.of(0);
-        launchControl = new VelocityVoltage(0);
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
+    hoodTarget = Rotations.of(0);
+    hoodControl = new PositionTorqueCurrentFOC(0);
+  }
 
-        hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
-        hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
-        hoodTarget = Rotations.of(0);
-        hoodControl = new PositionTorqueCurrentFOC(0);
-    }
+  @Override
+  public void periodic() {
+    flywheelMotor.setControl(
+        launchControl.withVelocity(launchVelocityTarget.in(RotationsPerSecond)));
+    hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
+  }
 
-    @Override
-    public void periodic(){}
-    
+  public Command spinFlywheelCommand() {
+    return runOnce(
+            () ->
+                launchVelocityTarget =
+                    RotationsPerSecond.of(ShooterPreferences.flywheelLaunchSpeed.getValue()))
+        .withName("Start Spinning Flywheel");
+  }
 
-    
+  public Command stopFlywheelCommand() {
+    return runOnce(() -> launchVelocityTarget = RotationsPerSecond.of(0))
+        .withName("Stop Spinning Flywheel");
+  }
+
+  private boolean atHoodSetpoint() {
+    return Math.abs(hoodMotor.getPosition().getValueAsDouble() - hoodTarget.in(Rotations))
+        < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
+  }
+
+  public Command setHoodCommand(Angle position) {
+    return runOnce(() -> hoodTarget = position)
+        .andThen(Commands.waitUntil(() -> atHoodSetpoint()))
+        .withName("Set Hood Angle");
+  }
+
+  public Command launchLemonsCommand() {
+    return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
+        .andThen(spinFlywheelCommand())
+        .withName("Start Launching Lemons");
+  }
+
+  public Command stowCommand() {
+    return stopFlywheelCommand().andThen(setHoodCommand(Rotations.of(0))).withName("Stow Shooter");
+  }
+
+  public Command homeShooterCommand() {
+    return runEnd(
+            () -> hoodMotor.set(ShooterConstants.SAFE_HOMING_EFFORT),
+            () -> hoodMotor.setPosition(0))
+        .until(
+            () -> {
+              return hoodMotor.getStatorCurrent().getValueAsDouble()
+                  > ShooterConstants.SAFE_STATOR_LIMIT;
+            });
+  }
 }

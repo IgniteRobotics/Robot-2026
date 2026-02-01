@@ -1,9 +1,10 @@
 package frc.robot.subsystems.indexer;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+
 final class IndexerConstants {
 
-  private IndexerConstants(){}
+  private IndexerConstants() {}
 
   // TODO Replace with real id
   protected static final int INDEXER_MOTOR_ID = 6;

@@ -1,3 +1,3 @@
-public class photonconfig {
-    
-}
+package frc.robot.subsystems.vision;
+
+public class photonconfig {}

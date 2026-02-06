@@ -18,8 +18,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         TunerConstants.FrontRight,
         TunerConstants.BackLeft,
         TunerConstants.BackRight);
-    // applySteerGains();
-    // applyDriveGains();
+    applySteerGains();
+    applyDriveGains();
   }
 
   @Override

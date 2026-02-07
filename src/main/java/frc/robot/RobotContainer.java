@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.commands.WheelSlipTest;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
@@ -84,6 +85,7 @@ public class RobotContainer {
 
     joystick.x().onTrue(drivetrain.sysIdSteer());
     joystick.y().onTrue(drivetrain.sysIdTranslation());
+    joystick.b().whileTrue(new WheelSlipTest(drivetrain)); // Testing only
 
     // Reset the field-centric heading on left bumper press.
     joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

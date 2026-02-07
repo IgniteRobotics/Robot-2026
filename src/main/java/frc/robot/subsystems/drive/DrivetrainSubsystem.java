@@ -131,6 +131,27 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         .withTimeout(1);
   }
 
+  public void setDrivePower(double power) {
+    for (int i = 0; i < 4; i++) {
+      this.getModule(i).getDriveMotor().set(power);
+    }
+  }
+
+  public void printDriveMotorCurrents() {
+    System.out.println(
+        "Front Left current: "
+            + this.getModule(0).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    System.out.println(
+        "Front Right current: "
+            + this.getModule(1).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    System.out.println(
+        "Rear Left current: "
+            + this.getModule(2).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    System.out.println(
+        "Rear Right current: "
+            + this.getModule(3).getDriveMotor().getStatorCurrent().getValueAsDouble());
+  }
+
   public PIDController getTranslationPIDController() {
     PIDController controller =
         new PIDController(

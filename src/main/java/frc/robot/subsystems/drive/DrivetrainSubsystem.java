@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.CommandSwerveDrivetrain;
@@ -114,5 +115,24 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         .getDriveMotor()
         .getConfigurator()
         .apply(DriveMotorConfigs.createRearRightDriveMotorSlot0Configs());
+  }
+
+  public PIDController getTranslationPIDController() {
+    PIDController controller =
+        new PIDController(
+            DrivePreferences.translation_kP.getValue(),
+            0,
+            DrivePreferences.translation_kD.getValue());
+    controller.setTolerance(DriveConstants.TRANSLATION_ALIGN_TOLERANCE);
+    return controller;
+  }
+
+  public PIDController getRotationPIDController() {
+    PIDController controller =
+        new PIDController(
+            DrivePreferences.rotation_kP.getValue(), 0, DrivePreferences.rotation_kD.getValue());
+    controller.setTolerance(DriveConstants.ROTATION_ALIGN_TOLERANCE);
+    controller.enableContinuousInput(-180, 180); // Degrees
+    return controller;
   }
 }

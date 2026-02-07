@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class CameraConstants {
 
@@ -19,16 +18,14 @@ public class CameraConstants {
       new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
   public static final PhotonCamera photonCamera1 = new PhotonCamera(photonCameraName1);
   public static final PhotonPoseEstimator photonPoseEstimator1 =
-      new PhotonPoseEstimator(
-          layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransform1);
+      new PhotonPoseEstimator(layout, photonCameraTransform1);
 
   public static final String photonCameraName2 = "CAMERA 2";
   public static final Transform3d photonCameraTransform2 =
       new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
   public static final PhotonCamera photonCamera2 = new PhotonCamera(photonCameraName2);
   public static final PhotonPoseEstimator photonPoseEstimator2 =
-      new PhotonPoseEstimator(
-          layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransform2);
+      new PhotonPoseEstimator(layout, photonCameraTransform2);
 
   public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.2;
 }

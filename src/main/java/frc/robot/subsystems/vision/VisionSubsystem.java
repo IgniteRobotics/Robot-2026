@@ -46,34 +46,22 @@ public class VisionSubsystem extends SubsystemBase {
     if (driveState.hasDriveStats()) {
       // this makes sure that the different parts of the periodic use different stats
       driveStats = driveState.getCurrentDriveStats();
-      // camera1
+      // Front Camera
       // This is FIFO, so the oldest is given first and the newest last'
-      CameraConstants.photonPoseEstimator1.setReferencePose(driveStats.Pose);
-      var camera1Results = CameraConstants.photonCamera1.getAllUnreadResults();
-      for (var result : camera1Results) {
+      CameraConstants.photonPoseEstimator_Front.setReferencePose(driveStats.Pose);
+      var frontCameraResults = CameraConstants.photonCamera_Front.getAllUnreadResults();
+      for (var result : frontCameraResults) {
         Optional<EstimatedRobotPose> estimatedPose =
-            CameraConstants.photonPoseEstimator1.update(result);
+            CameraConstants.photonPoseEstimator_Front.update(result);
         if (!estimatedPose.isEmpty()) {
-          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName1);
-        }
-      }
-
-      // camera 2
-      CameraConstants.photonPoseEstimator2.setReferencePose(driveStats.Pose);
-      var camera2Results = CameraConstants.photonCamera2.getAllUnreadResults();
-      for (var result : camera2Results) {
-        Optional<EstimatedRobotPose> estimatedPose =
-            CameraConstants.photonPoseEstimator2.update(result);
-        if (!estimatedPose.isEmpty()) {
-          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName2);
+          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Front);
         }
       }
     }
   }
 
   public void setPipeline(int index) {
-    CameraConstants.photonCamera1.setPipelineIndex(index);
-    CameraConstants.photonCamera1.setPipelineIndex(index);
+    CameraConstants.photonCamera_Front.setPipelineIndex(index);
   }
 
   // evaluates the estimations before export

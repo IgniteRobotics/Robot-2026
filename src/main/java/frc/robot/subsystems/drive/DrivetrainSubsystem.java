@@ -1,15 +1,9 @@
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.CommandSwerveDrivetrain;
@@ -30,20 +24,14 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         TunerConstants.BackRight);
     applySteerGains();
     applyDriveGains();
+    // configureAutoBuilder();
   }
 
   @Override
   public void periodic() {
     super.periodic();
     for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(CameraConstants.photonCameraName1)) {
-      addVisionMeasurement(
-          estimate.getEstimatedPose().estimatedPose.toPose2d(),
-          estimate.getTimestamp(),
-          estimate.getTrust());
-    }
-    for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(CameraConstants.photonCameraName2)) {
+        driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Front)) {
       addVisionMeasurement(
           estimate.getEstimatedPose().estimatedPose.toPose2d(),
           estimate.getTimestamp(),
@@ -126,6 +114,23 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         .apply(DriveMotorConfigs.createRearRightDriveMotorSlot0Configs());
   }
 
+  public Command driveForward() {
+    SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    SwerveRequest.RobotCentric forwardStraight =
+        new SwerveRequest.RobotCentric()
+            .withDriveRequestType(DriveRequestType.Velocity)
+            .withVelocityY(0);
+
+    return runOnce(() -> this.seedFieldCentric())
+        .andThen(applyRequest(() -> point.withModuleDirection(new Rotation2d(0.0))))
+        .withTimeout(1)
+        .andThen(applyRequest(() -> forwardStraight.withVelocityX(0.5)))
+        .withTimeout(2)
+        .andThen(applyRequest(() -> brake))
+        .withTimeout(1);
+  }
+
   public PIDController getTranslationPIDController() {
     PIDController controller =
         new PIDController(
@@ -145,38 +150,38 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     return controller;
   }
 
-  private void configureAutoBuilder() {
-        try {
-            var config = RobotConfig.fromGUISettings();
-            AutoBuilder.configure(
-                () -> getState().Pose,   // Supplier of current robot pose
-                this::resetPose,         // Consumer for seeding pose against auto
-                () -> getState().Speeds, // Supplier of current robot speeds
-                // Consumer of ChassisSpeeds and feedforwards to drive the robot
-                (speeds, feedforwards) -> setControl(
-                    new SwerveRequest.ApplyFieldSpeeds().withSpeeds(speeds)
-                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
-                ),
-                new PPHolonomicDriveController(
-                    // PID constants for translation
-                    new PIDConstants(10, 0, 0),
-                    // PID constants for rotation
-                    new PIDConstants(7, 0, 0)
-                ),
-                config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-                this // Subsystem for requirements
-            );
-        } catch (Exception ex) {
-            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
-        }
+  /*private void configureAutoBuilder() {
+    try {
+      var config = RobotConfig.fromGUISettings();
+      AutoBuilder.configure(
+          () -> getState().Pose, // Supplier of current robot pose
+          this::resetPose, // Consumer for seeding pose against auto
+          () -> getState().Speeds, // Supplier of current robot speeds
+          // Consumer of ChassisSpeeds and feedforwards to drive the robot
+          (speeds, feedforwards) ->
+              setControl(
+                  new SwerveRequest.ApplyFieldSpeeds()
+                      .withSpeeds(speeds)
+                      .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                      .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+          new PPHolonomicDriveController(
+              // PID constants for translation
+              new PIDConstants(10, 0, 0),
+              // PID constants for rotation
+              new PIDConstants(7, 0, 0)),
+          config,
+          // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+          () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+          this // Subsystem for requirements
+          );
+    } catch (Exception ex) {
+      DriverStation.reportError(
+          "Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
     }
+  }
 
-    public Command followPath(PathPlannerPath path){
-        this.resetPose(path.getStartingHolonomicPose().get());
-        return AutoBuilder.followPath(path);
-    }
-
+  public Command followPath(PathPlannerPath path) {
+    this.resetPose(path.getStartingHolonomicPose().get());
+    return AutoBuilder.followPath(path);
+  } */
 }

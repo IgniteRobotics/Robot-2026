@@ -5,11 +5,14 @@
 package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.commands.WheelSlipTest;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 
@@ -24,7 +27,12 @@ public class RobotContainer {
 
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
+  private final SendableChooser<Command> autoChooser;
+
   public RobotContainer() {
+    autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
+    SmartDashboard.putData("Auto Mode", autoChooser);
+
     configureSubsystemDefaultCommands();
     configureBindings();
   }
@@ -74,6 +82,7 @@ public class RobotContainer {
 
     joystick.x().onTrue(drivetrain.sysIdSteer());
     joystick.y().onTrue(drivetrain.sysIdTranslation());
+    joystick.b().whileTrue(new WheelSlipTest(drivetrain)); // Testing only
 
     // Reset the field-centric heading on left bumper press.
     joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -82,22 +91,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // Simple drive forward auton
-    final var idle = new SwerveRequest.Idle();
-    return Commands.sequence(
-        // Reset our field centric heading to match the robot
-        // facing away from our alliance station wall (0 deg).
-        drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-        // Then slowly drive forward (away from us) for 5 seconds.
-        drivetrain
-            .applyRequest(
-                () ->
-                    DriveConstants.DEFAULT_DRIVE_REQUEST
-                        .withVelocityX(0.5)
-                        .withVelocityY(0)
-                        .withRotationalRate(0))
-            .withTimeout(5.0),
-        // Finally idle for the rest of auton
-        drivetrain.applyRequest(() -> idle));
+    return autoChooser.getSelected();
   }
 }

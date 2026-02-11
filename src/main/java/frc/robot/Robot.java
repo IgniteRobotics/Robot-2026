@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
           // Default backend is NetworkTables - no need to set config.backend
           config.root = "Robot";
         });
-    
+
     // Start DataLogManager to capture NetworkTables data to disk (.wpilog files)
     // This provides post-match analysis capability for ALL telemetry
     DataLogManager.start();

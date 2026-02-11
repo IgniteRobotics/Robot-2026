@@ -21,10 +21,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Logged(name = "Roller Velocity Target", importance = Importance.CRITICAL)
   private AngularVelocity rollerVelocityTarget; // RotationsPerSecond
+
   private VelocityVoltage rollerControl;
 
   @Logged(name = "Extension Target", importance = Importance.CRITICAL)
   private Angle extensionTarget; // Rotations
+
   private PositionTorqueCurrentFOC extensionControl;
 
   public IntakeSubsystem() {
@@ -64,7 +66,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)
-  private boolean atExtensionSetpoint() {
+  public boolean atExtensionSetpoint() {
     return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
         < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }

@@ -16,6 +16,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
   @Logged(name = "Indexer Velocity Target", importance = Importance.CRITICAL)
   private AngularVelocity indexerVelocityTarget; // RotationsPerSecond
+
   private VelocityVoltage indexerControl;
 
   public IndexerSubsystem() {

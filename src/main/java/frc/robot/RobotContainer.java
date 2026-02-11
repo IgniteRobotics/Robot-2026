@@ -14,11 +14,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.WheelSlipTest;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.climber.ClimberSubsystem;
 
 @Logged
 public class RobotContainer {
@@ -32,11 +32,13 @@ public class RobotContainer {
 
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
-  @Logged(name = "Intake Subsystem")
+  @Logged(name = "Intake")
   public final IntakeSubsystem intake = new IntakeSubsystem();
-  @Logged(name = "Indexer Subsystem")
+
+  @Logged(name = "Indexer")
   public final IndexerSubsystem indexer = new IndexerSubsystem();
-  @Logged(name = "Climber Subsystem")
+
+  @Logged(name = "Climber")
   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   private final SendableChooser<Command> autoChooser;

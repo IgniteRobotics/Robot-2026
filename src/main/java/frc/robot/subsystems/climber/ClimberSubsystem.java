@@ -18,6 +18,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   @Logged(name = "Climb Target", importance = Importance.CRITICAL)
   private Angle climbTarget; // Rotations
+
   private PositionTorqueCurrentFOC climbControl;
 
   public ClimberSubsystem() {
@@ -36,7 +37,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   @Logged(name = "Climb Setpoint", importance = Importance.CRITICAL)
-  private boolean atClimbSetpoint() {
+  public boolean atClimbSetpoint() {
     return Math.abs(climbMotor.getPosition().getValueAsDouble() - climbTarget.in(Rotations))
         < ClimberConstants.ALLOWABLE_CLIMB_ERROR.in(Rotations);
   }

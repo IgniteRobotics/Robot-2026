@@ -5,14 +5,18 @@ import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 public class ClimberSubsystem extends SubsystemBase {
   private final TalonFX climbMotor;
 
+  @Logged(name = "Climb Target", importance = Importance.CRITICAL)
   private Angle climbTarget; // Rotations
   private PositionTorqueCurrentFOC climbControl;
 
@@ -31,6 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climbMotor.setControl(climbControl.withPosition(climbTarget));
   }
 
+  @Logged(name = "Climb Setpoint", importance = Importance.CRITICAL)
   private boolean atClimbSetpoint() {
     return Math.abs(climbMotor.getPosition().getValueAsDouble() - climbTarget.in(Rotations))
         < ClimberConstants.ALLOWABLE_CLIMB_ERROR.in(Rotations);

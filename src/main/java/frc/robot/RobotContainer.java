@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,7 +16,11 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.WheelSlipTest;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 
+@Logged
 public class RobotContainer {
 
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -26,6 +31,13 @@ public class RobotContainer {
   private final CommandXboxController joystick = new CommandXboxController(0);
 
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+
+  @Logged(name = "Intake Subsystem")
+  public final IntakeSubsystem intake = new IntakeSubsystem();
+  @Logged(name = "Indexer Subsystem")
+  public final IndexerSubsystem indexer = new IndexerSubsystem();
+  @Logged(name = "Climber Subsystem")
+  public final ClimberSubsystem climber = new ClimberSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 

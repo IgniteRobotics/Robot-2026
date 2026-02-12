@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.CommandSwerveDrivetrain;
@@ -145,30 +146,30 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
   }
 
   public void printDriveMotorCurrents() {
-    System.out.println(
-        "Front Left supply current: "
-            + this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-    System.out.println(
-        "Front Left stator current: "
-            + this.getModule(0).getDriveMotor().getStatorCurrent().getValueAsDouble());
-    System.out.println(
-        "Front Right supply current: "
-            + this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-    System.out.println(
-        "Front Right stator current: "
-            + this.getModule(1).getDriveMotor().getStatorCurrent().getValueAsDouble());
-    System.out.println(
-        "Rear Left supply current: "
-            + this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-    System.out.println(
-        "Rear Left stator current: "
-            + this.getModule(2).getDriveMotor().getStatorCurrent().getValueAsDouble());
-    System.out.println(
-        "Rear Right supply current: "
-            + this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-    System.out.println(
-        "Rear Right stator current: "
-            + this.getModule(3).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Front Left supply current", 
+        this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Front Left stator current",
+        this.getModule(0).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Front Right supply current",
+        this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Front Right stator current",
+        this.getModule(1).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Rear Left supply current",
+        this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Rear Left stator current",
+        this.getModule(2).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Rear Right supply current",
+        this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Rear Right stator current",
+        this.getModule(3).getDriveMotor().getStatorCurrent().getValueAsDouble());
   }
 
   public PIDController getTranslationPIDController() {

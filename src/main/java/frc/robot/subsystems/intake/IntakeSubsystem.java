@@ -6,20 +6,27 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX rollerMotor;
   private final TalonFX extensionMotor;
 
+  @Logged(name = "Roller Velocity Target", importance = Importance.CRITICAL)
   private AngularVelocity rollerVelocityTarget; // RotationsPerSecond
+
   private VelocityVoltage rollerControl;
 
+  @Logged(name = "Extension Target", importance = Importance.CRITICAL)
   private Angle extensionTarget; // Rotations
+
   private PositionTorqueCurrentFOC extensionControl;
 
   public IntakeSubsystem() {
@@ -58,7 +65,8 @@ public class IntakeSubsystem extends SubsystemBase {
         .withName("Stop Intake Roller");
   }
 
-  private boolean atExtensionSetpoint() {
+  @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)
+  public boolean atExtensionSetpoint() {
     return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
         < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }

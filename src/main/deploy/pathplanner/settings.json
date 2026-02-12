@@ -3,6 +3,7 @@
   "robotLength": 0.858,
   "holonomicMode": true,
   "pathFolders": [
+    "Basic Comp Paths",
     "Plus Sign Test",
     "Rotation + Translation Test",
     "Square Test"

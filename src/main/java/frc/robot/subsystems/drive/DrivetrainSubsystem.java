@@ -146,16 +146,28 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
   public void printDriveMotorCurrents() {
     System.out.println(
-        "Front Left current: "
+        "Front Left supply current: "
+            + this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    System.out.println(
+        "Front Left stator current: "
             + this.getModule(0).getDriveMotor().getStatorCurrent().getValueAsDouble());
     System.out.println(
-        "Front Right current: "
+        "Front Right supply current: "
+            + this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    System.out.println(
+        "Front Right stator current: "
             + this.getModule(1).getDriveMotor().getStatorCurrent().getValueAsDouble());
     System.out.println(
-        "Rear Left current: "
+        "Rear Left supply current: "
+            + this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    System.out.println(
+        "Rear Left stator current: "
             + this.getModule(2).getDriveMotor().getStatorCurrent().getValueAsDouble());
     System.out.println(
-        "Rear Right current: "
+        "Rear Right supply current: "
+            + this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+    System.out.println(
+        "Rear Right stator current: "
             + this.getModule(3).getDriveMotor().getStatorCurrent().getValueAsDouble());
   }
 

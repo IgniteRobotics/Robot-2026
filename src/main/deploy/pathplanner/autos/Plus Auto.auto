@@ -7,37 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Complex 1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "pathName": "Plus 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Complex 2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "pathName": "Plus 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Complex 3"
+            "pathName": "Plus 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Plus 4"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Test Autos",
   "choreoAuto": false
 }

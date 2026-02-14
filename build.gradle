@@ -1,7 +1,8 @@
 plugins {
     id "java"
-    id "com.diffplug.spotless" version "6.25.0"
+    id "com.diffplug.spotless" version "8.2.1"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id("com.peterabeles.gversion") version "1.10.3"
 }
 
 java {
@@ -15,15 +16,26 @@ spotless {
 
     java {
         target 'src/**/*.java'
+        removeUnusedImports()
         // Use Google Java Format with default style (2-space indentation, matching WPILib standard)
         googleJavaFormat('1.19.2').reflowLongStrings()
-        removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
     }
 }
 
+
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
+
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+  srcDir       = "src/main/java/"
+  classPackage = "frc.robot"
+  className    = "BuildConstants"
+  dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+  timeZone     = "America/New_York" // Use preferred time zone
+  indent       = "  "
+}
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
@@ -120,3 +132,5 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+compileJava.dependsOn 'spotlessApply'

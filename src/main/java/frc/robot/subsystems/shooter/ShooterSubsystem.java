@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
@@ -23,29 +22,35 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Logged(name = "Velocity Target", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // Rotations Per Second
+
   private VelocityVoltage velocityControl;
 
   @Logged(name = "Hood Target", importance = Importance.CRITICAL)
   private Angle hoodTarget; // Rotations
+
   private PositionTorqueCurrentFOC hoodControl;
 
-  public class LaunchRequest{
+  public class LaunchRequest {
     private Angle launchHoodTarget;
     private AngularVelocity launchVelocity;
 
-    public LaunchRequest(Angle theta, LinearVelocity velocity){
-      launchHoodTarget = Rotations.of(theta.in(Degrees)*ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations));
-      launchVelocity = RotationsPerSecond.of(velocity.in(MetersPerSecond)/(2*Math.PI*ShooterConstants.FLYWHEEL_RADIUS.in(Meters)));
+    public LaunchRequest(Angle theta, LinearVelocity velocity) {
+      launchHoodTarget =
+          Rotations.of(
+              theta.in(Degrees) * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations));
+      launchVelocity =
+          RotationsPerSecond.of(
+              velocity.in(MetersPerSecond)
+                  / (2 * Math.PI * ShooterConstants.FLYWHEEL_RADIUS.in(Meters)));
     }
 
-    public Angle getHoodTarget(){
+    public Angle getHoodTarget() {
       return launchHoodTarget;
     }
 
-    public AngularVelocity getVelocityTarget(){
+    public AngularVelocity getVelocityTarget() {
       return launchVelocity;
     }
-
   }
 
   public ShooterSubsystem() {
@@ -64,8 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    flywheelMotor.setControl(
-        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    flywheelMotor.setControl(velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
   }
 
@@ -83,7 +87,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
-  private boolean atHoodSetpoint() {
+  public boolean atHoodSetpoint() {
     return Math.abs(hoodMotor.getPosition().getValueAsDouble() - hoodTarget.in(Rotations))
         < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }
@@ -115,19 +119,34 @@ public class ShooterSubsystem extends SubsystemBase {
             });
   }
 
-  //helper method to find, given a distance from the robot to the tag, 
-  //(1) necessary angle of the hood
-  //(2) necessary velocity of flywheel
-  //to land a lemon in the goal
-  public LaunchRequest createLaunchRequest(double distanceToTag){
+  // helper method to find, given a distance from the robot to the tag,
+  // (1) necessary angle of the hood
+  // (2) necessary velocity of flywheel
+  // to land a lemon in the goal
+  public LaunchRequest createLaunchRequest(double distanceToTag) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distanceToTag + ShooterConstants.OFFSET_DISTANCE.in(Meters);
     double y2 = ShooterConstants.GOAL_HEIGHT.in(Meters);
-    
-    do{
-    double a = (ShooterConstants.OPTIMAL_ENTRY_SLOPE*x2 + y1 - y2)/x2;
-    }while(false);
 
-    return null;
+    double slope = ShooterConstants.OPTIMAL_ENTRY_SLOPE;
+    double a, b, vertex;
+    Angle theta;
+    do {
+      a = (slope * x2 + y1 - y2) / x2;
+      b = (slope - 2 * a * x2);
+      theta = Radians.of(Math.PI / 2 - Math.atan(b));
+      vertex = -1 * b / (2 * a);
+      slope -= 0.05;
+    } while ((vertex > x2 - ShooterConstants.MIN_VERTEX_DISTANCE.in(Meters))
+        && !(theta.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
+
+    if (theta.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
+
+    LinearVelocity velocity =
+        MetersPerSecond.of(
+            Math.sqrt(
+                2 * 9.8 * vertex / (Math.sin(theta.in(Radians)) * Math.cos(theta.in(Radians)))));
+
+    return new LaunchRequest(theta, velocity);
   }
 }

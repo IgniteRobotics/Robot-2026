@@ -1,7 +1,14 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
 
 public class ShooterConstants {
 
@@ -52,6 +59,18 @@ public class ShooterConstants {
     return configs;
   }
 
-  public static final double SAFE_HOMING_EFFORT = -0.2; // Update these
-  public static final double SAFE_STATOR_LIMIT = 0.8; // Update these
+  public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);
+  public static final Current SAFE_STATOR_LIMIT = Amp.of(0.8);
+
+  //Conversion Constants
+  public static final Angle ROTATIONS_PER_LAUNCH_DEGREE = Rotations.of(1); //TODO: Get Better Estimate
+  public static final Distance FLYWHEEL_RADIUS = Inch.of(1); //TODO: Get Better Estimate
+
+  //Lemon Yeeting Constants
+  public static final Distance SHOOTER_HEIGHT = Inch.of( 65); //TODO: Get Better Estimate
+  public static final Distance GOAL_HEIGHT = Inch.of(23); //TODO: Get Better Estimate
+  public static final Distance OFFSET_DISTANCE = Meter.of(1); //TODO: Get Better Estimate
+  public static final Distance MIN_VERTEX_DISTANCE = Inch.of(23.5);
+  public static final Angle MAX_LAUNCH_ANGLE = Degrees.of(90); //TODO: Get Better Estimate
+  public static final double OPTIMAL_ENTRY_SLOPE = -1; //TODO: Tune
 }

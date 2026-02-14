@@ -4,7 +4,8 @@ import frc.robot.preferences.DoublePreference;
 
 public class IntakePreferences {
 
-  private IntakePreferences() {};
+  private IntakePreferences() {}
+  ;
 
   public static DoublePreference rollerIntakeSpeed =
       new DoublePreference("Intake/Roller Intake Speed", 0.1); // in rotations per second

@@ -1,35 +1,60 @@
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.intake.IntakeConstants;
 
+@Logged
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotor;
   private final TalonFX hoodMotor;
 
-  private AngularVelocity launchVelocityTarget; // Rotations Per Second
-  private VelocityVoltage launchControl;
+  @Logged(name = "Velocity Target", importance = Importance.CRITICAL)
+  private AngularVelocity velocityTarget; // Rotations Per Second
+  private VelocityVoltage velocityControl;
 
+  @Logged(name = "Hood Target", importance = Importance.CRITICAL)
   private Angle hoodTarget; // Rotations
   private PositionTorqueCurrentFOC hoodControl;
+
+  public class LaunchRequest{
+    private Angle launchHoodTarget;
+    private AngularVelocity launchVelocity;
+
+    public LaunchRequest(Angle theta, LinearVelocity velocity){
+      launchHoodTarget = Rotations.of(theta.in(Degrees)*ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations));
+      launchVelocity = RotationsPerSecond.of(velocity.in(MetersPerSecond)/(2*Math.PI*ShooterConstants.FLYWHEEL_RADIUS.in(Meters)));
+    }
+
+    public Angle getHoodTarget(){
+      return launchHoodTarget;
+    }
+
+    public AngularVelocity getVelocityTarget(){
+      return launchVelocity;
+    }
+
+  }
 
   public ShooterSubsystem() {
     flywheelMotor = new TalonFX(ShooterConstants.FLYWHEEL_MOTOR_ID);
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
 
     flywheelMotor.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-    launchVelocityTarget = RotationsPerSecond.of(0);
-    launchControl = new VelocityVoltage(0);
+    velocityTarget = RotationsPerSecond.of(0);
+    velocityControl = new VelocityVoltage(0);
 
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
@@ -40,23 +65,24 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     flywheelMotor.setControl(
-        launchControl.withVelocity(launchVelocityTarget.in(RotationsPerSecond)));
+        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
   }
 
   public Command spinFlywheelCommand() {
     return runOnce(
             () ->
-                launchVelocityTarget =
+                velocityTarget =
                     RotationsPerSecond.of(ShooterPreferences.flywheelLaunchSpeed.getValue()))
         .withName("Start Spinning Flywheel");
   }
 
   public Command stopFlywheelCommand() {
-    return runOnce(() -> launchVelocityTarget = RotationsPerSecond.of(0))
+    return runOnce(() -> velocityTarget = RotationsPerSecond.of(0))
         .withName("Stop Spinning Flywheel");
   }
 
+  @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
   private boolean atHoodSetpoint() {
     return Math.abs(hoodMotor.getPosition().getValueAsDouble() - hoodTarget.in(Rotations))
         < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
@@ -80,12 +106,28 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command homeShooterCommand() {
     return runEnd(
-            () -> hoodMotor.set(ShooterConstants.SAFE_HOMING_EFFORT),
+            () -> hoodMotor.set(ShooterConstants.SAFE_HOMING_EFFORT.Output),
             () -> hoodMotor.setPosition(0))
         .until(
             () -> {
               return hoodMotor.getStatorCurrent().getValueAsDouble()
-                  > ShooterConstants.SAFE_STATOR_LIMIT;
+                  > ShooterConstants.SAFE_STATOR_LIMIT.in(Amp);
             });
+  }
+
+  //helper method to find, given a distance from the robot to the tag, 
+  //(1) necessary angle of the hood
+  //(2) necessary velocity of flywheel
+  //to land a lemon in the goal
+  public LaunchRequest createLaunchRequest(double distanceToTag){
+    double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
+    double x2 = distanceToTag + ShooterConstants.OFFSET_DISTANCE.in(Meters);
+    double y2 = ShooterConstants.GOAL_HEIGHT.in(Meters);
+    
+    do{
+    double a = (ShooterConstants.OPTIMAL_ENTRY_SLOPE*x2 + y1 - y2)/x2;
+    }while(false);
+
+    return null;
   }
 }

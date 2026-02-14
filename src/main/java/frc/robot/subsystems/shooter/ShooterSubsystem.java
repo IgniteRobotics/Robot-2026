@@ -35,9 +35,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private AngularVelocity launchVelocity;
 
     public LaunchRequest(Angle theta, LinearVelocity velocity) {
+      //hood angle in degrees (0 degrees is all the way back) is converted to motor rotations
       launchHoodTarget =
           Rotations.of(
               theta.in(Degrees) * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations));
+      //meters per second is converted to rotations per second of the flywheel
       launchVelocity =
           RotationsPerSecond.of(
               velocity.in(MetersPerSecond)
@@ -132,7 +134,10 @@ public class ShooterSubsystem extends SubsystemBase {
     double a, b, vertex;
     Angle theta;
     do {
-      a = (slope * x2 + y1 - y2) / x2;
+      //system of equations
+      //(y2) = a(x2*x2) + b(x2) + y1
+      //slope = 2a(x2) + b
+      a = (slope * x2 + y1 - y2) / (x2*x2);
       b = (slope - 2 * a * x2);
       theta = Radians.of(Math.PI / 2 - Math.atan(b));
       vertex = -1 * b / (2 * a);
@@ -142,6 +147,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (theta.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
 
+    //system of equations
+    //(-b/2a) = (velocity)*cos(theta)*t
+    //2g(t) = (velocity)*sin(theta)
     LinearVelocity velocity =
         MetersPerSecond.of(
             Math.sqrt(

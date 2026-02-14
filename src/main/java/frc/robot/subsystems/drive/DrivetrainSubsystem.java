@@ -188,15 +188,21 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
           // Consumer of ChassisSpeeds and feedforwards to drive the robot
           (speeds, feedforwards) ->
               setControl(
-                  new SwerveRequest.ApplyFieldSpeeds()
+                  new SwerveRequest.ApplyRobotSpeeds()
                       .withSpeeds(speeds)
                       .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                       .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
           new PPHolonomicDriveController(
               // PID constants for translation
-              new PIDConstants(10, 0, 0),
+              new PIDConstants(
+                  DrivePreferences.translation_kP.getValue(),
+                  0,
+                  DrivePreferences.translation_kD.getValue()),
               // PID constants for rotation
-              new PIDConstants(7, 0, 0)),
+              new PIDConstants(
+                  DrivePreferences.rotation_kP.getValue(),
+                  0,
+                  DrivePreferences.rotation_kD.getValue())),
           config,
           // Assume the path needs to be flipped for Red vs Blue, this is normally the case
           () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,

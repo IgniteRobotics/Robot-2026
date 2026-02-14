@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Simple Path"
+            "pathName": "Rotate And Move Forward"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rotate And Move Backward"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Test Autos",
   "choreoAuto": false
 }

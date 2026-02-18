@@ -132,20 +132,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double slope = ShooterConstants.OPTIMAL_ENTRY_SLOPE;
     double a, b, vertex;
-    Angle theta;
+    Angle theta, motorAngle;
     do {
       //system of equations
       //(y2) = a(x2*x2) + b(x2) + y1
       //slope = 2a(x2) + b
       a = (slope * x2 + y1 - y2) / (x2*x2);
       b = (slope - 2 * a * x2);
-      theta = Radians.of(Math.PI / 2 - Math.atan(b));
+      theta = Radians.of(Math.atan(b));//launch angle (Hood Angle Conversion: MATH.PI/2 - theta)
+      motorAngle = Radians.of(Math.PI/2 - theta.in(Radians));
       vertex = -1 * b / (2 * a);
       slope -= 0.05;
     } while ((vertex > x2 - ShooterConstants.MIN_VERTEX_DISTANCE.in(Meters))
-        && !(theta.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
+        && !(motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
 
-    if (theta.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
+    if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
 
     //system of equations
     //(-b/2a) = (velocity)*cos(theta)*t

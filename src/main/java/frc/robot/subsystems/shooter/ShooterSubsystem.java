@@ -100,7 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Stop Spinning Flywheel");
   }
 
-  private void setFlywheelVoltage(double magnitude){
+  private void setFlywheelVoltage(double magnitude) {
     flywheelMotor.setVoltage(magnitude);
   }
 

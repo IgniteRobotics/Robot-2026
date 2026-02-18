@@ -23,14 +23,14 @@ public class IndexerSubsystem extends SubsystemBase {
   private VelocityVoltage indexerControl;
 
   final SysIdRoutine m_sysIdRoutineIndexer =
-    new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null, // Use default ramp rate (1 V/s)
-            Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-            null, // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdIndexer_State", state.toString())),
-        new SysIdRoutine.Mechanism(output -> setIndexerVoltage(output.magnitude()), null, this));
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null, // Use default ramp rate (1 V/s)
+              Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+              null, // Use default timeout (10 s)
+              // Log state with SignalLogger class
+              state -> SignalLogger.writeString("SysIdIndexer_State", state.toString())),
+          new SysIdRoutine.Mechanism(output -> setIndexerVoltage(output.magnitude()), null, this));
 
   public IndexerSubsystem() {
     indexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR_ID);
@@ -45,7 +45,7 @@ public class IndexerSubsystem extends SubsystemBase {
         indexerControl.withVelocity(indexerVelocityTarget.in(RotationsPerSecond)));
   }
 
-  private void setIndexerVoltage(double magnitude){
+  private void setIndexerVoltage(double magnitude) {
     indexerMotor.setVoltage(magnitude);
   }
 

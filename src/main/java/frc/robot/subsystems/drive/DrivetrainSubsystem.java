@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix6.configs.ProximityParamsConfigs;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -11,6 +13,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.CommandSwerveDrivetrain;
@@ -22,6 +25,8 @@ import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
   private DriveState driveState = DriveState.getInstance();
 
+  private final CANrange drive_canrange;
+
   public DrivetrainSubsystem() {
     super(
         TunerConstants.DrivetrainConstants,
@@ -29,9 +34,13 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         TunerConstants.FrontRight,
         TunerConstants.BackLeft,
         TunerConstants.BackRight);
+
+    drive_canrange = new CANrange(9, "rio");
+
     applySteerGains();
     applyDriveGains();
     configureAutoBuilder();
+    configureCANrange();
   }
 
   @Override
@@ -45,6 +54,9 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
           estimate.getTrust());
     }
     driveState.adjustCurrentDriveStats(this.getStateCopy());
+
+    SmartDashboard.putNumber(
+        "Drive Canrange Distance", drive_canrange.getDistance(true).getValueAsDouble());
   }
 
   public Command sysIdSteer() {
@@ -176,6 +188,11 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     controller.setTolerance(DriveConstants.ROTATION_ALIGN_TOLERANCE);
     controller.enableContinuousInput(-180, 180); // Degrees
     return controller;
+  }
+
+  public void configureCANrange() {
+    ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
+    drive_canrange.getConfigurator().refresh(proximityParamsConfigs);
   }
 
   private void configureAutoBuilder() {

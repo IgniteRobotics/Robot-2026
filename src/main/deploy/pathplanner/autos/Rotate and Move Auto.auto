@@ -19,7 +19,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": "Test Autos",
   "choreoAuto": false
 }

@@ -7,13 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Simple Path"
+            "pathName": "Forward Simple"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rotation Simple"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

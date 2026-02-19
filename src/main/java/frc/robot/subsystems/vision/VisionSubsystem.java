@@ -10,6 +10,9 @@ import frc.robot.statemachines.DriveState;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 public class VisionSubsystem extends SubsystemBase {
 

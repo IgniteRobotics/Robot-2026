@@ -49,11 +49,16 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
+    // Idle while the robot is disabled. This ensures the configured
+    // neutral mode is applied to the drive motors while disabled.
+    RobotModeTriggers.disabled()
+        .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
+
     configureSubsystemDefaultCommands();
-    configureBindings();
+    configureTeleopBindings();
   }
 
-  private void configureSubsystemDefaultCommands() {
+  public void configureSubsystemDefaultCommands() {
 
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -78,13 +83,11 @@ public class RobotContainer {
                     .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
   }
 
-  private void configureBindings() {
-    // Idle while the robot is disabled. This ensures the configured
-    // neutral mode is applied to the drive motors while disabled.
-    final var idle = new SwerveRequest.Idle();
-    RobotModeTriggers.disabled()
-        .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
+  public void removeSubsystemDefaultCommands() {
+    drivetrain.removeDefaultCommand();
+  }
 
+  public void configureTeleopBindings() {
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick
         .b()
@@ -94,11 +97,18 @@ public class RobotContainer {
                     point.withModuleDirection(
                         new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
+    // Reset the field-centric heading on left bumper press.
+    joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    drivetrain.registerTelemetry(logger::telemeterize);
+  }
+
+  public void configureTestBindings() {
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
 
-    // joystick.x().onTrue(drivetrain.sysIdSteer());
-    // joystick.y().onTrue(drivetrain.sysIdTranslation());
+    joystick.a().onTrue(drivetrain.sysIdSteer());
+    joystick.b().onTrue(drivetrain.sysIdTranslation());
     joystick.x().onTrue(new WheelSlipTest(drivetrain));
     joystick
         .y()

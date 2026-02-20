@@ -16,8 +16,21 @@ import java.util.function.Supplier;
 /** Add your docs here. */
 public class ParabolicLaunchRequestBuilder extends LaunchRequestBuilder {
 
-  public ParabolicLaunchRequestBuilder(Supplier<Pose3d> targetPose) {
+  private ParabolicLaunchRequestBuilder instance;
+
+  private ParabolicLaunchRequestBuilder(Supplier<Pose3d> targetPose) {
     super(targetPose);
+  }
+
+  @Override
+  public ParabolicLaunchRequestBuilder getInstance(Supplier<Pose3d> targetPose) {
+    if (this.instance != null) {
+      instance = new ParabolicLaunchRequestBuilder(targetPose);
+      return instance;
+    } else {
+      this.targetPose = targetPose;
+      return instance;
+    }
   }
 
   @Override

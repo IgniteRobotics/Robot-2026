@@ -22,9 +22,11 @@ public abstract class LaunchRequestBuilder {
 
   Supplier<Pose3d> targetPose;
 
-  public LaunchRequestBuilder(Supplier<Pose3d> targetPose) {
+  protected LaunchRequestBuilder(Supplier<Pose3d> targetPose) {
     this.targetPose = targetPose;
   }
+
+  public abstract LaunchRequestBuilder getInstance(Supplier<Pose3d> targetPose);
 
   public abstract LaunchRequest createLaunchRequest();
 }

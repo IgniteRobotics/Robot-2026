@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -13,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
+@Logged
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
@@ -26,6 +32,42 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    Epilogue.configure(
+        config -> {
+          // Default backend is NetworkTables - no need to set config.backend
+          config.root = "Robot";
+        });
+
+    // Start DataLogManager to capture NetworkTables data to disk (.wpilog files)
+    // This provides post-match analysis capability for ALL telemetry
+    DataLogManager.start();
+
+    // Start Phoenix 6 SignalLogger for high-fidelity CTRE device logging (.hoot
+    // files)
+    // This captures ALL Phoenix 6 status signals at full CAN rate with timestamps
+    SignalLogger.start();
+
+    // Bind Epilogue to robot loop - runs at 50Hz, phase-offset from main loop
+    Epilogue.bind(this);
+
+    StringLogEntry metaData = new StringLogEntry(DataLogManager.getLog(), "MetaData");
+    metaData.append("Project Name: " + BuildConstants.MAVEN_NAME);
+    metaData.append("Build Date: " + BuildConstants.BUILD_DATE);
+    metaData.append("Commit Hash: " + BuildConstants.GIT_SHA);
+    metaData.append("Git Date: " + BuildConstants.GIT_DATE);
+    metaData.append("Git Branch: " + BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        metaData.append("GitDirty: " + "All changes commited");
+        break;
+      case 1:
+        metaData.append("GitDirty: " + "Uncomitted changes");
+        break;
+      default:
+        metaData.append("GitDirty: " + "Unknown");
+        break;
+    }
   }
 
   /**

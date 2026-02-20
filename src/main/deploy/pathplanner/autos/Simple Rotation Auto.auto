@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Seed"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Simple Path"
+            "pathName": "Rotation Simple"
           }
         }
       ]

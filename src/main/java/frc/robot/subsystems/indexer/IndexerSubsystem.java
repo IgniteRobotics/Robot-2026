@@ -1,7 +1,9 @@
 package frc.robot.subsystems.indexer;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
@@ -9,6 +11,7 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
 public class IndexerSubsystem extends SubsystemBase {
@@ -18,6 +21,16 @@ public class IndexerSubsystem extends SubsystemBase {
   private AngularVelocity indexerVelocityTarget; // RotationsPerSecond
 
   private VelocityVoltage indexerControl;
+
+  final SysIdRoutine m_sysIdRoutineIndexer =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null, // Use default ramp rate (1 V/s)
+              Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+              null, // Use default timeout (10 s)
+              // Log state with SignalLogger class
+              state -> SignalLogger.writeString("SysIdIndexer_State", state.toString())),
+          new SysIdRoutine.Mechanism(output -> setIndexerVoltage(output.magnitude()), null, this));
 
   public IndexerSubsystem() {
     indexerMotor = new TalonFX(IndexerConstants.INDEXER_MOTOR_ID);
@@ -30,6 +43,10 @@ public class IndexerSubsystem extends SubsystemBase {
   public void periodic() {
     indexerMotor.setControl(
         indexerControl.withVelocity(indexerVelocityTarget.in(RotationsPerSecond)));
+  }
+
+  private void setIndexerVoltage(double magnitude) {
+    indexerMotor.setVoltage(magnitude);
   }
 
   public Command indexCommand() {

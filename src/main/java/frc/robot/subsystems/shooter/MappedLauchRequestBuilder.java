@@ -168,6 +168,8 @@ public class MappedLauchRequestBuilder implements LaunchRequestBuilder {
     // calcuate rotation angle
     Rotation2d driveAngle =
         getDriveAngle(lookaheadPose, targetPose.get().getTranslation().toTranslation2d());
+    // if no last drive angle, default to the robot's current pose info.
+    if (lastDriveAngle == null) lastDriveAngle = estimatedRobotPose.getRotation();
 
     // calculate hood angle
     double hoodAngle =

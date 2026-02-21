@@ -42,31 +42,6 @@ public class ShooterSubsystem extends SubsystemBase {
               state -> SignalLogger.writeString("SysIdFlywheel_State", state.toString())),
           new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
 
-  public class LaunchRequest {
-    private Angle launchHoodTarget;
-    private AngularVelocity launchVelocity;
-
-    public LaunchRequest(Angle theta, LinearVelocity velocity) {
-      // hood angle in degrees (0 degrees is all the way back) is converted to motor rotations
-      launchHoodTarget =
-          Rotations.of(
-              theta.in(Degrees) * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations));
-      // meters per second is converted to rotations per second of the flywheel
-      launchVelocity =
-          RotationsPerSecond.of(
-              velocity.in(MetersPerSecond)
-                  / (2 * Math.PI * ShooterConstants.FLYWHEEL_RADIUS.in(Meters)));
-    }
-
-    public Angle getHoodTarget() {
-      return launchHoodTarget;
-    }
-
-    public AngularVelocity getVelocityTarget() {
-      return launchVelocity;
-    }
-  }
-
   public ShooterSubsystem() {
     flywheelMotor = new TalonFX(ShooterConstants.FLYWHEEL_MOTOR_ID);
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);

@@ -1,6 +1,8 @@
 package frc.robot.statemachines;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -16,6 +18,8 @@ public class DriveState {
 
   private HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>> concurrentQueueMap;
 
+
+  private SwerveDriveState previousDriveStats = null;
   private SwerveDriveState currentDriveStats = null;
 
   private DriveState() {
@@ -57,6 +61,7 @@ public class DriveState {
   }
 
   public void adjustCurrentDriveStats(SwerveDriveState newStats) {
+    previousDriveStats = currentDriveStats;
     currentDriveStats = newStats;
   }
 
@@ -66,6 +71,10 @@ public class DriveState {
 
   public SwerveDriveState getCurrentDriveStats() {
     return currentDriveStats;
+  }
+
+  public SwerveDriveState getPreviousDriveStats(){
+    return previousDriveStats;
   }
 
   public ChassisSpeeds getFieldVelocity() {

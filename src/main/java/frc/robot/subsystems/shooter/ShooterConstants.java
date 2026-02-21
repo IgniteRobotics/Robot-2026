@@ -41,7 +41,7 @@ public class ShooterConstants {
   // Flywheel motor
   public static final double FLYWHEEL_KS = 0;
   public static final double FLYWHEEL_KV = 0;
-  public static final double FLYWHEEL_KP = 0;
+  public static final double FLYWHEEL_KP = 10;
   public static final double FLYWHEEL_KD = 0;
 
   public static Slot0Configs createFlywheelMotorSlot0Configs() {

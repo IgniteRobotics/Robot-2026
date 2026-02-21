@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -12,13 +13,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.commands.DriveBySpeed;
-import frc.robot.commands.WheelSlipTest;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -95,7 +95,7 @@ public class RobotContainer {
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     driverJoystick
         .b()
         .whileTrue(
@@ -109,26 +109,25 @@ public class RobotContainer {
 
     // joystick.x().onTrue(drivetrain.sysIdSteer());
     // joystick.y().onTrue(drivetrain.sysIdTranslation());
-    driverJoystick.x().onTrue(new WheelSlipTest(drivetrain));
+    /*driverJoystick.x().onTrue(new WheelSlipTest(drivetrain));
     driverJoystick
         .y()
         .whileTrue(new DriveBySpeed(drivetrain, DrivePreferences.onemeter_speed)); // Testing only
 
     driverJoystick
         .rightTrigger()
-        .onTrue(intake.setExtendNoPID())
+        .whileTrue(intake.setExtendNoPID().repeatedly())
         .onFalse(intake.stopIntakeNoPID());
 
     driverJoystick
         .leftTrigger()
-        .onTrue(intake.setRetractNoPID())
+        .whileTrue(intake.setRetractNoPID().repeatedly())
         .onFalse(intake.stopIntakeNoPID());
 
     driverJoystick
         .a()
         .whileTrue(intake.setRollerNoPID().repeatedly())
-        .onFalse(intake.stopRollerNoPID());
-
+        .onFalse(intake.stopRollerNoPID());*/
     operatorJoystick
         .leftTrigger()
         .whileTrue(shooter.launchLemonsCommandNoPID().repeatedly())
@@ -138,6 +137,14 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(indexer.setIndexerNoPID().repeatedly())
         .onFalse(indexer.stopIndexerNoPID());
+
+    driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+
+    driverJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    driverJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    driverJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    driverJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

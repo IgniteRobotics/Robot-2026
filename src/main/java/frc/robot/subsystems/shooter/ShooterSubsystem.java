@@ -119,6 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private void setFlywheelVoltage(double magnitude) {
     flywheelMotorLeader.setVoltage(magnitude);
+    flywheelMotorFollower.setVoltage(magnitude);
   }
 
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
@@ -140,20 +141,24 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command launchLemonsCommandNoPID() {
-    return runOnce(
-            () -> {
-              flywheelMotorLeader.set(ShooterPreferences.flywheelLaunchPercent.getValue());
-              flywheelMotorFollower.set(ShooterPreferences.flywheelLaunchPercent.getValue());
-            })
+    return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
+        .andThen(
+            runOnce(
+                () -> {
+                  flywheelMotorLeader.set(ShooterPreferences.flywheelLaunchPercent.getValue());
+                  flywheelMotorFollower.set(ShooterPreferences.flywheelLaunchPercent.getValue());
+                }))
         .withName("Start Launching Lemons (No PID)");
   }
 
   public Command stopLaunchLemonsNoPIDCommand() {
-    return runOnce(
-            () -> {
-              flywheelMotorLeader.set(0);
-              flywheelMotorFollower.set(0);
-            })
+    return setHoodCommand(Rotations.of(0))
+        .andThen(
+            runOnce(
+                () -> {
+                  flywheelMotorLeader.set(0);
+                  flywheelMotorFollower.set(0);
+                }))
         .withName("Stop Launching Lemons (No PID)");
   }
 
@@ -170,5 +175,13 @@ public class ShooterSubsystem extends SubsystemBase {
               return hoodMotor.getStatorCurrent().getValueAsDouble()
                   > ShooterConstants.SAFE_STATOR_LIMIT.in(Amp);
             });
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutineFlywheel.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutineFlywheel.dynamic(direction);
   }
 }

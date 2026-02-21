@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,6 +14,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
@@ -29,6 +31,16 @@ public class ShooterSubsystem extends SubsystemBase {
   private Angle hoodTarget; // Rotations
 
   private PositionTorqueCurrentFOC hoodControl;
+
+  final SysIdRoutine m_sysIdRoutineFlywheel =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null, // Use default ramp rate (1 V/s)
+              Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+              null, // Use default timeout (10 s)
+              // Log state with SignalLogger class
+              state -> SignalLogger.writeString("SysIdFlywheel_State", state.toString())),
+          new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
 
   public class LaunchRequest {
     private Angle launchHoodTarget;
@@ -86,6 +98,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command stopFlywheelCommand() {
     return runOnce(() -> velocityTarget = RotationsPerSecond.of(0))
         .withName("Stop Spinning Flywheel");
+  }
+
+  private void setFlywheelVoltage(double magnitude) {
+    flywheelMotor.setVoltage(magnitude);
   }
 
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)

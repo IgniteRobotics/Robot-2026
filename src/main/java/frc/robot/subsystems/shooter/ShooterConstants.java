@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -73,4 +75,19 @@ public class ShooterConstants {
   public static final Distance MIN_VERTEX_DISTANCE = Inch.of(23.5);
   public static final Angle MIN_HOOD_ANGLE = Degrees.of(0); // TODO: Get Better Estimate
   public static final double OPTIMAL_ENTRY_SLOPE = -1; // TODO: Tune
+
+  // TODO:  verify these!
+  // funnel poses.
+  public static final Pose3d BLUE_TARGET =
+      new Pose3d(
+          Distance.ofBaseUnits(4.623, Meters),
+          Distance.ofBaseUnits(4.041, Meters),
+          Distance.ofBaseUnits(1.435, Meters),
+          Rotation3d.kZero);
+  public static final Pose3d RED_TARGET =
+      new Pose3d(
+          Distance.ofBaseUnits(12.276, Meters),
+          Distance.ofBaseUnits(4.041, Meters),
+          Distance.ofBaseUnits(1.435, Meters),
+          Rotation3d.kZero);
 }

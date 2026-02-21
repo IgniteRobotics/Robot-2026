@@ -14,26 +14,14 @@ import frc.robot.statemachines.DriveState;
 import java.util.function.Supplier;
 
 /** Add your docs here. */
-public class ParabolicLaunchRequestBuilder extends LaunchRequestBuilder {
+public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
 
-  private ParabolicLaunchRequestBuilder instance;
+  private Supplier<Pose3d> targetPose;
 
   private ParabolicLaunchRequestBuilder(Supplier<Pose3d> targetPose) {
-    super(targetPose);
+    this.targetPose = targetPose;
   }
 
-  @Override
-  public ParabolicLaunchRequestBuilder getInstance(Supplier<Pose3d> targetPose) {
-    if (this.instance != null) {
-      instance = new ParabolicLaunchRequestBuilder(targetPose);
-      return instance;
-    } else {
-      this.targetPose = targetPose;
-      return instance;
-    }
-  }
-
-  @Override
   public LaunchRequest createLaunchRequest() {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 =

@@ -41,6 +41,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     applyDriveGains();
     configureAutoBuilder();
     configureCANrange();
+    // TODO: remove.  debugging.
+    periodic();
   }
 
   @Override

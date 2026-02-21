@@ -22,6 +22,7 @@ import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 @Logged
 public class RobotContainer {
@@ -43,6 +44,9 @@ public class RobotContainer {
 
   @Logged(name = "Climber")
   public final ClimberSubsystem climber = new ClimberSubsystem();
+
+  @Logged(name = "Shooter")
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 

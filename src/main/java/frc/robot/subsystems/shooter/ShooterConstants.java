@@ -54,7 +54,7 @@ public class ShooterConstants {
   }
 
   public static final double ALLOWABLE_HOOD_ERROR = 0.1;
-  public static final double HOOD_FORWARD_LIMIT = 100;
+  public static final double HOOD_FORWARD_LIMIT = 5.8;
   public static final double HOOD_REVERSE_LIMIT = 0;
   public static final double HOOD_KS = 0;
   public static final double HOOD_KP = 0;
@@ -75,6 +75,13 @@ public class ShooterConstants {
     configs.ForwardSoftLimitThreshold = HOOD_FORWARD_LIMIT;
     configs.ReverseSoftLimitThreshold = HOOD_REVERSE_LIMIT;
     return configs;
+  }
+
+  public static MotorOutputConfigs createHoodMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
   }
 
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);

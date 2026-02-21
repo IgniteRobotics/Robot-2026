@@ -32,7 +32,8 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController driverJoystick = new CommandXboxController(0);
+  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
@@ -68,16 +69,19 @@ public class RobotContainer {
                 DriveConstants.DEFAULT_DRIVE_REQUEST
                     .withVelocityX(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftY(), 2), joystick.getLeftY())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
                             * DriveConstants
                                 .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
                     .withVelocityY(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftX(), 2), joystick.getLeftX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                             * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
                     .withRotationalRate(
                         -1
-                            * Math.copySign(Math.pow(joystick.getRightX(), 2), joystick.getRightX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
                             * DriveConstants
                                 .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
                     .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
@@ -91,27 +95,52 @@ public class RobotContainer {
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick
+    driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    driverJoystick
         .b()
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
                     point.withModuleDirection(
-                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+                        new Rotation2d(-driverJoystick.getLeftY(), -driverJoystick.getLeftX()))));
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
 
     // joystick.x().onTrue(drivetrain.sysIdSteer());
     // joystick.y().onTrue(drivetrain.sysIdTranslation());
-    joystick.x().onTrue(new WheelSlipTest(drivetrain));
-    joystick
+    driverJoystick.x().onTrue(new WheelSlipTest(drivetrain));
+    driverJoystick
         .y()
         .whileTrue(new DriveBySpeed(drivetrain, DrivePreferences.onemeter_speed)); // Testing only
 
+    driverJoystick
+        .rightTrigger()
+        .onTrue(intake.setExtendNoPID())
+        .onFalse(intake.stopIntakeNoPID());
+
+    driverJoystick
+        .leftTrigger()
+        .onTrue(intake.setRetractNoPID())
+        .onFalse(intake.stopIntakeNoPID());
+
+    driverJoystick
+        .a()
+        .whileTrue(intake.setRollerNoPID().repeatedly())
+        .onFalse(intake.stopRollerNoPID());
+
+    operatorJoystick
+        .leftTrigger()
+        .whileTrue(shooter.launchLemonsCommandNoPID().repeatedly())
+        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
+
+    operatorJoystick
+        .rightTrigger()
+        .whileTrue(indexer.setIndexerNoPID().repeatedly())
+        .onFalse(indexer.stopIndexerNoPID());
+
     // Reset the field-centric heading on left bumper press.
-    joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

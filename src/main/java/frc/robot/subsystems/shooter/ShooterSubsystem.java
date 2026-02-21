@@ -88,6 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
     velocityControl = new VelocityVoltage(0);
 
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionTorqueCurrentFOC(0);
@@ -141,11 +142,19 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command launchLemonsCommandNoPID() {
     return runOnce(
             () -> {
-              hoodMotor.set(
-                  Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()).in(Rotations));
               flywheelMotorLeader.set(ShooterPreferences.flywheelLaunchPercent.getValue());
+              flywheelMotorFollower.set(ShooterPreferences.flywheelLaunchPercent.getValue());
             })
         .withName("Start Launching Lemons (No PID)");
+  }
+
+  public Command stopLaunchLemonsNoPIDCommand() {
+    return runOnce(
+            () -> {
+              flywheelMotorLeader.set(0);
+              flywheelMotorFollower.set(0);
+            })
+        .withName("Stop Launching Lemons (No PID)");
   }
 
   public Command stowCommand() {

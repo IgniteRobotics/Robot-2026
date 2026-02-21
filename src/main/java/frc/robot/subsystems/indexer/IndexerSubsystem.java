@@ -49,6 +49,15 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerMotor.setVoltage(magnitude);
   }
 
+  public Command setIndexerNoPID() {
+    return runOnce(() -> indexerMotor.set(IndexerPreferences.indexerPercent.getValue()))
+        .withName("Set Indexer Percent");
+  }
+
+  public Command stopIndexerNoPID() {
+    return runOnce(() -> indexerMotor.set(0)).withName("Stop Indexer Percent");
+  }
+
   public Command indexCommand() {
     return runOnce(
             () ->

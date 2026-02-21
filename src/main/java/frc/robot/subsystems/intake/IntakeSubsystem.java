@@ -2,7 +2,9 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
 public class IntakeSubsystem extends SubsystemBase {
@@ -28,6 +31,16 @@ public class IntakeSubsystem extends SubsystemBase {
   private Angle extensionTarget; // Rotations
 
   private PositionTorqueCurrentFOC extensionControl;
+
+  final SysIdRoutine m_sysIdRoutineRoller =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null, // Use default ramp rate (1 V/s)
+              Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+              null, // Use default timeout (10 s)
+              // Log state with SignalLogger class
+              state -> SignalLogger.writeString("SysIdRoller_State", state.toString())),
+          new SysIdRoutine.Mechanism(output -> setRollerVoltage(output.magnitude()), null, this));
 
   public IntakeSubsystem() {
     rollerMotor = new TalonFX(IntakeConstants.ROLLER_MOTOR_ID);
@@ -63,6 +76,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command stopRollerCommand() {
     return runOnce(() -> rollerVelocityTarget = RotationsPerSecond.of(0))
         .withName("Stop Intake Roller");
+  }
+
+  private void setRollerVoltage(double magnitude) {
+    rollerMotor.setVoltage(magnitude);
   }
 
   @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)

@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,6 +14,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
@@ -20,6 +22,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorLeader;
   private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
+
+  private final LaunchRequestBuilder launchRequestBuilder;
 
   @Logged(name = "Velocity Target", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // Rotations Per Second
@@ -30,6 +34,16 @@ public class ShooterSubsystem extends SubsystemBase {
   private Angle hoodTarget; // Rotations
 
   private PositionTorqueCurrentFOC hoodControl;
+
+  final SysIdRoutine m_sysIdRoutineFlywheel =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null, // Use default ramp rate (1 V/s)
+              Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+              null, // Use default timeout (10 s)
+              // Log state with SignalLogger class
+              state -> SignalLogger.writeString("SysIdFlywheel_State", state.toString())),
+          new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
 
   public class LaunchRequest {
     private Angle launchHoodTarget;
@@ -77,6 +91,8 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionTorqueCurrentFOC(0);
+
+    launchRequestBuilder = new MappedLauchRequestBuilder(() -> ShooterConstants.BLUE_TARGET);
   }
 
   @Override
@@ -84,6 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
+    launchRequestBuilder.createLaunchRequest();
   }
 
   public Command spinFlywheelCommand() {
@@ -97,6 +114,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command stopFlywheelCommand() {
     return runOnce(() -> velocityTarget = RotationsPerSecond.of(0))
         .withName("Stop Spinning Flywheel");
+  }
+
+  private void setFlywheelVoltage(double magnitude) {
+    flywheelMotorLeader.setVoltage(magnitude);
   }
 
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
@@ -140,43 +161,5 @@ public class ShooterSubsystem extends SubsystemBase {
               return hoodMotor.getStatorCurrent().getValueAsDouble()
                   > ShooterConstants.SAFE_STATOR_LIMIT.in(Amp);
             });
-  }
-
-  // helper method to find, given a distance from the robot to the tag,
-  // (1) necessary angle of the hood
-  // (2) necessary velocity of flywheel
-  // to land a lemon in the goal
-  public LaunchRequest createLaunchRequest(double distanceToTag) {
-    double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
-    double x2 = distanceToTag + ShooterConstants.OFFSET_DISTANCE.in(Meters);
-    double y2 = ShooterConstants.GOAL_HEIGHT.in(Meters);
-
-    double slope = ShooterConstants.OPTIMAL_ENTRY_SLOPE;
-    double a, b, vertex;
-    Angle theta, motorAngle;
-    do {
-      // system of equations
-      // (y2) = a(x2*x2) + b(x2) + y1
-      // slope = 2a(x2) + b
-      a = (slope * x2 + y1 - y2) / (x2 * x2);
-      b = (slope - 2 * a * x2);
-      theta = Radians.of(Math.atan(b)); // launch angle (Hood Angle Conversion: MATH.PI/2 - theta)
-      motorAngle = Radians.of(Math.PI / 2 - theta.in(Radians));
-      vertex = -1 * b / (2 * a);
-      slope -= 0.05;
-    } while ((vertex > x2 - ShooterConstants.MIN_VERTEX_DISTANCE.in(Meters))
-        && !(motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
-
-    if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
-
-    // system of equations
-    // (-b/2a) = (velocity)*cos(theta)*t
-    // 2g(t) = (velocity)*sin(theta)
-    LinearVelocity velocity =
-        MetersPerSecond.of(
-            Math.sqrt(
-                2 * 9.8 * vertex / (Math.sin(theta.in(Radians)) * Math.cos(theta.in(Radians)))));
-
-    return new LaunchRequest(theta, velocity);
   }
 }

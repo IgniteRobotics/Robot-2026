@@ -1,6 +1,7 @@
 package frc.robot.statemachines;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.vision.CameraConstants;
@@ -65,5 +66,10 @@ public class DriveState {
 
   public SwerveDriveState getCurrentDriveStats() {
     return currentDriveStats;
+  }
+
+  public ChassisSpeeds getFieldVelocity() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+        getCurrentDriveStats().Speeds, getCurrentDriveStats().Pose.getRotation());
   }
 }

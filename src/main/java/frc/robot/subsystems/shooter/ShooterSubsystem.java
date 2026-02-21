@@ -125,42 +125,4 @@ public class ShooterSubsystem extends SubsystemBase {
                   > ShooterConstants.SAFE_STATOR_LIMIT.in(Amp);
             });
   }
-
-  // helper method to find, given a distance from the robot to the tag,
-  // (1) necessary angle of the hood
-  // (2) necessary velocity of flywheel
-  // to land a lemon in the goal
-  public LaunchRequest createLaunchRequest(double distanceToTag) {
-    double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
-    double x2 = distanceToTag + ShooterConstants.OFFSET_DISTANCE.in(Meters);
-    double y2 = ShooterConstants.GOAL_HEIGHT.in(Meters);
-
-    double slope = ShooterConstants.OPTIMAL_ENTRY_SLOPE;
-    double a, b, vertex;
-    Angle theta, motorAngle;
-    do {
-      // system of equations
-      // (y2) = a(x2*x2) + b(x2) + y1
-      // slope = 2a(x2) + b
-      a = (slope * x2 + y1 - y2) / (x2 * x2);
-      b = (slope - 2 * a * x2);
-      theta = Radians.of(Math.atan(b)); // launch angle (Hood Angle Conversion: MATH.PI/2 - theta)
-      motorAngle = Radians.of(Math.PI / 2 - theta.in(Radians));
-      vertex = -1 * b / (2 * a);
-      slope -= 0.05;
-    } while ((vertex > x2 - ShooterConstants.MIN_VERTEX_DISTANCE.in(Meters))
-        && !(motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
-
-    if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
-
-    // system of equations
-    // (-b/2a) = (velocity)*cos(theta)*t
-    // 2g(t) = (velocity)*sin(theta)
-    LinearVelocity velocity =
-        MetersPerSecond.of(
-            Math.sqrt(
-                2 * 9.8 * vertex / (Math.sin(theta.in(Radians)) * Math.cos(theta.in(Radians)))));
-
-    return new LaunchRequest(theta, velocity);
-  }
 }

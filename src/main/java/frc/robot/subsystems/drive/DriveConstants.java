@@ -31,5 +31,4 @@ public class DriveConstants {
 
   public static final double TRANSLATION_ALIGN_KP = 0.0001;
   public static final double ROTATION_ALIGN_KP = 6.28;
-
 }

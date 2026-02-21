@@ -4,15 +4,13 @@
 
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
-import java.util.function.Supplier;
 
 /** Add your docs here. */
-public abstract class LaunchRequestBuilder {
+public interface LaunchRequestBuilder {
 
   public record LaunchRequest(
       Angle launchHoodTarget,
@@ -20,13 +18,5 @@ public abstract class LaunchRequestBuilder {
       LinearVelocity driveVelocity,
       Rotation2d driveAngle) {}
 
-  Supplier<Pose3d> targetPose;
-
-  protected LaunchRequestBuilder(Supplier<Pose3d> targetPose) {
-    this.targetPose = targetPose;
-  }
-
-  public abstract LaunchRequestBuilder getInstance(Supplier<Pose3d> targetPose);
-
-  public abstract LaunchRequest createLaunchRequest();
+  public LaunchRequest createLaunchRequest();
 }

@@ -22,6 +22,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotor;
   private final TalonFX hoodMotor;
 
+  private final LaunchRequestBuilder launchRequestBuilder;
+
   @Logged(name = "Velocity Target", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // Rotations Per Second
 
@@ -79,12 +81,15 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionTorqueCurrentFOC(0);
+
+    launchRequestBuilder = new MappedLauchRequestBuilder(() -> ShooterConstants.BLUE_TARGET);
   }
 
   @Override
   public void periodic() {
     flywheelMotor.setControl(velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
+    launchRequestBuilder.createLaunchRequest();
   }
 
   public Command spinFlywheelCommand() {

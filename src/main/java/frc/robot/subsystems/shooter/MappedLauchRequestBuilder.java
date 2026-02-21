@@ -26,25 +26,14 @@ import frc.robot.statemachines.DriveState;
 import java.util.function.Supplier;
 
 /** Add your docs here. */
-public class MappedLauchRequestBuilder extends LaunchRequestBuilder {
+public class MappedLauchRequestBuilder implements LaunchRequestBuilder {
 
-  private MappedLauchRequestBuilder instance;
-
-  private MappedLauchRequestBuilder(Supplier<Pose3d> targetPose) {
-    super(targetPose);
-  }
+  private Supplier<Pose3d> targetPose;
 
   private LaunchRequest currentLaunchRequest;
 
-  @Override
-  public MappedLauchRequestBuilder getInstance(Supplier<Pose3d> targetPose) {
-    if (this.instance != null) {
-      instance = new MappedLauchRequestBuilder(targetPose);
-      return instance;
-    } else {
-      this.targetPose = targetPose;
-      return instance;
-    }
+  public MappedLauchRequestBuilder(Supplier<Pose3d> targetPose) {
+    this.targetPose = targetPose;
   }
 
   private double loopPeriodSecs = 0.02;
@@ -125,7 +114,6 @@ public class MappedLauchRequestBuilder extends LaunchRequestBuilder {
     passingTimeOfFlightMap.put(passingMaxDistance, 0.0);
   }
 
-  @Override
   public LaunchRequest createLaunchRequest() {
 
     boolean passing = targetPose.get().getZ() == 0.0; // target pose is the floor, so we're passing.
@@ -180,6 +168,8 @@ public class MappedLauchRequestBuilder extends LaunchRequestBuilder {
     // calcuate rotation angle
     Rotation2d driveAngle =
         getDriveAngle(lookaheadPose, targetPose.get().getTranslation().toTranslation2d());
+    // if no last drive angle, default to the robot's current pose info.
+    if (lastDriveAngle == null) lastDriveAngle = estimatedRobotPose.getRotation();
 
     // calculate hood angle
     double hoodAngle =

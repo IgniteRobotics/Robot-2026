@@ -7,7 +7,7 @@ final class IndexerConstants {
   private IndexerConstants() {}
 
   // TODO Replace with real id
-  protected static final int INDEXER_MOTOR_ID = 6;
+  protected static final int INDEXER_MOTOR_ID = 3;
 
   // TODO: Tune motor
 

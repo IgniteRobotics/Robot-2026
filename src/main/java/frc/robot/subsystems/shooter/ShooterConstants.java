@@ -18,20 +18,20 @@ public class ShooterConstants {
 
   private ShooterConstants() {}
 
-  public static final int FLYWHEEL_LEADER_MOTOR_ID = 5; // TODO: set ids in tunerx
+  public static final int FLYWHEEL_LEADER_MOTOR_ID = 5;
   public static final int FLYWHEEL_FOLLOWER_MOTOR_ID = 6;
-  public static final int HOOD_MOTOR_ID = 5;
+  public static final int HOOD_MOTOR_ID = 4;
 
   public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
 
   public static MotorOutputConfigs createFollowerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }

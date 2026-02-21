@@ -17,7 +17,8 @@ import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
-  private final TalonFX flywheelMotor;
+  private final TalonFX flywheelMotorLeader;
+  private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
 
   @Logged(name = "Velocity Target", importance = Importance.CRITICAL)
@@ -35,11 +36,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private AngularVelocity launchVelocity;
 
     public LaunchRequest(Angle theta, LinearVelocity velocity) {
-      //hood angle in degrees (0 degrees is all the way back) is converted to motor rotations
+      // hood angle in degrees (0 degrees is all the way back) is converted to motor rotations
       launchHoodTarget =
           Rotations.of(
               theta.in(Degrees) * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations));
-      //meters per second is converted to rotations per second of the flywheel
+      // meters per second is converted to rotations per second of the flywheel
       launchVelocity =
           RotationsPerSecond.of(
               velocity.in(MetersPerSecond)
@@ -56,10 +57,19 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public ShooterSubsystem() {
-    flywheelMotor = new TalonFX(ShooterConstants.FLYWHEEL_MOTOR_ID);
+    flywheelMotorLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEADER_MOTOR_ID);
+    flywheelMotorFollower = new TalonFX(ShooterConstants.FLYWHEEL_FOLLOWER_MOTOR_ID);
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
 
-    flywheelMotor.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
+    flywheelMotorFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFollowerMotorOutputConfigs());
+
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);
 
@@ -71,7 +81,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    flywheelMotor.setControl(velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    flywheelMotorLeader.setControl(
+        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
   }
 
@@ -106,6 +117,16 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Start Launching Lemons");
   }
 
+  public Command launchLemonsCommandNoPID() {
+    return runOnce(
+            () -> {
+              hoodMotor.set(
+                  Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()).in(Rotations));
+              flywheelMotorLeader.set(ShooterPreferences.flywheelLaunchPercent.getValue());
+            })
+        .withName("Start Launching Lemons (No PID)");
+  }
+
   public Command stowCommand() {
     return stopFlywheelCommand().andThen(setHoodCommand(Rotations.of(0))).withName("Stow Shooter");
   }
@@ -134,13 +155,13 @@ public class ShooterSubsystem extends SubsystemBase {
     double a, b, vertex;
     Angle theta, motorAngle;
     do {
-      //system of equations
-      //(y2) = a(x2*x2) + b(x2) + y1
-      //slope = 2a(x2) + b
-      a = (slope * x2 + y1 - y2) / (x2*x2);
+      // system of equations
+      // (y2) = a(x2*x2) + b(x2) + y1
+      // slope = 2a(x2) + b
+      a = (slope * x2 + y1 - y2) / (x2 * x2);
       b = (slope - 2 * a * x2);
-      theta = Radians.of(Math.atan(b));//launch angle (Hood Angle Conversion: MATH.PI/2 - theta)
-      motorAngle = Radians.of(Math.PI/2 - theta.in(Radians));
+      theta = Radians.of(Math.atan(b)); // launch angle (Hood Angle Conversion: MATH.PI/2 - theta)
+      motorAngle = Radians.of(Math.PI / 2 - theta.in(Radians));
       vertex = -1 * b / (2 * a);
       slope -= 0.05;
     } while ((vertex > x2 - ShooterConstants.MIN_VERTEX_DISTANCE.in(Meters))
@@ -148,9 +169,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
 
-    //system of equations
-    //(-b/2a) = (velocity)*cos(theta)*t
-    //2g(t) = (velocity)*sin(theta)
+    // system of equations
+    // (-b/2a) = (velocity)*cos(theta)*t
+    // 2g(t) = (velocity)*sin(theta)
     LinearVelocity velocity =
         MetersPerSecond.of(
             Math.sqrt(

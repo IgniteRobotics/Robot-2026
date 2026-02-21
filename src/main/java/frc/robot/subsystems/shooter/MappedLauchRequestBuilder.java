@@ -4,31 +4,19 @@
 
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.statemachines.DriveState;
-import java.util.function.Supplier;
 import frc.robot.statemachines.LaunchCalculator.LaunchRequest;
 
 /** Add your docs here. */
-public class MappedLauchRequestBuilder{
-
+public class MappedLauchRequestBuilder {
 
   private static final double minDistance;
   private static final double maxDistance;
@@ -76,7 +64,6 @@ public class MappedLauchRequestBuilder{
     flywheelSpeedMap.put(5.57, 275.0);
     flywheelSpeedMap.put(5.60, 290.0);
 
-
     passingHoodAngleMap.put(passingMinDistance, Rotation2d.fromDegrees(0.0));
     passingHoodAngleMap.put(passingMaxDistance, Rotation2d.fromDegrees(0.0));
 
@@ -84,7 +71,11 @@ public class MappedLauchRequestBuilder{
     passingFlywheelSpeedMap.put(passingMaxDistance, 0.0);
   }
 
-  public static LaunchRequest createLaunchRequest(boolean passing, double distance, AngularVelocity targetRobotAngularVelocity, Rotation2d targetRobotAngle) {
+  public static LaunchRequest createLaunchRequest(
+      boolean passing,
+      double distance,
+      AngularVelocity targetRobotAngularVelocity,
+      Rotation2d targetRobotAngle) {
 
     // calculate hood angle
     double hoodAngle =
@@ -94,14 +85,12 @@ public class MappedLauchRequestBuilder{
 
     // calculate flywheel speed
     double flywheelSpeed =
-        passing
-            ? passingFlywheelSpeedMap.get(distance)
-            : flywheelSpeedMap.get(distance);
+        passing ? passingFlywheelSpeedMap.get(distance) : flywheelSpeedMap.get(distance);
 
     return new LaunchRequest(
-            Angle.ofBaseUnits(hoodAngle, Radians),
-            AngularVelocity.ofBaseUnits(flywheelSpeed, RadiansPerSecond),
-            targetRobotAngularVelocity,
-            targetRobotAngle);
+        Angle.ofBaseUnits(hoodAngle, Radians),
+        AngularVelocity.ofBaseUnits(flywheelSpeed, RadiansPerSecond),
+        targetRobotAngularVelocity,
+        targetRobotAngle);
   }
 }

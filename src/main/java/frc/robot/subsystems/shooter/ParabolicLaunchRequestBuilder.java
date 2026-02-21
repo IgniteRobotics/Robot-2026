@@ -6,27 +6,29 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.statemachines.DriveState;
-import java.util.function.Supplier;
 import frc.robot.statemachines.LaunchCalculator.LaunchRequest;
 
 /** Add your docs here. */
 public class ParabolicLaunchRequestBuilder {
 
-  public static LaunchRequest createLaunchRequest(boolean passing, double goalHeight, double distance, AngularVelocity targetRobotAngularVelocity, Rotation2d targetRobotAngle) {
+  public static LaunchRequest createLaunchRequest(
+      boolean passing,
+      double goalHeight,
+      double distance,
+      AngularVelocity targetRobotAngularVelocity,
+      Rotation2d targetRobotAngle) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distance;
     double y2 = goalHeight;
 
     double slope;
-    if(passing) slope = ShooterConstants.OPTIMAL_PASSING_ENTRY_SLOPE;
+    if (passing) slope = ShooterConstants.OPTIMAL_PASSING_ENTRY_SLOPE;
     else slope = ShooterConstants.OPTIMAL_HUB_ENTRY_SLOPE;
-    
+
     double a, b, vertex;
     Angle theta, motorAngle;
     do {

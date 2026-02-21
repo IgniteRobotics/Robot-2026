@@ -2,8 +2,6 @@ package frc.robot.statemachines;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,30 +10,27 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
-import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.shooter.MappedLauchRequestBuilder;
 import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
 
 public class LaunchCalculator {
-    public record LaunchRequest(
-        Angle launchHoodTarget,
-        AngularVelocity launchVelocity,
-        AngularVelocity targetRobotAngularVelocity,
-        Rotation2d targetRobotAngle) {}
+  public record LaunchRequest(
+      Angle launchHoodTarget,
+      AngularVelocity launchVelocity,
+      AngularVelocity targetRobotAngularVelocity,
+      Rotation2d targetRobotAngle) {}
 
-    private Pose3d target;
-    private LaunchType type;
+  private Pose3d target;
+  private LaunchType type;
 
-    protected LaunchCalculator(Pose3d target, LaunchType type){
-        this.target = target;
-        this.type = type;
-    }
+  protected LaunchCalculator(Pose3d target, LaunchType type) {
+    this.target = target;
+    this.type = type;
+  }
 
   private double loopPeriodSecs = 0.02;
 
@@ -110,21 +105,31 @@ public class LaunchCalculator {
               launcherPose.getTranslation().plus(new Translation2d(offsetX, offsetY)),
               launcherPose.getRotation());
       lookaheadLauncherToTargetDistance =
-          target
-              .getTranslation()
-              .toTranslation2d()
-              .getDistance(lookaheadPose.getTranslation());
+          target.getTranslation().toTranslation2d().getDistance(lookaheadPose.getTranslation());
     }
 
     // calcuate rotation angle
     Rotation2d targetRobotAngle =
         getDriveAngle(lookaheadPose, target.getTranslation().toTranslation2d());
 
-    AngularVelocity targetRobotAngularVelocity = RadiansPerSecond.of(driveAngleFilter.calculate(targetRobotAngle.minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation()).getRadians() / loopPeriodSecs));
-    
-    if(type == LaunchType.MAPPED)
-        return MappedLauchRequestBuilder.createLaunchRequest(passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
-    else return ParabolicLaunchRequestBuilder.createLaunchRequest(passing, target.getZ(), lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
+    AngularVelocity targetRobotAngularVelocity =
+        RadiansPerSecond.of(
+            driveAngleFilter.calculate(
+                targetRobotAngle
+                        .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
+                        .getRadians()
+                    / loopPeriodSecs));
+
+    if (type == LaunchType.MAPPED)
+      return MappedLauchRequestBuilder.createLaunchRequest(
+          passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
+    else
+      return ParabolicLaunchRequestBuilder.createLaunchRequest(
+          passing,
+          target.getZ(),
+          lookaheadLauncherToTargetDistance,
+          targetRobotAngularVelocity,
+          targetRobotAngle);
   }
 
   private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {
@@ -140,7 +145,4 @@ public class LaunchCalculator {
     Rotation2d driveAngle = fieldToHubAngle.plus(hubAngle).plus(robotPose.getRotation());
     return driveAngle;
   }
-
-
-
 }

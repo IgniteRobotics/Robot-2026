@@ -19,7 +19,8 @@ import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
-  private final TalonFX flywheelMotor;
+  private final TalonFX flywheelMotorLeader;
+  private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
 
   private final LaunchRequestBuilder launchRequestBuilder;
@@ -70,10 +71,19 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public ShooterSubsystem() {
-    flywheelMotor = new TalonFX(ShooterConstants.FLYWHEEL_MOTOR_ID);
+    flywheelMotorLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEADER_MOTOR_ID);
+    flywheelMotorFollower = new TalonFX(ShooterConstants.FLYWHEEL_FOLLOWER_MOTOR_ID);
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
 
-    flywheelMotor.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
+    flywheelMotorFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFollowerMotorOutputConfigs());
+
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);
 
@@ -87,7 +97,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    flywheelMotor.setControl(velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    flywheelMotorLeader.setControl(
+        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
     launchRequestBuilder.createLaunchRequest();
   }
@@ -106,7 +117,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void setFlywheelVoltage(double magnitude) {
-    flywheelMotor.setVoltage(magnitude);
+    flywheelMotorLeader.setVoltage(magnitude);
   }
 
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
@@ -125,6 +136,16 @@ public class ShooterSubsystem extends SubsystemBase {
     return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
         .andThen(spinFlywheelCommand())
         .withName("Start Launching Lemons");
+  }
+
+  public Command launchLemonsCommandNoPID() {
+    return runOnce(
+            () -> {
+              hoodMotor.set(
+                  Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()).in(Rotations));
+              flywheelMotorLeader.set(ShooterPreferences.flywheelLaunchPercent.getValue());
+            })
+        .withName("Start Launching Lemons (No PID)");
   }
 
   public Command stowCommand() {

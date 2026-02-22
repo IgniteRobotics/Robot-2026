@@ -5,39 +5,51 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Start to Shoot - RIGHT"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Seed"
+            "name": "Shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Square 1"
+            "pathName": "Shoot to Overbump - RIGHT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Square 2"
+            "pathName": "Collect - RIGHT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Square 3"
+            "pathName": "Overbump to Shoot - RIGHT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Square 4"
+            "pathName": "Shoot to Climb - RIGHT"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
-  "folder": "Test Autos",
+  "resetOdom": true,
+  "folder": "Comp Autos",
   "choreoAuto": false
 }

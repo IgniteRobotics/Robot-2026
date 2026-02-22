@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Seed"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Rotate And Move Forward"

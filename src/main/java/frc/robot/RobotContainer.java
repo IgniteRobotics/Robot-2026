@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -53,6 +54,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
+    NamedCommands.registerCommand("Shoot", new WaitCommand(2));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -110,25 +112,23 @@ public class RobotContainer {
 
     // joystick.x().onTrue(drivetrain.sysIdSteer());
     // joystick.y().onTrue(drivetrain.sysIdTranslation());
-    /*driverJoystick.x().onTrue(new WheelSlipTest(drivetrain));
+    // driverJoystick.x().onTrue(new WheelSlipTest(drivetrain));
+    /*
     driverJoystick
         .y()
         .whileTrue(new DriveBySpeed(drivetrain, DrivePreferences.onemeter_speed)); // Testing only
+    */
 
     driverJoystick
         .rightTrigger()
         .whileTrue(intake.setExtendNoPID().repeatedly())
-        .onFalse(intake.stopIntakeNoPID());
+        .onFalse(intake.stopIntakeNoPID().andThen(intake.setRollerNoPID().repeatedly()));
 
     driverJoystick
         .leftTrigger()
         .whileTrue(intake.setRetractNoPID().repeatedly())
-        .onFalse(intake.stopIntakeNoPID());
+        .onFalse(intake.stopIntakeNoPID().andThen(intake.stopRollerNoPID()));
 
-    driverJoystick
-        .a()
-        .whileTrue(intake.setRollerNoPID().repeatedly())
-        .onFalse(intake.stopRollerNoPID());*/
     operatorJoystick
         .leftTrigger()
         .whileTrue(shooter.launchLemonsCommandNoPID())
@@ -142,10 +142,10 @@ public class RobotContainer {
     driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
     driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    driverJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    driverJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    driverJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    driverJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

@@ -87,7 +87,6 @@ public class SimpleShooterSubsystem extends SubsystemBase {
             run(
                 () -> {
                   flywheelMotorLeader.set(ShooterPreferences.flywheelLaunchPercent.getValue());
-                  flywheelMotorFollower.set(ShooterPreferences.flywheelLaunchPercent.getValue());
                 }))
         .withName("Start Launching Lemons (No PID)");
   }

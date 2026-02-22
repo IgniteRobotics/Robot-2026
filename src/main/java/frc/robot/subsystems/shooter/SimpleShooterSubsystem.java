@@ -83,7 +83,7 @@ public class SimpleShooterSubsystem extends SubsystemBase {
 
   public Command launchLemonsCommandNoPID() {
     return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
-        .alongWith(
+        .andThen(
             run(
                 () -> {
                   flywheelMotorLeader.set(ShooterPreferences.flywheelLaunchPercent.getValue());
@@ -93,7 +93,7 @@ public class SimpleShooterSubsystem extends SubsystemBase {
 
   public Command stopLaunchLemonsNoPIDCommand() {
     return setHoodCommand(Rotations.of(0))
-        .alongWith(
+        .andThen(
             run(
                 () -> {
                   flywheelMotorLeader.set(0);

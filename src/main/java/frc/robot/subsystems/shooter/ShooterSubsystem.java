@@ -100,7 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
+    hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
     launchRequestBuilder.createLaunchRequest();
   }
 

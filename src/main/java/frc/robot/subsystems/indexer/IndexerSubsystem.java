@@ -41,8 +41,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    indexerMotor.setControl(
-        indexerControl.withVelocity(indexerVelocityTarget.in(RotationsPerSecond)));
+    // TODO:  removed for testing only.  PUT IT BACK!
+    // indexerMotor.setControl(
+    //     indexerControl.withVelocity(indexerVelocityTarget.in(RotationsPerSecond)));
   }
 
   private void setIndexerVoltage(double magnitude) {
@@ -50,7 +51,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command setIndexerNoPID() {
-    return runOnce(() -> indexerMotor.set(IndexerPreferences.indexerPercent.getValue()))
+    return run(() -> indexerMotor.set(IndexerPreferences.indexerPercent.getValue()))
         .withName("Set Indexer Percent");
   }
 

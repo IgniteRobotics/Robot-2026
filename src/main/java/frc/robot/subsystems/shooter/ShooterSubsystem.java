@@ -93,7 +93,7 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionTorqueCurrentFOC(0);
 
-    launchRequestBuilder = new MappedLauchRequestBuilder(() -> ShooterConstants.BLUE_TARGET);
+    launchRequestBuilder = new MappedLaunchRequestBuilder(() -> ShooterConstants.BLUE_TARGET);
   }
 
   @Override

@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.statemachines.DriveState;
@@ -13,7 +14,7 @@ public class DriveToPose extends Command {
   private Pose2d targetPose;
   private PIDController xControl;
   private PIDController yControl;
-  private PIDController rotControl;
+  private ProfiledPIDController rotControl;
 
   public DriveToPose(DrivetrainSubsystem subsystem, Pose2d pose) {
     drivetrain = subsystem;

@@ -10,12 +10,15 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
 import frc.robot.generated.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.DriveState;
@@ -185,10 +188,14 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     return controller;
   }
 
-  public PIDController getRotationPIDController() {
-    PIDController controller =
-        new PIDController(
-            DrivePreferences.rotation_kP.getValue(), 0, DrivePreferences.rotation_kD.getValue());
+  public ProfiledPIDController getRotationPIDController() {
+    ProfiledPIDController controller =
+        new ProfiledPIDController(
+            DrivePreferences.rotation_kP.getValue(),
+            0,
+            DrivePreferences.rotation_kD.getValue(),
+            new TrapezoidProfile.Constraints(0.0, 0.0),
+            Constants.RobotContants.LOOP_PERIOD_SECONDS);
     controller.setTolerance(DriveConstants.ROTATION_ALIGN_TOLERANCE);
     controller.enableContinuousInput(-180, 180); // Degrees
     return controller;

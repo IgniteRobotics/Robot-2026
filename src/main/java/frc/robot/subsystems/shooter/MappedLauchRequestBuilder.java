@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import frc.robot.Constants;
 import frc.robot.statemachines.DriveState;
 import java.util.function.Supplier;
 
@@ -36,15 +37,13 @@ public class MappedLauchRequestBuilder implements LaunchRequestBuilder {
     this.targetPose = targetPose;
   }
 
-  private double loopPeriodSecs = 0.02;
-
   private double lastHoodAngle;
   private Rotation2d lastDriveAngle;
 
   private final LinearFilter hoodAngleFilter =
-      LinearFilter.movingAverage((int) (0.1 / loopPeriodSecs));
+      LinearFilter.movingAverage((int) (0.1 / Constants.RobotContants.LOOP_PERIOD_SECONDS));
   private final LinearFilter driveAngleFilter =
-      LinearFilter.movingAverage((int) (0.8 / loopPeriodSecs));
+      LinearFilter.movingAverage((int) (0.8 / Constants.RobotContants.LOOP_PERIOD_SECONDS));
 
   private static final double minDistance;
   private static final double maxDistance;
@@ -185,7 +184,9 @@ public class MappedLauchRequestBuilder implements LaunchRequestBuilder {
 
     // filter for smoothing
     double driveVelocity =
-        driveAngleFilter.calculate(driveAngle.minus(lastDriveAngle).getRadians() / loopPeriodSecs);
+        driveAngleFilter.calculate(
+            driveAngle.minus(lastDriveAngle).getRadians()
+                / Constants.RobotContants.LOOP_PERIOD_SECONDS);
     lastDriveAngle = driveAngle;
 
     currentLaunchRequest =

@@ -16,4 +16,8 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class RobotContants {
+    public static final double LOOP_PERIOD_SECONDS = 0.02;
+  }
 }

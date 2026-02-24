@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
@@ -124,7 +125,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
   public boolean atHoodSetpoint() {
     return Math.abs(hoodMotor.getPosition().getValueAsDouble() - hoodTarget.in(Rotations))
-        < ShooterConstants.ALLOWABLE_HOOD_ERROR;
+        < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }
 
   public Command setHoodCommand(Angle position) {

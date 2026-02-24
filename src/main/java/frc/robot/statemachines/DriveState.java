@@ -16,8 +16,8 @@ public class DriveState {
 
   private HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>> concurrentQueueMap;
 
-  private SwerveDriveState previousDriveStats = null;
-  private SwerveDriveState currentDriveStats = null;
+  private SwerveDriveState previousDriveStats = new SwerveDriveState();
+  private SwerveDriveState currentDriveStats = new SwerveDriveState();
 
   private DriveState() {
     concurrentQueueMap = new HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>>();

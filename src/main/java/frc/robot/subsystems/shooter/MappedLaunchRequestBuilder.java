@@ -16,7 +16,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.statemachines.LaunchCalculator.LaunchRequest;
 
 /** Add your docs here. */
-public class MappedLauchRequestBuilder {
+public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
 
   private static final double minDistance;
   private static final double maxDistance;
@@ -71,7 +71,7 @@ public class MappedLauchRequestBuilder {
     passingFlywheelSpeedMap.put(passingMaxDistance, 0.0);
   }
 
-  public static LaunchRequest createLaunchRequest(
+  public LaunchRequest createLaunchRequest(
       boolean passing,
       double distance,
       AngularVelocity targetRobotAngularVelocity,

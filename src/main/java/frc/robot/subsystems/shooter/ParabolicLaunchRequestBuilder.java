@@ -13,17 +13,16 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.statemachines.LaunchCalculator.LaunchRequest;
 
 /** Add your docs here. */
-public class ParabolicLaunchRequestBuilder {
+public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder{
 
-  public static LaunchRequest createLaunchRequest(
+  public LaunchRequest createLaunchRequest(
       boolean passing,
-      double goalHeight,
       double distance,
       AngularVelocity targetRobotAngularVelocity,
       Rotation2d targetRobotAngle) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distance;
-    double y2 = goalHeight;
+    double y2 = passing ? 0 : ShooterConstants.GOAL_HEIGHT.in(Meters);
 
     double slope;
     if (passing) slope = ShooterConstants.OPTIMAL_PASSING_ENTRY_SLOPE;

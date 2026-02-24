@@ -68,6 +68,7 @@ public class ShooterConstants {
 
   // Lemon Yeeting Constants
   public static final Distance SHOOTER_HEIGHT = Inch.of(65); // TODO: Get Better Estimate
+  public static final Distance GOAL_HEIGHT = Inch.of(23); // TODO: Get Better Estimate
 
   public static final Distance MIN_HUB_VERTEX_DISTANCE = Inch.of(23.5);
   public static final Angle MIN_HOOD_ANGLE = Degrees.of(0); // TODO: Get Better Estimate

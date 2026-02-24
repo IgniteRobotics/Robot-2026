@@ -14,8 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.statemachines.LaunchState.LaunchType;
-import frc.robot.subsystems.shooter.MappedLauchRequestBuilder;
-import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
+import frc.robot.subsystems.shooter.LaunchRequestBuilder;
 
 public class LaunchCalculator {
   public record LaunchRequest(
@@ -25,11 +24,11 @@ public class LaunchCalculator {
       Rotation2d targetRobotAngle) {}
 
   private Pose3d target;
-  private LaunchType type;
+  private LaunchRequestBuilder builder;
 
-  protected LaunchCalculator(Pose3d target, LaunchType type) {
+  protected LaunchCalculator(Pose3d target, LaunchRequestBuilder builder) {
     this.target = target;
-    this.type = type;
+    this.builder = builder;
   }
 
   private double loopPeriodSecs = 0.02;
@@ -82,8 +81,8 @@ public class LaunchCalculator {
         launcherPose.getTranslation().getDistance(target.toPose2d().getTranslation());
 
     // Calculate field relative velocity
-    double xVelocity = DriveState.getInstance().getFieldVelocity().vxMetersPerSecond;
-    double yVelocity = DriveState.getInstance().getFieldVelocity().vyMetersPerSecond;
+    double xSpeed = DriveState.getInstance().getFieldVelocity().vxMetersPerSecond;
+    double ySpeed = DriveState.getInstance().getFieldVelocity().vyMetersPerSecond;
 
     // Account for imparted velocity by robot (launcher) to offset
     double timeOfFlight =
@@ -98,8 +97,8 @@ public class LaunchCalculator {
           passing
               ? passingTimeOfFlightMap.get(lookaheadLauncherToTargetDistance)
               : hubTimeOfFlightMap.get(lookaheadLauncherToTargetDistance);
-      double offsetX = xVelocity * timeOfFlight;
-      double offsetY = yVelocity * timeOfFlight;
+      double offsetX = xSpeed * timeOfFlight;
+      double offsetY = ySpeed * timeOfFlight;
       lookaheadPose =
           new Pose2d(
               launcherPose.getTranslation().plus(new Translation2d(offsetX, offsetY)),
@@ -120,16 +119,8 @@ public class LaunchCalculator {
                         .getRadians()
                     / loopPeriodSecs));
 
-    if (type == LaunchType.MAPPED)
-      return MappedLauchRequestBuilder.createLaunchRequest(
+      return builder.createLaunchRequest(
           passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
-    else
-      return ParabolicLaunchRequestBuilder.createLaunchRequest(
-          passing,
-          target.getZ(),
-          lookaheadLauncherToTargetDistance,
-          targetRobotAngularVelocity,
-          targetRobotAngle);
   }
 
   private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {

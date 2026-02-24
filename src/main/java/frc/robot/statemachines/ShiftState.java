@@ -43,10 +43,11 @@ public class ShiftState {
   }
 
   public ActiveState getShiftState() {
-    if(isFMSConnected){
+    if (isFMSConnected) {
       String gameData = DriverStation.getGameSpecificMessage();
       if (gameData.length() > 0)
-        redWonAuton = gameData.charAt(0) == 'R'; // Set to true if red won auton, false if blue won auton
+        redWonAuton =
+            gameData.charAt(0) == 'R'; // Set to true if red won auton, false if blue won auton
     }
 
     switch (getShiftFromMatchTime()) {

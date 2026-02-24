@@ -8,14 +8,25 @@ public class ShiftState {
 
   private static ShiftState single_instance = null;
 
-  public static enum ShiftStateEnum {
+  public static enum ActiveState {
     RED_ACTIVE,
     BLUE_ACTIVE,
     BOTH_ACTIVE,
     UNKNOWN
   }
 
-  private ShiftStateEnum shiftState = ShiftStateEnum.UNKNOWN;
+  public static enum Shift {
+    AUTONOMOUS,
+    TRANSITION,
+    SHIFT_1,
+    SHIFT_2,
+    SHIFT_3,
+    SHIFT_4,
+    ENDGAME,
+    NONE
+  }
+
+  private ActiveState shiftState = ActiveState.UNKNOWN;
   private boolean isFMSConnected = DriverStation.isFMSAttached();
 
   private boolean redWonAuton = true; // Set to true if red wins auton, false if blue wins auton
@@ -31,39 +42,25 @@ public class ShiftState {
     return single_instance;
   }
 
-  public ShiftStateEnum getShiftState() {
-    if (!isFMSConnected) { // FMS not connected, use match time to determine shift state
-      switch (getShiftFromMatchTime()) {
-        case 0, 1, 6:
-          shiftState = ShiftStateEnum.BOTH_ACTIVE;
-          break;
-        case 2, 4:
-          shiftState = ShiftStateEnum.BLUE_ACTIVE;
-        case 3, 5:
-          shiftState = ShiftStateEnum.RED_ACTIVE;
-          break;
-        default:
-          shiftState = ShiftStateEnum.UNKNOWN;
-      }
-    } else {
+  public ActiveState getShiftState() {
+    if(isFMSConnected){
       String gameData = DriverStation.getGameSpecificMessage();
-      if (gameData.length() > 0) {
-        switch (gameData.charAt(0)) {
-          case 'B':
-            shiftState = ShiftStateEnum.BLUE_ACTIVE;
-            break;
-          case 'R':
-            shiftState = ShiftStateEnum.RED_ACTIVE;
-            break;
-          default:
-            shiftState = ShiftStateEnum.BOTH_ACTIVE;
-        }
-      } else shiftState = ShiftStateEnum.UNKNOWN;
+      if (gameData.length() > 0)
+        redWonAuton = gameData.charAt(0) == 'R'; // Set to true if red won auton, false if blue won auton
     }
 
-    if (!redWonAuton) { // Invert shift state if blue won auton (manually set)
-      if (shiftState == ShiftStateEnum.BLUE_ACTIVE) shiftState = ShiftStateEnum.RED_ACTIVE;
-      else if (shiftState == ShiftStateEnum.RED_ACTIVE) shiftState = ShiftStateEnum.BLUE_ACTIVE;
+    switch (getShiftFromMatchTime()) {
+      case AUTONOMOUS, TRANSITION, ENDGAME: // auto, transition, endgame
+        shiftState = ActiveState.BOTH_ACTIVE;
+        break;
+      case SHIFT_1, SHIFT_3: // shift 1 and shift 3
+        shiftState = redWonAuton ? ActiveState.BLUE_ACTIVE : ActiveState.RED_ACTIVE;
+        break;
+      case SHIFT_2, SHIFT_4: // shift 2 and shift 4
+        shiftState = redWonAuton ? ActiveState.RED_ACTIVE : ActiveState.BLUE_ACTIVE;
+        break;
+      default:
+        shiftState = ActiveState.UNKNOWN;
     }
 
     SmartDashboard.putString("Shift State", shiftState.toString());
@@ -71,47 +68,36 @@ public class ShiftState {
   }
 
   public boolean isOurHubActive() {
-    ShiftStateEnum shiftState = getShiftState(); // update shiftState before checking
+    ActiveState shiftState = getShiftState(); // update shiftState before checking
     Alliance alliance = AllianceState.getInstance().getAlliance();
 
-    if (shiftState == ShiftStateEnum.BOTH_ACTIVE) return true;
-    if (shiftState == ShiftStateEnum.UNKNOWN) return false;
+    if (shiftState == ActiveState.BOTH_ACTIVE) return true;
+    if (shiftState == ActiveState.UNKNOWN) return false;
 
-    return (shiftState == ShiftStateEnum.RED_ACTIVE && alliance == Alliance.Red)
-        || (shiftState == ShiftStateEnum.BLUE_ACTIVE && alliance == Alliance.Blue);
+    return (shiftState == ActiveState.RED_ACTIVE && alliance == Alliance.Red)
+        || (shiftState == ActiveState.BLUE_ACTIVE && alliance == Alliance.Blue);
   }
 
-  /*
-   * Determines shift state based on match time. Used when FMS is not connected (testing, practice bot, etc.)
-   * Shift states are:
-   *   0: Autonomous (both active)
-   *   1: Transition (both active)
-   *   2: Shift 1
-   *   3: Shift 2
-   *   4: Shift 3
-   *   5: Shift 4
-   *   6: Endgame (both active)
-   */
-  public int getShiftFromMatchTime() {
-    int shiftStateInt = -1;
+  public Shift getShiftFromMatchTime() {
+    Shift shiftStateInt = Shift.NONE;
     double matchTime = DriverStation.getMatchTime();
     if (DriverStation.isAutonomousEnabled()) { // Auton
-      shiftStateInt = 0;
+      shiftStateInt = Shift.AUTONOMOUS;
     } else if (DriverStation.isTeleopEnabled()) {
       if (matchTime >= 130) { // Transition shift
-        shiftStateInt = 1;
+        shiftStateInt = Shift.TRANSITION;
       } else if (matchTime >= 105) { // Shift 1
-        shiftStateInt = 2;
+        shiftStateInt = Shift.SHIFT_1;
       } else if (matchTime >= 80) { // Shift 2
-        shiftStateInt = 3;
+        shiftStateInt = Shift.SHIFT_2;
       } else if (matchTime >= 55) { // Shift 3
-        shiftStateInt = 4;
+        shiftStateInt = Shift.SHIFT_3;
       } else if (matchTime >= 30) { // Shift 4
-        shiftStateInt = 5;
+        shiftStateInt = Shift.SHIFT_4;
       } else { // Endgame
-        shiftStateInt = 6;
+        shiftStateInt = Shift.ENDGAME;
       }
-    } else shiftStateInt = -1; // none (teleop disabled)
+    }
     return shiftStateInt;
   }
 }

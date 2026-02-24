@@ -1,8 +1,8 @@
 package frc.robot.statemachines;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShiftState {
 
@@ -26,15 +26,15 @@ public class ShiftState {
     NONE
   }
 
+  @Logged(name = "Shift State")
   private ActiveState shiftState = ActiveState.UNKNOWN;
+
   private boolean isFMSConnected = DriverStation.isFMSAttached();
 
+  @Logged(name = "Red Won Auton")
   private boolean redWonAuton = true; // Set to true if red wins auton, false if blue wins auton
 
-  private ShiftState() {
-    SmartDashboard.putString("Shift State", shiftState.toString());
-    SmartDashboard.putBoolean("Red Won Auton?", redWonAuton);
-  }
+  private ShiftState() {}
 
   public static synchronized ShiftState getInstance() {
     if (single_instance == null) single_instance = new ShiftState();
@@ -64,7 +64,6 @@ public class ShiftState {
         shiftState = ActiveState.UNKNOWN;
     }
 
-    SmartDashboard.putString("Shift State", shiftState.toString());
     return shiftState;
   }
 

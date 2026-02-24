@@ -81,6 +81,17 @@ public class ShiftState {
         || (shiftState == ShiftStateEnum.BLUE_ACTIVE && alliance == Alliance.Blue);
   }
 
+  /*
+   * Determines shift state based on match time. Used when FMS is not connected (testing, practice bot, etc.)
+   * Shift states are:
+   *   0: Autonomous (both active)
+   *   1: Transition (both active)
+   *   2: Shift 1
+   *   3: Shift 2
+   *   4: Shift 3
+   *   5: Shift 4
+   *   6: Endgame (both active)
+   */
   public int getShiftFromMatchTime() {
     int shiftStateInt = -1;
     double matchTime = DriverStation.getMatchTime();

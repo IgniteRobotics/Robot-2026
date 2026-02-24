@@ -1,0 +1,6 @@
+intake extension = 1
+    roller = 2
+indexer = 3
+hood = 4
+flywheel x2 = 5,6
+climb = 7

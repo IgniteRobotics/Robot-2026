@@ -26,13 +26,13 @@ import frc.robot.statemachines.DriveState;
 import java.util.function.Supplier;
 
 /** Add your docs here. */
-public class MappedLauchRequestBuilder implements LaunchRequestBuilder {
+public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
 
   private Supplier<Pose3d> targetPose;
 
   private LaunchRequest currentLaunchRequest;
 
-  public MappedLauchRequestBuilder(Supplier<Pose3d> targetPose) {
+  public MappedLaunchRequestBuilder(Supplier<Pose3d> targetPose) {
     this.targetPose = targetPose;
   }
 

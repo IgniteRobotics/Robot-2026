@@ -18,20 +18,20 @@ public class ShooterConstants {
 
   private ShooterConstants() {}
 
-  public static final int FLYWHEEL_LEADER_MOTOR_ID = 5; // TODO: set ids in tunerx
+  public static final int FLYWHEEL_LEADER_MOTOR_ID = 5;
   public static final int FLYWHEEL_FOLLOWER_MOTOR_ID = 6;
-  public static final int HOOD_MOTOR_ID = 5;
+  public static final int HOOD_MOTOR_ID = 4;
 
   public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
 
   public static MotorOutputConfigs createFollowerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
@@ -41,7 +41,7 @@ public class ShooterConstants {
   // Flywheel motor
   public static final double FLYWHEEL_KS = 0;
   public static final double FLYWHEEL_KV = 0;
-  public static final double FLYWHEEL_KP = 0;
+  public static final double FLYWHEEL_KP = 10;
   public static final double FLYWHEEL_KD = 0;
 
   public static Slot0Configs createFlywheelMotorSlot0Configs() {
@@ -54,7 +54,7 @@ public class ShooterConstants {
   }
 
   public static final double ALLOWABLE_HOOD_ERROR = 0.1;
-  public static final double HOOD_FORWARD_LIMIT = 100;
+  public static final double HOOD_FORWARD_LIMIT = 5.8;
   public static final double HOOD_REVERSE_LIMIT = 0;
   public static final double HOOD_KS = 0;
   public static final double HOOD_KP = 0;
@@ -75,6 +75,13 @@ public class ShooterConstants {
     configs.ForwardSoftLimitThreshold = HOOD_FORWARD_LIMIT;
     configs.ReverseSoftLimitThreshold = HOOD_REVERSE_LIMIT;
     return configs;
+  }
+
+  public static MotorOutputConfigs createHoodMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
   }
 
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);

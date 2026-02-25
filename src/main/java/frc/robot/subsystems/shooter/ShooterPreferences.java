@@ -10,4 +10,7 @@ public class ShooterPreferences {
       new DoublePreference("Shooter/Launch Speed", 0.1); // in rotations per second
   public static DoublePreference hoodLaunchAngle =
       new DoublePreference("Shooter/Hood Launch Position", 3); // in rotations
+
+  public static DoublePreference flywheelLaunchPercent =
+      new DoublePreference("Shooter/Launch Percent (for without PID)", 0.1); // in percent
 }

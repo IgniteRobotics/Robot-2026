@@ -13,31 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Square 1"
+            "pathName": "Forward Simple"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Square 2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Square 3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Square 4"
+            "pathName": "Rotation Simple"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Test Autos",
+  "folder": "Simple Autos",
   "choreoAuto": false
 }

@@ -4,23 +4,25 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.commands.DriveBySpeed;
-import frc.robot.commands.WheelSlipTest;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.shooter.SimpleShooterSubsystem;
 
 @Logged
 public class RobotContainer {
@@ -30,7 +32,8 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController driverJoystick = new CommandXboxController(0);
+  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
@@ -43,9 +46,15 @@ public class RobotContainer {
   @Logged(name = "Climber")
   public final ClimberSubsystem climber = new ClimberSubsystem();
 
+  @Logged(name = "Shooter")
+  // public final ShooterSubsystem shooter = new ShooterSubsystem();
+  public final SimpleShooterSubsystem shooter = new SimpleShooterSubsystem();
+
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
+    NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
+    NamedCommands.registerCommand("Shoot", new WaitCommand(2));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -67,27 +76,32 @@ public class RobotContainer {
                 DriveConstants.DEFAULT_DRIVE_REQUEST
                     .withVelocityX(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftY(), 2), joystick.getLeftY())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
                             * DriveConstants
                                 .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
                     .withVelocityY(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftX(), 2), joystick.getLeftX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                             * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
                     .withRotationalRate(
                         -1
-                            * Math.copySign(Math.pow(joystick.getRightX(), 2), joystick.getRightX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
                             * DriveConstants
                                 .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
                     .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
                     .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
   }
 
-  public void removeSubsystemDefaultCommands() {
-    drivetrain.removeDefaultCommand();
-  }
+  private void configureBindings() {
+    // Idle while the robot is disabled. This ensures the configured
+    // neutral mode is applied to the drive motors while disabled.
+    final var idle = new SwerveRequest.Idle();
+    RobotModeTriggers.disabled()
+        .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-  public void configureTeleopBindings() {
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick
         .b()
@@ -107,15 +121,39 @@ public class RobotContainer {
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
 
-    joystick.a().onTrue(drivetrain.sysIdSteer());
-    joystick.b().onTrue(drivetrain.sysIdTranslation());
-    joystick.x().onTrue(new WheelSlipTest(drivetrain));
-    joystick
-        .y()
-        .whileTrue(new DriveBySpeed(drivetrain, DrivePreferences.onemeter_speed)); // Testing only
+    // joystick.x().onTrue(drivetrain.sysIdSteer());
+    // joystick.y().onTrue(drivetrain.sysIdTranslation());
+
+    driverJoystick
+        .rightTrigger()
+        .whileTrue(intake.setExtendNoPID().repeatedly())
+        .onFalse(intake.stopIntakeNoPID().andThen(intake.setRollerNoPID().repeatedly()));
+
+    driverJoystick
+        .leftTrigger()
+        .whileTrue(intake.setRetractNoPID().repeatedly())
+        .onFalse(intake.stopIntakeNoPID().andThen(intake.stopRollerNoPID()));
+
+    operatorJoystick
+        .leftTrigger()
+        .whileTrue(shooter.launchLemonsCommandNoPID())
+        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
+
+    operatorJoystick
+        .rightTrigger()
+        .whileTrue(indexer.setIndexerNoPID())
+        .onFalse(indexer.stopIndexerNoPID());
+
+    driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+
+    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
-    joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

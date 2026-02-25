@@ -11,4 +11,11 @@ public class IntakePreferences {
       new DoublePreference("Intake/Roller Intake Speed", 0.1); // in rotations per second
   public static DoublePreference intakeCollectPosition =
       new DoublePreference("Intake/Stowed Intake Position", 3); // in rotations
+
+  public static DoublePreference extendPercent =
+      new DoublePreference("Intake/Extend Percent (for without PID)", 0.1); // in percent
+  public static DoublePreference retractPercent =
+      new DoublePreference("Intake/Retract Percent (for without PID)", -0.1); // in percent
+  public static DoublePreference rollerIntakePercent =
+      new DoublePreference("Intake/Roller Intake Percent (for without PID)", 0.1); // in percent
 }

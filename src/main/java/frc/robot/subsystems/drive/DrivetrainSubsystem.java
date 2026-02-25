@@ -41,6 +41,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     applyDriveGains();
     configureAutoBuilder();
     configureCANrange();
+    // TODO: remove.  debugging.
+    periodic();
   }
 
   @Override
@@ -57,6 +59,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
     SmartDashboard.putNumber(
         "Drive Canrange Distance", drive_canrange.getDistance(true).getValueAsDouble());
+
+    SmartDashboard.putNumber("kP Preference Current", DrivePreferences.translation_kP.getValue());
   }
 
   public Command sysIdSteer() {
@@ -197,6 +201,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
   private void configureAutoBuilder() {
     try {
+      SmartDashboard.putNumber("What we think it is", DrivePreferences.translation_kP.getValue());
       var config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
           () -> getState().Pose, // Supplier of current robot pose

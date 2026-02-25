@@ -39,17 +39,17 @@ public class ShooterConstants {
   // TODO: Tune Flywheel and Hood Motor
 
   // Flywheel motor
-  public static final double FLYWHEEL_KS = 0;
-  public static final double FLYWHEEL_KV = 0;
-  public static final double FLYWHEEL_KP = 10;
-  public static final double FLYWHEEL_KD = 0;
+  public static final double FLYWHEEL_KS = 0.11239;
+  public static final double FLYWHEEL_KV = 0.11589;
+  public static final double FLYWHEEL_KA = 0.0034356;
+  public static final double FLYWHEEL_KP = 0.066945;
 
   public static Slot0Configs createFlywheelMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
     slot.kS = FLYWHEEL_KS;
     slot.kV = FLYWHEEL_KV;
     slot.kP = FLYWHEEL_KP;
-    slot.kD = FLYWHEEL_KD;
+    slot.kA = FLYWHEEL_KA;
     return slot;
   }
 

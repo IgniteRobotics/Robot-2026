@@ -86,4 +86,12 @@ public class IndexerSubsystem extends SubsystemBase {
     return runOnce(() -> indexerVelocityTarget = RotationsPerSecond.of(0))
         .withName("Stop Indexing");
   }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutineIndexer.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutineIndexer.dynamic(direction);
+  }
 }

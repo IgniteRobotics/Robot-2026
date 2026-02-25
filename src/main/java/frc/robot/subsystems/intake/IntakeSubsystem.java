@@ -32,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private PositionTorqueCurrentFOC extensionControl;
 
+  // final SysIdRoutineLog logger = new SysIdRoutineLog("Intake Motor");
+
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -61,8 +63,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
     extensionMotor.setControl(extensionControl.withPosition(extensionTarget.in(Rotations)));
+    */
   }
 
   public Command spinRollerCommand() {
@@ -138,5 +142,13 @@ public class IntakeSubsystem extends SubsystemBase {
               return extensionMotor.getStatorCurrent().getValueAsDouble()
                   > IntakeConstants.SAFE_STATOR_LIMIT;
             });
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutineRoller.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutineRoller.dynamic(direction);
   }
 }

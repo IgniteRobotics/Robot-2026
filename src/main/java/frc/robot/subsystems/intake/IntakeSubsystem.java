@@ -82,7 +82,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.setVoltage(magnitude);
   }
 
-  public Command setRollerNoPID() {
+  public Command startRollerNoPID() {
     return runOnce(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
         .withName("Set Roller Percent");
   }
@@ -112,7 +112,7 @@ public class IntakeSubsystem extends SubsystemBase {
         .withName("Retract Intake Percent");
   }
 
-  public Command stopIntakeNoPID() {
+  public Command stopExtensionNoPID() {
     return runOnce(() -> extensionMotor.set(0)).withName("Stop Intake Percent");
   }
 

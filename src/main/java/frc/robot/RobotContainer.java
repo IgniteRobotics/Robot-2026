@@ -58,11 +58,13 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
-    configureSubsystemDefaultCommands();
-    configureBindings();
+    // Idle while the robot is disabled. This ensures the configured
+    // neutral mode is applied to the drive motors while disabled.
+    RobotModeTriggers.disabled()
+        .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
   }
 
-  private void configureSubsystemDefaultCommands() {
+  public void configureSubsystemDefaultCommands() {
 
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -90,34 +92,36 @@ public class RobotContainer {
                     .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
   }
 
-  private void configureBindings() {
+  public void removeSubsystemDefaultCommands(){
+    drivetrain.removeDefaultCommand();
+  }
+
+  public void configureTestBindings() {
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
+
     final var idle = new SwerveRequest.Idle();
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
+    
+    driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    // // driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    // driverJoystick
-    //     .b()
-    //     .whileTrue(
-    //         drivetrain.applyRequest(
-    //             () ->
-    //                 point.withModuleDirection(
-    //                     new Rotation2d(-driverJoystick.getLeftY(),
-    // -driverJoystick.getLeftX()))));
+    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    // Reset the field-centric heading on left bumper press.
+    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+  }
+
+  public void configureTeleopBindings() {
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
 
     // joystick.x().onTrue(drivetrain.sysIdSteer());
     // joystick.y().onTrue(drivetrain.sysIdTranslation());
-    // driverJoystick.x().onTrue(new WheelSlipTest(drivetrain));
-    /*
-    driverJoystick
-        .y()
-        .whileTrue(new DriveBySpeed(drivetrain, DrivePreferences.onemeter_speed)); // Testing only
-    */
 
     driverJoystick
         .rightTrigger()
@@ -138,14 +142,6 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(indexer.setIndexerNoPID())
         .onFalse(indexer.stopIndexerNoPID());
-
-    driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-
-    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

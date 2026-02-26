@@ -13,7 +13,6 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.shooter.LaunchRequestBuilder;
 
 public class LaunchCalculator {
@@ -119,8 +118,8 @@ public class LaunchCalculator {
                         .getRadians()
                     / loopPeriodSecs));
 
-      return builder.createLaunchRequest(
-          passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
+    return builder.createLaunchRequest(
+        passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
   }
 
   private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {

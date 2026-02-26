@@ -13,7 +13,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.statemachines.LaunchCalculator.LaunchRequest;
 
 /** Add your docs here. */
-public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder{
+public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
 
   public LaunchRequest createLaunchRequest(
       boolean passing,

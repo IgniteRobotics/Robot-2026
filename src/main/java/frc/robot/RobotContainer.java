@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.DriveBySpeed;
 import frc.robot.commands.WheelSlipTest;
+import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
@@ -45,6 +46,8 @@ public class RobotContainer {
   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   private final SendableChooser<Command> autoChooser;
+
+  private final LaunchState launchState  = LaunchState.getInstance();
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));

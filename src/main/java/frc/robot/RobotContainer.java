@@ -121,14 +121,20 @@ public class RobotContainer {
     // joystick.x().onTrue(drivetrain.sysIdSteer());
     // joystick.y().onTrue(drivetrain.sysIdTranslation());
 
+    driverJoystick.a().onTrue(shooter.spinFlywheelCommand());
+    driverJoystick.b().onFalse(shooter.stopFlywheelCommand());
+
+    driverJoystick.x().onTrue(intake.startRollerNoPID());
+    driverJoystick.y().onTrue(intake.stopRollerNoPID());
+
     driverJoystick
         .rightBumper()
-        .whileTrue(intake.startRollerNoPID().andThen(intake.setExtendNoPID().repeatedly()))
+        .whileTrue(intake.setExtendNoPID().repeatedly())
         .onFalse(intake.stopExtensionNoPID());
 
     driverJoystick
         .leftBumper()
-        .whileTrue(intake.stopRollerNoPID().andThen(intake.setRetractNoPID()))
+        .whileTrue(intake.setRetractNoPID())
         .onFalse(intake.stopExtensionNoPID());
 
     driverJoystick

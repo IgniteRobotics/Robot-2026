@@ -129,7 +129,7 @@ public class RobotContainer {
 
     driverJoystick
         .rightBumper()
-        .whileTrue(intake.setExtendNoPID().repeatedly())
+        .whileTrue(intake.setExtendNoPID())
         .onFalse(intake.stopExtensionNoPID());
 
     driverJoystick

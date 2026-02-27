@@ -22,7 +22,7 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       Rotation2d targetRobotAngle) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distance;
-    double y2 = passing ? 0 : ShooterConstants.GOAL_HEIGHT.in(Meters);
+    double y2 = passing ? 0 : ShooterConstants.HUB_HEIGHT.in(Meters);
 
     double slope;
     if (passing) slope = ShooterConstants.OPTIMAL_PASSING_ENTRY_SLOPE;
@@ -41,7 +41,9 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       vertex = -1 * b / (2 * a);
       hitWallCheckX = x2 - ShooterConstants.FROM_HUB_CENTER_TO_WALL.in(Meters);
       slope -= 0.05;
-    } while ((passing || a*Math.pow(hitWallCheckX,2) + b*hitWallCheckX + y1 > ShooterConstants.HUB_HEIGHT.in(Meters))
+    } while ((passing
+            || a * Math.pow(hitWallCheckX, 2) + b * hitWallCheckX + y1
+                > ShooterConstants.HUB_HEIGHT.in(Meters))
         && !(motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;

@@ -28,7 +28,7 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
     if (passing) slope = ShooterConstants.OPTIMAL_PASSING_ENTRY_SLOPE;
     else slope = ShooterConstants.OPTIMAL_HUB_ENTRY_SLOPE;
 
-    double a, b, vertex;
+    double a, b, vertex, hitWallCheckX;
     Angle theta, motorAngle;
     do {
       // system of equations
@@ -39,8 +39,9 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       theta = Radians.of(Math.atan(b)); // launch angle (Hood Angle Conversion: MATH.PI/2 - theta)
       motorAngle = Radians.of(Math.PI / 2 - theta.in(Radians));
       vertex = -1 * b / (2 * a);
+      hitWallCheckX = x2 - ShooterConstants.FROM_HUB_CENTER_TO_WALL.in(Meters);
       slope -= 0.05;
-    } while ((passing || vertex > x2 - ShooterConstants.MIN_HUB_VERTEX_DISTANCE.in(Meters))
+    } while ((passing || a*Math.pow(hitWallCheckX,2) + b*hitWallCheckX + y1 > ShooterConstants.HUB_HEIGHT.in(Meters))
         && !(motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;

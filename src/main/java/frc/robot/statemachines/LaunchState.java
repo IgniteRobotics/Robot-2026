@@ -1,7 +1,11 @@
 package frc.robot.statemachines;
 
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
 import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
@@ -48,6 +52,15 @@ public class LaunchState {
 
   private void refreshRequest() {
     currentRequest = currentCalculator.createLaunchRequest();
+    SmartDashboard.putNumber(
+        "Current Launch Request/Target Robot Angle (degrees)",
+        currentRequest.getTargetRobotAngle().getDegrees());
+    SmartDashboard.putNumber(
+        "Current Launch Request/Target Flywheel Velocity (rps)",
+        currentRequest.getFlywheelVelocity().in(RotationsPerSecond));
+    SmartDashboard.putNumber(
+        "Current Launch Request/Target Hood Angle (rotations)",
+        currentRequest.getHoodTarget().in(Rotations));
   }
 
   public enum LaunchType {

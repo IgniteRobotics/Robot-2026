@@ -1,6 +1,6 @@
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -24,7 +24,7 @@ public class LaunchRequest {
       double timestamp) {
     this.launchHoodTarget =
         Rotations.of(
-            launchHoodTarget.in(Radians)
+            launchHoodTarget.in(Degrees)
                 * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(
                     Rotations)); // converts froms radians to rotations
     this.launchVelocity =

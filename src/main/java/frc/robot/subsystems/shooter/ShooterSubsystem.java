@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
@@ -30,6 +31,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private Angle hoodTarget; // Rotations
 
   private PositionTorqueCurrentFOC hoodControl;
+
+  private final LaunchState launchState = LaunchState.getInstance();
 
   final SysIdRoutine m_sysIdRoutineFlywheel =
       new SysIdRoutine(
@@ -57,8 +60,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (launchState.isActivated()) {
+      hoodTarget = launchState.getLaunchRequest().getHoodTarget();
+      velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
+    }
+
     flywheelMotor.setControl(velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    hoodMotor.setControl(hoodControl.withVelocity(hoodTarget.in(Rotations)));
+    hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
   }
 
   public Command spinFlywheelCommand() {

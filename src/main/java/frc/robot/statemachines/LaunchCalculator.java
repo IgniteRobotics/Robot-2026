@@ -11,16 +11,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.LaunchRequestBuilder;
 
 public class LaunchCalculator {
-  public record LaunchRequest(
-      Angle launchHoodTarget,
-      AngularVelocity launchVelocity,
-      AngularVelocity targetRobotAngularVelocity,
-      Rotation2d targetRobotAngle) {}
 
   private Pose3d target;
   private LaunchRequestBuilder builder;

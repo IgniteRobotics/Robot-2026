@@ -7,13 +7,13 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.statemachines.LaunchCalculator.LaunchRequest;
 
 /** Add your docs here. */
 public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
@@ -91,6 +91,7 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
         Angle.ofBaseUnits(hoodAngle, Radians),
         AngularVelocity.ofBaseUnits(flywheelSpeed, RadiansPerSecond),
         targetRobotAngularVelocity,
-        targetRobotAngle);
+        targetRobotAngle,
+        Utils.getCurrentTimeSeconds());
   }
 }

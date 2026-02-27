@@ -6,11 +6,11 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.statemachines.LaunchCalculator.LaunchRequest;
 
 /** Add your docs here. */
 public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
@@ -60,6 +60,11 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
     // Create a typed AngularVelocity object (optional, for use within the units library ecosystem)
     AngularVelocity angularVelocity = RadiansPerSecond.of(angularVelocityMagnitude);
 
-    return new LaunchRequest(theta, angularVelocity, targetRobotAngularVelocity, targetRobotAngle);
+    return new LaunchRequest(
+        motorAngle,
+        angularVelocity,
+        targetRobotAngularVelocity,
+        targetRobotAngle,
+        Utils.getCurrentTimeSeconds());
   }
 }

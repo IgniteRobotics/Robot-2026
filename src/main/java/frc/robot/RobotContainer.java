@@ -141,18 +141,8 @@ public class RobotContainer {
 
     driverJoystick
         .rightTrigger()
-        .whileTrue(indexer.startIndexerNoPID())
-        .onFalse(indexer.stopIndexerNoPID());
-
-    operatorJoystick
-        .leftTrigger()
-        .whileTrue(shooter.launchLemonsCommandNoPID())
-        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
-
-    operatorJoystick
-        .rightTrigger()
-        .whileTrue(indexer.startIndexerNoPID())
-        .onFalse(indexer.stopIndexerNoPID());
+        .whileTrue(indexer.startIndexerNoPID().andThen(indexer.startAcceleratorNoPID()))
+        .onFalse(indexer.stopIndexerNoPID().andThen(indexer.stopAcceleratorNoPID()));
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

@@ -61,8 +61,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
-    extensionMotor.setControl(extensionControl.withPosition(extensionTarget.in(Rotations)));
+    // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
+    // extensionMotor.setControl(extensionControl.withPosition(extensionTarget.in(Rotations)));
   }
 
   public Command spinRollerCommand() {
@@ -82,7 +82,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.setVoltage(magnitude);
   }
 
-  public Command setRollerNoPID() {
+  public Command startRollerNoPID() {
     return runOnce(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
         .withName("Set Roller Percent");
   }
@@ -103,16 +103,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setExtendNoPID() {
-    return runOnce(() -> extensionMotor.set(IntakePreferences.extendPercent.getValue()))
+    return run(() -> extensionMotor.set(IntakePreferences.extendPercent.getValue()))
         .withName("Extend Intake Percent");
   }
 
   public Command setRetractNoPID() {
-    return runOnce(() -> extensionMotor.set(IntakePreferences.retractPercent.getValue()))
+    return run(() -> extensionMotor.set(IntakePreferences.retractPercent.getValue()))
         .withName("Retract Intake Percent");
   }
 
-  public Command stopIntakeNoPID() {
+  public Command stopExtensionNoPID() {
     return runOnce(() -> extensionMotor.set(0)).withName("Stop Intake Percent");
   }
 

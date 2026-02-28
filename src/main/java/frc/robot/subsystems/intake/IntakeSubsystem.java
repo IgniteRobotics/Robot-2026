@@ -54,6 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
@@ -61,8 +62,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
-    // extensionMotor.setControl(extensionControl.withPosition(extensionTarget.in(Rotations)));
+    rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
+    extensionMotor.setControl(
+        extensionControl
+            .withPosition(extensionTarget.in(Rotations))
+            .withOverrideCoastDurNeutral(true));
   }
 
   public Command spinRollerCommand() {
@@ -83,12 +87,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command startRollerNoPID() {
-    return runOnce(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
+    return run(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
         .withName("Set Roller Percent");
   }
 
   public Command stopRollerNoPID() {
-    return runOnce(() -> rollerMotor.set(0)).withName("Stop Roller No PID");
+    return run(() -> rollerMotor.set(0)).withName("Stop Roller No PID");
   }
 
   @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)
@@ -124,9 +128,21 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command stowCommand() {
-    return stopRollerCommand()
-        .andThen(setIntakeExtensionCommand(Rotations.of(0)))
+    return setIntakeExtensionCommand(Rotations.of(0))
+        .andThen(stopRollerCommand())
+        .andThen(setIntakeExtensionCommand(Rotations.of(0)).repeatedly())
         .withName("Stow Intake");
+  }
+
+  public Command dislodgeCommand() {
+    return spinRollerCommand()
+        .andThen(
+            setIntakeExtensionCommand(Rotations.of(IntakePreferences.dislodgePosition.getValue()))
+                .andThen(
+                    setIntakeExtensionCommand(
+                        Rotations.of(IntakePreferences.intakeCollectPosition.getValue()))))
+        .repeatedly()
+        .withName("Dislodge Intake");
   }
 
   public Command homeIntakeCommand() {

@@ -4,19 +4,19 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.statemachines.LaunchState;
-import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
@@ -28,7 +28,8 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class RobotContainer {
   private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController driverJoystick = new CommandXboxController(0);
+  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
@@ -60,7 +61,6 @@ public class RobotContainer {
   }
 
   public void configureSubsystemDefaultCommands() {
-
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
@@ -68,22 +68,24 @@ public class RobotContainer {
                 DriveConstants.DEFAULT_DRIVE_REQUEST
                     .withVelocityX(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftY(), 2), joystick.getLeftY())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
                             * DriveConstants
                                 .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
                     .withVelocityY(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftX(), 2), joystick.getLeftX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                             * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
                     .withRotationalRate(
                         -1
-                            * Math.copySign(Math.pow(joystick.getRightX(), 2), joystick.getRightX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
                             * DriveConstants
                                 .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
                     .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
                     .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
   }
-
 
   public void removeSubsystemDefaultCommands() {
     drivetrain.removeDefaultCommand();
@@ -156,15 +158,6 @@ public class RobotContainer {
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     drivetrain.registerTelemetry(logger::telemeterize);
-    */
-
-    joystick
-        .x()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    launchState.activateCalculator(
-                        new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)), LaunchType.PARABOLIC)));
   }
 
   public Command getAutonomousCommand() {

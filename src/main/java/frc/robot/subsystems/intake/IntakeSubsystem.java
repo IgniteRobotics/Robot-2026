@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.shooter.ShooterConstants;
 
 @Logged
 public class IntakeSubsystem extends SubsystemBase {
@@ -55,9 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
-    extensionMotor
-        .getConfigurator()
-        .apply(IntakeConstants.createExtensionMotorOutputConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
@@ -130,6 +127,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command stowCommand() {
     return setIntakeExtensionCommand(Rotations.of(0))
         .andThen(stopRollerCommand())
+        .andThen(setIntakeExtensionCommand(Rotations.of(0)).repeatedly())
         .withName("Stow Intake");
   }
 

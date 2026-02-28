@@ -57,6 +57,26 @@ public class VisionSubsystem extends SubsystemBase {
           evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Front);
         }
       }
+      // Left Camera
+      CameraConstants.photonPoseEstimator_Left.setReferencePose(driveStats.Pose);
+      var leftCameraResults = CameraConstants.photonCamera_Left.getAllUnreadResults();
+      for (var result : leftCameraResults) {
+        Optional<EstimatedRobotPose> estimatedPose =
+            CameraConstants.photonPoseEstimator_Left.update(result);
+        if (!estimatedPose.isEmpty()) {
+          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Left);
+        }
+      }
+      // Right Camera
+      CameraConstants.photonPoseEstimator_Right.setReferencePose(driveStats.Pose);
+      var rightCameraResults = CameraConstants.photonCamera_Right.getAllUnreadResults();
+      for (var result : rightCameraResults) {
+        Optional<EstimatedRobotPose> estimatedPose =
+            CameraConstants.photonPoseEstimator_Right.update(result);
+        if (!estimatedPose.isEmpty()) {
+          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Right);
+        }
+      }
     }
   }
 

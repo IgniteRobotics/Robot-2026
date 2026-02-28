@@ -63,7 +63,10 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
-    extensionMotor.setControl(extensionControl.withPosition(extensionTarget.in(Rotations)));
+    extensionMotor.setControl(
+        extensionControl
+            .withPosition(extensionTarget.in(Rotations))
+            .withOverrideCoastDurNeutral(true));
   }
 
   public Command spinRollerCommand() {

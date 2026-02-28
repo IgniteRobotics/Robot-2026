@@ -12,19 +12,18 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.statemachines.LaunchState;
+import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorLeader;
   private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
-
-  private final LaunchRequestBuilder launchRequestBuilder;
 
   @Logged(name = "Velocity Target", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // Rotations Per Second
@@ -36,6 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private PositionTorqueCurrentFOC hoodControl;
 
+  private final LaunchState launchState = LaunchState.getInstance();
+
   final SysIdRoutine m_sysIdRoutineFlywheel =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -45,31 +46,6 @@ public class ShooterSubsystem extends SubsystemBase {
               // Log state with SignalLogger class
               state -> SignalLogger.writeString("SysIdFlywheel_State", state.toString())),
           new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
-
-  public class LaunchRequest {
-    private Angle launchHoodTarget;
-    private AngularVelocity launchVelocity;
-
-    public LaunchRequest(Angle theta, LinearVelocity velocity) {
-      // hood angle in degrees (0 degrees is all the way back) is converted to motor rotations
-      launchHoodTarget =
-          Rotations.of(
-              theta.in(Degrees) * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations));
-      // meters per second is converted to rotations per second of the flywheel
-      launchVelocity =
-          RotationsPerSecond.of(
-              velocity.in(MetersPerSecond)
-                  / (2 * Math.PI * ShooterConstants.FLYWHEEL_RADIUS.in(Meters)));
-    }
-
-    public Angle getHoodTarget() {
-      return launchHoodTarget;
-    }
-
-    public AngularVelocity getVelocityTarget() {
-      return launchVelocity;
-    }
-  }
 
   public ShooterSubsystem() {
     flywheelMotorLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEADER_MOTOR_ID);
@@ -91,20 +67,21 @@ public class ShooterSubsystem extends SubsystemBase {
     velocityControl = new VelocityVoltage(0);
 
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
-    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionTorqueCurrentFOC(0);
-
-    launchRequestBuilder = new MappedLaunchRequestBuilder(() -> ShooterConstants.BLUE_TARGET);
   }
 
   @Override
   public void periodic() {
+    if (launchState.isActivated()) {
+      hoodTarget = launchState.getLaunchRequest().getHoodTarget();
+      velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
+    }
+
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     // hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
-    // launchRequestBuilder.createLaunchRequest();
   }
 
   public Command spinFlywheelCommand() {
@@ -128,7 +105,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
   public boolean atHoodSetpoint() {
     return Math.abs(hoodMotor.getPosition().getValueAsDouble() - hoodTarget.in(Rotations))
-        < ShooterConstants.ALLOWABLE_HOOD_ERROR;
+        < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }
 
   public Command setHoodCommand(Angle position) {

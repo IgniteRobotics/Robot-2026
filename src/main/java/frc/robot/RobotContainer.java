@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
@@ -39,18 +39,18 @@ public class RobotContainer {
   @Logged(name = "Indexer")
   public final IndexerSubsystem indexer = new IndexerSubsystem();
 
-  @Logged(name = "Climber")
-  public final ClimberSubsystem climber = new ClimberSubsystem();
-
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
+  @Logged(name = "Climber")
+  public final ClimberSubsystem climber = new ClimberSubsystem();
+
+  private final LaunchState launchState = LaunchState.getInstance();
 
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
-    NamedCommands.registerCommand("Shoot", new WaitCommand(2));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -61,7 +61,6 @@ public class RobotContainer {
   }
 
   public void configureSubsystemDefaultCommands() {
-
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(

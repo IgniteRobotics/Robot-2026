@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Seed"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Plus 1"
@@ -37,7 +31,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": "Test Autos",
   "choreoAuto": false
 }

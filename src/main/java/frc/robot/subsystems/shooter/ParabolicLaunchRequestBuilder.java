@@ -6,35 +6,29 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import com.ctre.phoenix6.Utils;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.statemachines.DriveState;
-import java.util.function.Supplier;
 
 /** Add your docs here. */
 public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
 
-  private Supplier<Pose3d> targetPose;
-
-  private ParabolicLaunchRequestBuilder(Supplier<Pose3d> targetPose) {
-    this.targetPose = targetPose;
-  }
-
-  public LaunchRequest createLaunchRequest() {
+  public LaunchRequest createLaunchRequest(
+      boolean passing,
+      double distance,
+      AngularVelocity targetRobotAngularVelocity,
+      Rotation2d targetRobotAngle) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
-    double x2 =
-        DriveState.getInstance()
-            .getCurrentDriveStats()
-            .Pose
-            .getTranslation()
-            .getDistance(targetPose.get().getTranslation().toTranslation2d());
-    // double y2 = ShooterConstants.GOAL_HEIGHT.in(Meters);
-    double y2 = targetPose.get().getMeasureZ().in(Meters);
+    double x2 = distance;
+    double y2 = passing ? 0 : ShooterConstants.HUB_HEIGHT.in(Meters);
 
-    double slope = ShooterConstants.OPTIMAL_ENTRY_SLOPE;
-    double a, b, vertex;
+    double slope;
+    if (passing) slope = ShooterConstants.OPTIMAL_PASSING_ENTRY_SLOPE;
+    else slope = ShooterConstants.OPTIMAL_HUB_ENTRY_SLOPE;
+
+    double a, b, vertex, hitWallCheckX;
     Angle theta, motorAngle;
     do {
       // system of equations
@@ -45,8 +39,11 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       theta = Radians.of(Math.atan(b)); // launch angle (Hood Angle Conversion: MATH.PI/2 - theta)
       motorAngle = Radians.of(Math.PI / 2 - theta.in(Radians));
       vertex = -1 * b / (2 * a);
+      hitWallCheckX = x2 - ShooterConstants.FROM_HUB_CENTER_TO_WALL.in(Meters);
       slope -= 0.05;
-    } while ((vertex > x2 - ShooterConstants.MIN_VERTEX_DISTANCE.in(Meters))
+    } while ((passing
+            || a * Math.pow(hitWallCheckX, 2) + b * hitWallCheckX + y1
+                > ShooterConstants.HUB_HEIGHT.in(Meters))
         && !(motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
@@ -67,9 +64,10 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
     AngularVelocity angularVelocity = RadiansPerSecond.of(angularVelocityMagnitude);
 
     return new LaunchRequest(
-        theta,
+        motorAngle,
         angularVelocity,
-        LinearVelocity.ofBaseUnits(0, MetersPerSecond),
-        DriveState.getInstance().getCurrentDriveStats().Pose.getRotation());
+        targetRobotAngularVelocity,
+        targetRobotAngle,
+        Utils.getCurrentTimeSeconds());
   }
 }

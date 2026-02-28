@@ -94,11 +94,12 @@ public class ShooterConstants {
 
   // Lemon Yeeting Constants
   public static final Distance SHOOTER_HEIGHT = Inch.of(65); // TODO: Get Better Estimate
-  public static final Distance GOAL_HEIGHT = Inch.of(23); // TODO: Get Better Estimate
-  public static final Distance OFFSET_DISTANCE = Meter.of(1); // TODO: Get Better Estimate
+  public static final Distance HUB_HEIGHT = Inch.of(23); // TODO: Get Better Estimate
+  public static final Distance FROM_HUB_CENTER_TO_WALL = Inch.of(23.5);
   public static final Distance MIN_VERTEX_DISTANCE = Inch.of(23.5);
   public static final Angle MIN_HOOD_ANGLE = Degrees.of(0); // TODO: Get Better Estimate
-  public static final double OPTIMAL_ENTRY_SLOPE = -1; // TODO: Tune
+  public static final double OPTIMAL_PASSING_ENTRY_SLOPE = -1; // TODO: Tune
+  public static final double OPTIMAL_HUB_ENTRY_SLOPE = -1; // TODO: Tune
 
   // TODO:  verify these!
   // funnel poses.

@@ -11,7 +11,7 @@ public class IntakeConstants {
 
   // TODO: Change to actual ports
   public static final int ROLLER_MOTOR_ID = 2;
-  public static final int EXTENSION_MOTOR_ID = 1;
+  public static final int EXTENSION_MOTOR_ID = 3;
 
   // TODO: Tune Roller and Extension Motors
 

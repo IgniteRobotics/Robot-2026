@@ -7,49 +7,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot - LEFT"
+            "pathName": "Start to Shoot"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Overbump - LEFT"
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect - LEFT"
+            "pathName": "Shoot to Overbump"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Overbump to Shoot - LEFT"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "pathName": "Collect"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climb - LEFT"
+            "pathName": "Overbump to Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to Climber"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Comp Autos",
+  "folder": null,
   "choreoAuto": false
 }

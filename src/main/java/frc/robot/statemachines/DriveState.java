@@ -16,7 +16,8 @@ public class DriveState {
 
   private HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>> concurrentQueueMap;
 
-  private SwerveDriveState currentDriveStats = null;
+  private SwerveDriveState previousDriveStats = new SwerveDriveState();
+  private SwerveDriveState currentDriveStats = new SwerveDriveState();
 
   private DriveState() {
     concurrentQueueMap = new HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>>();
@@ -57,6 +58,7 @@ public class DriveState {
   }
 
   public void adjustCurrentDriveStats(SwerveDriveState newStats) {
+    previousDriveStats = currentDriveStats;
     currentDriveStats = newStats;
   }
 
@@ -66,6 +68,10 @@ public class DriveState {
 
   public SwerveDriveState getCurrentDriveStats() {
     return currentDriveStats;
+  }
+
+  public SwerveDriveState getPreviousDriveStats() {
+    return previousDriveStats;
   }
 
   public ChassisSpeeds getFieldVelocity() {

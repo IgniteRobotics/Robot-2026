@@ -61,7 +61,8 @@ public class SimpleShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
+
+    // hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
   }
 
   // for sysID

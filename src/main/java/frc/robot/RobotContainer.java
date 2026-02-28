@@ -22,14 +22,11 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.SimpleShooterSubsystem;
 
 @Logged
 public class RobotContainer {
-
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
   private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
@@ -47,8 +44,9 @@ public class RobotContainer {
   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   @Logged(name = "Shooter")
-  // public final ShooterSubsystem shooter = new ShooterSubsystem();
-  public final SimpleShooterSubsystem shooter = new SimpleShooterSubsystem();
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
+
+  public final SimpleShooterSubsystem simpleShooter = new SimpleShooterSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 
@@ -92,7 +90,7 @@ public class RobotContainer {
                     .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
   }
 
-  public void removeSubsystemDefaultCommands(){
+  public void removeSubsystemDefaultCommands() {
     drivetrain.removeDefaultCommand();
   }
 
@@ -103,14 +101,14 @@ public class RobotContainer {
     final var idle = new SwerveRequest.Idle();
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
-    
+
     driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
     driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.y().whileTrue(simpleShooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.a().whileTrue(simpleShooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.b().whileTrue(simpleShooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.x().whileTrue(simpleShooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -123,27 +121,43 @@ public class RobotContainer {
     // joystick.x().onTrue(drivetrain.sysIdSteer());
     // joystick.y().onTrue(drivetrain.sysIdTranslation());
 
+    driverJoystick.a().onTrue(shooter.spinFlywheelCommand());
+    driverJoystick.b().onFalse(shooter.stopFlywheelCommand());
+
+    driverJoystick.x().onTrue(intake.startRollerNoPID());
+    driverJoystick.y().onTrue(intake.stopRollerNoPID());
+
     driverJoystick
-        .rightTrigger()
-        .whileTrue(intake.setExtendNoPID().repeatedly())
-        .onFalse(intake.stopIntakeNoPID().andThen(intake.setRollerNoPID().repeatedly()));
+        .rightBumper()
+        .whileTrue(intake.setExtendNoPID())
+        .onFalse(intake.stopExtensionNoPID());
+
+    driverJoystick
+        .leftBumper()
+        .whileTrue(intake.setRetractNoPID())
+        .onFalse(intake.stopExtensionNoPID());
 
     driverJoystick
         .leftTrigger()
-        .whileTrue(intake.setRetractNoPID().repeatedly())
-        .onFalse(intake.stopIntakeNoPID().andThen(intake.stopRollerNoPID()));
+        .whileTrue(shooter.launchLemonsCommand())
+        .onFalse(simpleShooter.stopLaunchLemonsNoPIDCommand());
 
-    operatorJoystick
-        .leftTrigger()
-        .whileTrue(shooter.launchLemonsCommandNoPID())
-        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
-
-    operatorJoystick
+    driverJoystick
         .rightTrigger()
-        .whileTrue(indexer.setIndexerNoPID())
+        .whileTrue(indexer.startIndexerNoPID())
         .onFalse(indexer.stopIndexerNoPID());
 
-    // Reset the field-centric heading on left bumper press.
+    operatorJoystick
+        .leftTrigger()
+        .whileTrue(simpleShooter.launchLemonsCommandNoPID())
+        .onFalse(simpleShooter.stopLaunchLemonsNoPIDCommand());
+
+    operatorJoystick
+        .rightTrigger()
+        .whileTrue(indexer.startIndexerNoPID())
+        .onFalse(indexer.stopIndexerNoPID());
+
+    // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     drivetrain.registerTelemetry(logger::telemeterize);

@@ -23,7 +23,6 @@ import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.shooter.SimpleShooterSubsystem;
 
 @Logged
 public class RobotContainer {
@@ -46,7 +45,6 @@ public class RobotContainer {
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  public final SimpleShooterSubsystem simpleShooter = new SimpleShooterSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 
@@ -105,10 +103,10 @@ public class RobotContainer {
     driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
     driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    operatorJoystick.y().whileTrue(simpleShooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.a().whileTrue(simpleShooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    operatorJoystick.b().whileTrue(simpleShooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.x().whileTrue(simpleShooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -140,7 +138,7 @@ public class RobotContainer {
     driverJoystick
         .leftTrigger()
         .whileTrue(shooter.launchLemonsCommand())
-        .onFalse(simpleShooter.stopLaunchLemonsNoPIDCommand());
+        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
 
     driverJoystick
         .rightTrigger()
@@ -149,8 +147,8 @@ public class RobotContainer {
 
     operatorJoystick
         .leftTrigger()
-        .whileTrue(simpleShooter.launchLemonsCommandNoPID())
-        .onFalse(simpleShooter.stopLaunchLemonsNoPIDCommand());
+        .whileTrue(shooter.launchLemonsCommandNoPID())
+        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
 
     operatorJoystick
         .rightTrigger()

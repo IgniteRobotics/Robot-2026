@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+@Logged
 public class VisionSubsystem extends SubsystemBase {
 
   private DriveState driveState = DriveState.getInstance();
@@ -42,6 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public VisionSubsystem() {}
 
+  @Override
   public void periodic() {
     if (driveState.hasDriveStats()) {
       // this makes sure that the different parts of the periodic use different stats

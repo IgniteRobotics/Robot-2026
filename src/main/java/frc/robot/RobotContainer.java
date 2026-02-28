@@ -23,6 +23,7 @@ import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 @Logged
 public class RobotContainer {
@@ -44,6 +45,9 @@ public class RobotContainer {
 
   @Logged(name = "Climber")
   public final ClimberSubsystem climber = new ClimberSubsystem();
+
+  @Logged(name = "Vision")
+  public final VisionSubsystem vision = new VisionSubsystem();
 
   private final LaunchState launchState = LaunchState.getInstance();
 

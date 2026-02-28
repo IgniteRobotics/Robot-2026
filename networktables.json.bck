@@ -2,7 +2,7 @@
   {
     "name": "/Preferences/Drive/Translation/kP",
     "type": "double",
-    "value": 0.0,
+    "value": 1.0,
     "properties": {
       "persistent": true
     }
@@ -35,6 +35,30 @@
     "name": "/Preferences/Drive/Speed for 1m (command)",
     "type": "double",
     "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter/Launch Speed",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter/Hood Launch Position",
+    "type": "double",
+    "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter/Launch Percent (for without PID)",
+    "type": "double",
+    "value": 0.1,
     "properties": {
       "persistent": true
     }

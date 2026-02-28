@@ -17,7 +17,8 @@ public class CameraConstants {
   public static final String photonCameraName_Front = "FRONT-CAMERA";
 
   public static final Transform3d photonCameraTransform_Front_STATIC =
-      new Transform3d(new Translation3d(0.3175, 0.0706, 0.2477), new Rotation3d(0, 0, 0));
+      new Transform3d(new Translation3d(-0.18415, 0, 0.7239), new Rotation3d(0, 0, 0));
+  // x was 0.3175, y was 0.0706, z was 0.2477
 
   public static final Transform3d photonCameraTransform_Front_TILTED =
       new Transform3d(
@@ -33,7 +34,7 @@ public class CameraConstants {
 
   public static final Transform3d photonCameraTransform_Left =
       new Transform3d(
-          new Translation3d(-0.2435, 0.3174, 0.3908),
+          new Translation3d(-0.2435, 0.3175, 0.43815),
           new Rotation3d(0, Math.toRadians(-20), Math.toRadians(120)));
 
   public static final PhotonCamera photonCamera_Left = new PhotonCamera(photonCameraName_Left);
@@ -46,7 +47,7 @@ public class CameraConstants {
 
   public static final Transform3d photonCameraTransform_Right =
       new Transform3d(
-          new Translation3d(-0.1651, 0, 0.7191),
+          new Translation3d(-0.2435, -0.3175, 0.43815),
           new Rotation3d(0, Math.toRadians(-20), Math.toRadians(-120)));
 
   public static final PhotonCamera photonCamera_Right = new PhotonCamera(photonCameraName_Right);

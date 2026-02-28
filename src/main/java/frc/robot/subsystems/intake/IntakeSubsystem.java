@@ -54,6 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
@@ -62,7 +63,10 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
-    extensionMotor.setControl(extensionControl.withPosition(extensionTarget.in(Rotations)));
+    extensionMotor.setControl(
+        extensionControl
+            .withPosition(extensionTarget.in(Rotations))
+            .withOverrideCoastDurNeutral(true));
   }
 
   public Command spinRollerCommand() {
@@ -82,6 +86,15 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.setVoltage(magnitude);
   }
 
+  public Command startRollerNoPID() {
+    return run(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
+        .withName("Set Roller Percent");
+  }
+
+  public Command stopRollerNoPID() {
+    return run(() -> rollerMotor.set(0)).withName("Stop Roller No PID");
+  }
+
   @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)
   public boolean atExtensionSetpoint() {
     return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
@@ -93,6 +106,20 @@ public class IntakeSubsystem extends SubsystemBase {
         .andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
   }
 
+  public Command setExtendNoPID() {
+    return run(() -> extensionMotor.set(IntakePreferences.extendPercent.getValue()))
+        .withName("Extend Intake Percent");
+  }
+
+  public Command setRetractNoPID() {
+    return run(() -> extensionMotor.set(IntakePreferences.retractPercent.getValue()))
+        .withName("Retract Intake Percent");
+  }
+
+  public Command stopExtensionNoPID() {
+    return runOnce(() -> extensionMotor.set(0)).withName("Stop Intake Percent");
+  }
+
   public Command collectCommand() {
     return setIntakeExtensionCommand(
             Rotations.of(IntakePreferences.intakeCollectPosition.getValue()))
@@ -101,9 +128,21 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command stowCommand() {
-    return stopRollerCommand()
-        .andThen(setIntakeExtensionCommand(Rotations.of(0)))
+    return setIntakeExtensionCommand(Rotations.of(0))
+        .andThen(stopRollerCommand())
+        .andThen(setIntakeExtensionCommand(Rotations.of(0)).repeatedly())
         .withName("Stow Intake");
+  }
+
+  public Command dislodgeCommand() {
+    return spinRollerCommand()
+        .andThen(
+            setIntakeExtensionCommand(Rotations.of(IntakePreferences.dislodgePosition.getValue()))
+                .andThen(
+                    setIntakeExtensionCommand(
+                        Rotations.of(IntakePreferences.intakeCollectPosition.getValue()))))
+        .repeatedly()
+        .withName("Dislodge Intake");
   }
 
   public Command homeIntakeCommand() {

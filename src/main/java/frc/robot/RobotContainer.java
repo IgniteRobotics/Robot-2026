@@ -140,7 +140,7 @@ public class RobotContainer {
     //     .whileTrue(shooter.launchLemonsCommand())
     //     .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
 
-    driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
+    driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
 
     driverJoystick
         .rightTrigger()

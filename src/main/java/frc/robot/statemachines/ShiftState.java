@@ -29,6 +29,9 @@ public class ShiftState {
   @Logged(name = "Shift State")
   private ActiveState shiftState = ActiveState.UNKNOWN;
 
+  @Logged(name = "Current Shift")
+  private Shift currentShift = Shift.NONE;
+
   private boolean isFMSConnected = DriverStation.isFMSAttached();
 
   @Logged(name = "Red Won Auton")
@@ -43,13 +46,10 @@ public class ShiftState {
   }
 
   public ActiveState getShiftState() {
-    if (isFMSConnected) {
-      String gameData = DriverStation.getGameSpecificMessage();
-      if (gameData.length() > 0)
-        redWonAuton =
-            gameData.charAt(0) == 'R'; // Set to true if red won auton, false if blue won auton
-    }
+    return shiftState;
+  }
 
+  private void updateInternalShiftState() {
     switch (getShiftFromMatchTime()) {
       case AUTONOMOUS, TRANSITION, ENDGAME: // auto, transition, endgame
         shiftState = ActiveState.BOTH_ACTIVE;
@@ -63,8 +63,6 @@ public class ShiftState {
       default:
         shiftState = ActiveState.UNKNOWN;
     }
-
-    return shiftState;
   }
 
   public boolean isOurHubActive() {
@@ -99,5 +97,19 @@ public class ShiftState {
       }
     }
     return shiftStateInt;
+  }
+
+  public void periodic() {
+    // Update FMS connection status
+    isFMSConnected = DriverStation.isFMSAttached(); // Update periodically
+
+    if (isFMSConnected) {
+        String gameData = DriverStation.getGameSpecificMessage();
+        if (gameData.length() > 0) {
+            redWonAuton = (gameData.charAt(0) == 'R'); // true if red won auton, false if blue won auton
+        }
+    }
+    // Update the internal shiftState based on current match time and redWonAuton
+    updateInternalShiftState();
   }
 }

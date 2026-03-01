@@ -2,7 +2,6 @@ package frc.robot.statemachines;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -106,7 +105,10 @@ public class LaunchCalculator {
 
     // calcuate rotation angle
     Rotation2d targetRobotAngle =
-        getDriveAngle(lookaheadPose, target.getTranslation().toTranslation2d());
+        target.getTranslation().toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();
+
+    // Rotation2d targetRobotAngle = getDriveAngle(lookaheadPose,
+    // target.getTranslation().toTranslation2d());
 
     AngularVelocity targetRobotAngularVelocity =
         RadiansPerSecond.of(
@@ -132,6 +134,7 @@ public class LaunchCalculator {
               targetRobotAngle);
   }
 
+  /*
   private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {
     Rotation2d fieldToHubAngle = target.minus(robotPose.getTranslation()).getAngle();
     Rotation2d hubAngle =
@@ -145,4 +148,5 @@ public class LaunchCalculator {
     Rotation2d driveAngle = fieldToHubAngle.plus(hubAngle).plus(robotPose.getRotation());
     return driveAngle;
   }
+  */
 }

@@ -140,13 +140,18 @@ public class RobotContainer {
 
   public void configureTeleopBindings() {
 
-
-    driverJoystick.a()
+    driverJoystick
+        .a()
         .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerReverseNoPID()).andThen(indexer.startIndexerReverseNoPID()));
+        .onFalse(
+            intake
+                .stopExtensionNoPID()
+                .andThen(intake.startRollerReverseNoPID())
+                .alongWith(indexer.startIndexerReverseNoPID()));
 
-    driverJoystick.b()
-        .onTrue(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()))
+    driverJoystick
+        .b()
+        .onTrue(intake.stopRollerNoPID().alongWith(indexer.stopIndexerNoPID()))
         .whileTrue(intake.setRetractNoPID())
         .onFalse(intake.stopExtensionNoPID());
 

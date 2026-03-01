@@ -12,7 +12,7 @@ final class IndexerPreferences {
   protected static DoublePreference indexerPercent =
       new DoublePreference("Indexer/Index Percent (for without PID)", 0.1); // in percent
 
-  protected static DoublePreference indexerReversePercent = 
+  protected static DoublePreference indexerReversePercent =
       new DoublePreference("Indexer/Reverse Index Percent (for without PID)", -0.1); // in percent
 
   protected static DoublePreference acceleratorPercent =

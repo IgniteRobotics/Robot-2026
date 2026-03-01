@@ -169,7 +169,8 @@ public class VisionSubsystem extends SubsystemBase {
     // note that we use a singular trust value for both the x and y trust values
 
     driveState.addVisionEstimate(
-        new VisionMeasurement(pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(0, 0, 0)),
+        new VisionMeasurement(
+            pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd)),
         cameraName);
   }
 }

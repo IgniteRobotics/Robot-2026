@@ -105,7 +105,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command stopIndexerNoPID() {
-    return runOnce(() -> indexerMotorLeader.set(0)).withName("Stop Accelerator Percent");
+    return runOnce(() -> indexerMotorLeader.set(0)).withName("Stop Indexer Percent");
   }
 
   public Command stopAcceleratorNoPID() {

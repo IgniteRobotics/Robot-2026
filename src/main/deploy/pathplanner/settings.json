@@ -3,7 +3,13 @@
   "robotLength": 0.858,
   "holonomicMode": true,
   "pathFolders": [
+<<<<<<< Updated upstream
     "Basic Comp Paths",
+=======
+    "Basic Comp Paths - LEFT",
+    "Basic Comp Paths - RIGHT",
+    "Basic Comp Paths - CENTER",
+>>>>>>> Stashed changes
     "Plus Sign Test",
     "Rotation + Translation Test",
     "Square Test"

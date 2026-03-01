@@ -124,33 +124,34 @@ public class RobotContainer {
   }
 
   public void configureTeleopBindings() {
-    driverJoystick.a().onTrue(shooter.spinFlywheelCommand());
-    driverJoystick.b().onFalse(shooter.stopFlywheelCommand());
-
-    driverJoystick.x().onTrue(intake.startRollerNoPID());
-    driverJoystick.y().onTrue(intake.stopRollerNoPID());
 
     driverJoystick
         .rightBumper()
         .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID());
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
 
     driverJoystick
         .leftBumper()
         .whileTrue(intake.setRetractNoPID())
-        .onFalse(intake.stopExtensionNoPID());
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
 
-    driverJoystick
-        .leftTrigger()
-        .whileTrue(shooter.launchLemonsCommand())
-        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
+    // driverJoystick
+    //     .leftTrigger()
+    //     .whileTrue(shooter.launchLemonsCommand())
+    //     .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
+
+    driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
 
     driverJoystick
         .rightTrigger()
         .whileTrue(indexer.startFullIndexingNoPID())
         .onFalse(indexer.stopFullIndexingNoPID());
 
-    operatorJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
+    // operatorJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
+    // operatorJoystick
+    //     .rightBumper()
+    //     .whileTrue(indexer.startFullIndexingNoPID())
+    //     .onFalse(indexer.stopFullIndexingNoPID());
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

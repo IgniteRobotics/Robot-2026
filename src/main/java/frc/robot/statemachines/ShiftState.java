@@ -102,6 +102,7 @@ public class ShiftState {
   public void periodic() {
     // Update FMS connection status
     isFMSConnected = DriverStation.isFMSAttached(); // Update periodically
+    currentShift = getShiftFromMatchTime(); // Update current shift based on match time
 
     if (isFMSConnected) {
         String gameData = DriverStation.getGameSpecificMessage();

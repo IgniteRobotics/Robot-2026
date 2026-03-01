@@ -19,19 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HP to Shoot - HP AUTO"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "pathName": "HP to Right Tower - HP AUTO"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Depot - HP AUTO"
+            "pathName": "Right Tower through Depot - HP AUTO"
           }
         },
         {

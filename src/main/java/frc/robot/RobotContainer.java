@@ -116,12 +116,6 @@ public class RobotContainer {
   }
 
   public void configureTeleopBindings() {
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
-
-    // joystick.x().onTrue(drivetrain.sysIdSteer());
-    // joystick.y().onTrue(drivetrain.sysIdTranslation());
-
     driverJoystick.a().onTrue(shooter.spinFlywheelCommand());
     driverJoystick.b().onFalse(shooter.stopFlywheelCommand());
 
@@ -147,6 +141,8 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(indexer.startIndexerNoPID().andThen(indexer.startAcceleratorNoPID()))
         .onFalse(indexer.stopIndexerNoPID().andThen(indexer.stopAcceleratorNoPID()));
+
+    // operatorJoystick.rightTrigger(launchState.activateCalculator(, LaunchType.PARABOLIC);)
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

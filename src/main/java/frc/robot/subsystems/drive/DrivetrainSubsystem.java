@@ -27,10 +27,6 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
   private final CANrange drive_canrange;
 
-  private int count1 = 0;
-  private int count2 = 0;
-  private int count3 = 0;
-
   public DrivetrainSubsystem() {
     super(
         TunerConstants.DrivetrainConstants,
@@ -51,13 +47,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
   public void periodic() {
     super.periodic();
 
-    SmartDashboard.putNumber("Front Saw Something", count1);
-    SmartDashboard.putNumber("Left Saw Something", count2);
-    SmartDashboard.putNumber("Right Saw Something", count3);
-
     for (VisionMeasurement estimate :
         driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Front)) {
-      count1++;
       addVisionMeasurement(
           estimate.getEstimatedPose().estimatedPose.toPose2d(),
           estimate.getTimestamp(),
@@ -66,7 +57,6 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
     for (VisionMeasurement estimate :
         driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Left)) {
-      count2++;
       addVisionMeasurement(
           estimate.getEstimatedPose().estimatedPose.toPose2d(),
           estimate.getTimestamp(),
@@ -75,7 +65,6 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
     for (VisionMeasurement estimate :
         driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Right)) {
-      count3++;
       addVisionMeasurement(
           estimate.getEstimatedPose().estimatedPose.toPose2d(),
           estimate.getTimestamp(),

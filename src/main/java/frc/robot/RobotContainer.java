@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.DriveAndLaunch;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -50,6 +51,13 @@ public class RobotContainer {
   public final VisionSubsystem vision = new VisionSubsystem();
 
   private final LaunchState launchState = LaunchState.getInstance();
+
+  private final DriveAndLaunch driveAndLaunchCommand =
+      new DriveAndLaunch(
+          drivetrain,
+          () -> driverJoystick.getLeftY(),
+          () -> driverJoystick.getLeftY(),
+          () -> launchState.getTargetPose3d());
 
   private final SendableChooser<Command> autoChooser;
 
@@ -142,7 +150,7 @@ public class RobotContainer {
         .whileTrue(indexer.startFullIndexingNoPID())
         .onFalse(indexer.stopFullIndexingNoPID());
 
-    // operatorJoystick.rightTrigger(launchState.activateCalculator(, LaunchType.PARABOLIC);)
+    operatorJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

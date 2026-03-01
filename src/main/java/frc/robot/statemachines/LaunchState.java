@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
 import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
+import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class LaunchState {
   private static LaunchState single_instance = null;
@@ -16,6 +17,8 @@ public class LaunchState {
   private LaunchCalculator currentCalculator = null;
 
   private LaunchRequest currentRequest = null;
+
+  private Pose3d targetPose3d = ShooterConstants.RED_TARGET;
 
   private LaunchState() {}
 
@@ -61,6 +64,14 @@ public class LaunchState {
     SmartDashboard.putNumber(
         "Current Launch Request/Target Hood Angle (rotations)",
         currentRequest.getHoodTarget().in(Rotations));
+  }
+
+  public void setTargetPose3d(Pose3d target) {
+    this.targetPose3d = target;
+  }
+
+  public Pose3d getTargetPose3d() {
+    return this.targetPose3d;
   }
 
   public enum LaunchType {

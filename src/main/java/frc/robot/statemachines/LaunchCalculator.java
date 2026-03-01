@@ -12,17 +12,21 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.LaunchRequestBuilder;
+import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
+import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
 
 public class LaunchCalculator {
 
-  private Pose3d target;
-  private LaunchRequestBuilder builder;
+  private static LaunchCalculator single_instance = null;
 
-  protected LaunchCalculator(Pose3d target, LaunchRequestBuilder builder) {
-    this.target = target;
-    this.builder = builder;
+  private LaunchCalculator(){}
+
+  protected static synchronized LaunchCalculator getInstance() {
+    if (single_instance == null) single_instance = new LaunchCalculator();
+    return single_instance;
   }
 
   private double loopPeriodSecs = 0.02;
@@ -54,7 +58,7 @@ public class LaunchCalculator {
     passingTimeOfFlightMap.put(2.38, 0.90);
   }
 
-  public LaunchRequest createLaunchRequest() {
+  protected LaunchRequest refreshRequest(Pose3d target, LaunchType builderType) {
 
     boolean passing = target.getZ() < 0.1;
 
@@ -113,8 +117,8 @@ public class LaunchCalculator {
                         .getRadians()
                     / loopPeriodSecs));
 
-    return builder.createLaunchRequest(
-        passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
+    if(builderType == LaunchType.MAPPED) return new ParabolicLaunchRequestBuilder().createLaunchRequest(passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
+    else return new MappedLaunchRequestBuilder().createLaunchRequest(passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
   }
 
   private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {

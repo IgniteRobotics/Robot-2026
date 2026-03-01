@@ -7,6 +7,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.statemachines.LaunchState;
@@ -23,27 +24,22 @@ public class DriveAndLaunch extends Command {
   private DrivetrainSubsystem drivetrain;
   private DoubleSupplier xSupplier;
   private DoubleSupplier ySupplier;
-  private Supplier<Pose3d> targetSupplier;
 
   /** Creates a new DriveAndLanuch. */
   public DriveAndLaunch(
       DrivetrainSubsystem drivetrain,
       DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier,
-      Supplier<Pose3d> targetSupplier) {
+      DoubleSupplier ySupplier) {
     this.drivetrain = drivetrain;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
-    this.targetSupplier = targetSupplier;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(this.drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    LaunchState.getInstance().activateCalculator(targetSupplier.get(), LaunchType.MAPPED);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -73,9 +69,7 @@ public class DriveAndLaunch extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    LaunchState.getInstance().deactivateCalculator();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

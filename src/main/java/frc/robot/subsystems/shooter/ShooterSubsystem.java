@@ -71,16 +71,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (launchState.isActivated()) {
-      hoodTarget = launchState.getLaunchRequest().getHoodTarget();
-      velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
-    }
-
+    launchState.refreshRequest();
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    // hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
   }
 
   public Command spinFlywheelCommand() {

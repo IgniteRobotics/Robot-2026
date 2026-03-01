@@ -50,14 +50,11 @@ public class RobotContainer {
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
-  private final LaunchState launchState = LaunchState.getInstance();
-
   private final DriveAndLaunch driveAndLaunchCommand =
       new DriveAndLaunch(
           drivetrain,
           () -> driverJoystick.getLeftY(),
-          () -> driverJoystick.getLeftY(),
-          () -> launchState.getTargetPose3d());
+          () -> driverJoystick.getLeftY());
 
   private final SendableChooser<Command> autoChooser;
 

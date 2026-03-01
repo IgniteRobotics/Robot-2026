@@ -14,12 +14,6 @@ import frc.robot.subsystems.shooter.ShooterConstants;
 public class LaunchState {
   private static LaunchState single_instance = null;
 
-  private LaunchCalculator currentCalculator = null;
-
-  private LaunchRequest currentRequest = null;
-
-  private Pose3d targetPose3d = ShooterConstants.RED_TARGET;
-
   private LaunchState() {}
 
   public static synchronized LaunchState getInstance() {
@@ -27,51 +21,26 @@ public class LaunchState {
     return single_instance;
   }
 
-  public void activateCalculator(Pose3d target, LaunchType calculatorType) {
-    if (currentCalculator != null) return;
+  private LaunchCalculator launchCalculator = LaunchCalculator.getInstance();
+  private LaunchRequest currentLaunchRequest = null;
 
-    if (calculatorType == LaunchType.PARABOLIC)
-      currentCalculator = new LaunchCalculator(target, new ParabolicLaunchRequestBuilder());
-    else if (calculatorType == LaunchType.MAPPED)
-      currentCalculator = new LaunchCalculator(target, new MappedLaunchRequestBuilder());
-
-    refreshRequest();
-  }
-
-  public void deactivateCalculator() {
-    currentCalculator = null;
-  }
-
-  public boolean isActivated() {
-    return currentCalculator != null;
-  }
+  private Pose3d targetPose3d = ShooterConstants.RED_TARGET;
+  private LaunchType builderType = LaunchType.PARABOLIC;
 
   public LaunchRequest getLaunchRequest() {
-    if (!isActivated()) return null;
-
-    if (currentRequest.getTimestamp() + 0.02 < Utils.getCurrentTimeSeconds()) refreshRequest();
-    return currentRequest;
+    return currentLaunchRequest;
   }
 
-  private void refreshRequest() {
-    currentRequest = currentCalculator.createLaunchRequest();
-    SmartDashboard.putNumber(
-        "Current Launch Request/Target Robot Angle (degrees)",
-        currentRequest.getTargetRobotAngle().getDegrees());
-    SmartDashboard.putNumber(
-        "Current Launch Request/Target Flywheel Velocity (rps)",
-        currentRequest.getFlywheelVelocity().in(RotationsPerSecond));
-    SmartDashboard.putNumber(
-        "Current Launch Request/Target Hood Angle (rotations)",
-        currentRequest.getHoodTarget().in(Rotations));
+  public void refreshRequest() {
+    currentLaunchRequest = launchCalculator.refreshRequest(targetPose3d, builderType);
   }
 
   public void setTargetPose3d(Pose3d target) {
     this.targetPose3d = target;
   }
 
-  public Pose3d getTargetPose3d() {
-    return this.targetPose3d;
+  public void setBuilderType(LaunchType builderType){
+    this.builderType = builderType;
   }
 
   public enum LaunchType {

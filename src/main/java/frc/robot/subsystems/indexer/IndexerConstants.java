@@ -60,7 +60,7 @@ final class IndexerConstants {
 
   public static MotorOutputConfigs createAcceleratorMotorOutputsConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }

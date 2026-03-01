@@ -139,8 +139,8 @@ public class RobotContainer {
 
     driverJoystick
         .rightTrigger()
-        .whileTrue(indexer.startIndexerNoPID().andThen(indexer.startAcceleratorNoPID()))
-        .onFalse(indexer.stopIndexerNoPID().andThen(indexer.stopAcceleratorNoPID()));
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
 
     // operatorJoystick.rightTrigger(launchState.activateCalculator(, LaunchType.PARABOLIC);)
 

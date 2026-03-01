@@ -65,7 +65,9 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerMotorFollower.getConfigurator().apply(IndexerConstants.createIndexerMotorSlot0Configs());
 
     acceleratorMotor.getConfigurator().apply(IndexerConstants.createAcceleratorMotorSlot0Configs());
-    acceleratorMotor.getConfigurator().apply(IndexerConstants.createAcceleratorMotorSlot0Configs());
+    acceleratorMotor
+        .getConfigurator()
+        .apply(IndexerConstants.createAcceleratorMotorOutputsConfigs());
 
     indexerMotorFollower.setControl(
         new Follower(indexerMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -108,6 +110,22 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public Command stopAcceleratorNoPID() {
     return runOnce(() -> acceleratorMotor.set(0)).withName("Stop Accelerator Percent");
+  }
+
+  public Command startFullIndexingNoPID() {
+    return run(() -> {
+          indexerMotorLeader.set(IndexerPreferences.indexerPercent.getValue());
+          acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue());
+        })
+        .withName("Full Indexing No PID");
+  }
+
+  public Command stopFullIndexingNoPID() {
+    return run(() -> {
+          indexerMotorLeader.set(0);
+          acceleratorMotor.set(0);
+        })
+        .withName("Full Indexing No PID");
   }
 
   public Command indexCommand() {

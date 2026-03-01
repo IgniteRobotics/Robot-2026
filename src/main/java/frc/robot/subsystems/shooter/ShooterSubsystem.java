@@ -3,11 +3,9 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
@@ -59,8 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMotorFollower
         .getConfigurator()
         .apply(ShooterConstants.createFollowerMotorOutputConfigs());
-    flywheelMotorFollower.setControl(
-        new Follower(flywheelMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
+    // flywheelMotorFollower.setControl(
+    //    new Follower(flywheelMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);
@@ -80,7 +78,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
+    flywheelMotorFollower.setControl(
+        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    // hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
   }
 
   public Command spinFlywheelCommand() {

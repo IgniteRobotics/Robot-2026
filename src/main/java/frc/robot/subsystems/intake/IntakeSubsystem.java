@@ -91,6 +91,11 @@ public class IntakeSubsystem extends SubsystemBase {
         .withName("Set Roller Percent");
   }
 
+  public Command startRollerReverseNoPID(){ 
+    return run(() -> rollerMotor.set(IntakePreferences.rollerOutakePercent.getValue()))
+        .withName("Set Roller Reverse Percent");
+  }
+
   public Command stopRollerNoPID() {
     return run(() -> rollerMotor.set(0)).withName("Stop Roller No PID");
   }

@@ -16,8 +16,11 @@ public class IntakePreferences {
       new DoublePreference("Intake/Extend Percent (for without PID)", 0.1); // in percent
   public static DoublePreference retractPercent =
       new DoublePreference("Intake/Retract Percent (for without PID)", -0.1); // in percent
+
   public static DoublePreference rollerIntakePercent =
       new DoublePreference("Intake/Roller Intake Percent (for without PID)", 0.1); // in percent
+  public static DoublePreference rollerOutakePercent = 
+      new DoublePreference("Intake/Roller Outake Percent (for without PID)", -0.1); // in percent
 
   public static DoublePreference dislodgePosition =
       new DoublePreference("Intake/Extension Dislodge Position", 1.5);

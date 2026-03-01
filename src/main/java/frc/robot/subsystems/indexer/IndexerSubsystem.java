@@ -99,6 +99,11 @@ public class IndexerSubsystem extends SubsystemBase {
         .withName("Set Indexer Percent");
   }
 
+  public Command startIndexerReverseNoPID() {
+    return run(() -> indexerMotorLeader.set(IndexerPreferences.indexerReversePercent.getValue()))
+        .withName("Set Indexer Reverse Percent");
+  }
+
   public Command startAcceleratorNoPID() {
     return run(() -> acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue()))
         .withName("Set Acceleration Percent");

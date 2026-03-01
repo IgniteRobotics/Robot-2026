@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -16,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveAndLaunch;
+import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
@@ -49,9 +51,28 @@ public class RobotContainer {
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
-  private final DriveAndLaunch driveAndLaunchCommand =
-      new DriveAndLaunch(
-          drivetrain, () -> driverJoystick.getLeftY(), () -> driverJoystick.getLeftY());
+  private final Command driveAndLaunchCommand =
+      drivetrain.applyRequest(
+          () ->
+              DriveConstants.DEFAULT_DRIVE_REQUEST
+                  .withVelocityX(
+                      -1
+                          * Math.copySign(
+                              Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
+                          * DriveConstants
+                              .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
+                  .withVelocityY(
+                      -1
+                          * Math.copySign(
+                              Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
+                          * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
+                  .withRotationalRate(
+                      LaunchState.getInstance()
+                          .getLaunchRequest()
+                          .getTargetRobotAngularVelocity()
+                          .in(RadiansPerSecond)) // Drive counterclockwise with negative X (left)
+                  .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
+                  .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1));
 
   private final SendableChooser<Command> autoChooser;
 
@@ -118,6 +139,16 @@ public class RobotContainer {
   }
 
   public void configureTeleopBindings() {
+
+
+    driverJoystick.a()
+        .whileTrue(intake.setExtendNoPID())
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerReverseNoPID()).andThen(indexer.startIndexerReverseNoPID()));
+
+    driverJoystick.b()
+        .onTrue(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()))
+        .whileTrue(intake.setRetractNoPID())
+        .onFalse(intake.stopExtensionNoPID());
 
     driverJoystick
         .rightBumper()

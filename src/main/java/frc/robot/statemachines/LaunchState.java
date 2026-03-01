@@ -25,7 +25,7 @@ public class LaunchState {
   private LaunchRequest currentLaunchRequest = null;
 
   private Pose3d targetPose3d = ShooterConstants.RED_TARGET;
-  private LaunchType builderType = LaunchType.PARABOLIC;
+  private LaunchType builderType = LaunchType.MAPPED;
 
   public LaunchRequest getLaunchRequest() {
     return currentLaunchRequest;
@@ -33,6 +33,11 @@ public class LaunchState {
 
   public void refreshRequest() {
     currentLaunchRequest = launchCalculator.refreshRequest(targetPose3d, builderType);
+
+    SmartDashboard.putNumber("Launch/Target Robot Angle (Degrees)", currentLaunchRequest.getTargetRobotAngle().getDegrees());
+    SmartDashboard.putNumber("Launch/Target Robot Angular Velocity (Rotations Per Second)", currentLaunchRequest.getTargetRobotAngularVelocity().in(RotationsPerSecond));
+    SmartDashboard.putNumber("Launch/Flywheel Velocity", currentLaunchRequest.getFlywheelVelocity().in(RotationsPerSecond));
+    SmartDashboard.putNumber("Launch/Hood Target", currentLaunchRequest.getHoodTarget().in(Rotations));
   }
 
   public void setTargetPose3d(Pose3d target) {

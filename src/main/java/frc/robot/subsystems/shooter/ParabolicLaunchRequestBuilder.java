@@ -44,7 +44,7 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
     } while ((!passing
             && a * Math.pow(hitWallCheckX, 2) + b * hitWallCheckX + y1
                 < ShooterConstants.HUB_HEIGHT.in(Meters))
-        || (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
+        && (motorAngle.in(Degrees) > ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
 

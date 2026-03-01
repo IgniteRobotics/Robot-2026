@@ -89,14 +89,14 @@ public class ShooterConstants {
 
   // Conversion Constants
   public static final Angle ROTATIONS_PER_LAUNCH_DEGREE =
-      Rotations.of(1); // TODO: Get Better Estimate
-  public static final Distance FLYWHEEL_RADIUS = Inch.of(1); // TODO: Get Better Estimate
+      Rotations.of(0.2); 
+  public static final Distance FLYWHEEL_RADIUS = Inch.of(2);
 
   // Lemon Yeeting Constants
-  public static final Distance SHOOTER_HEIGHT = Inch.of(25.5); // TODO: Get Better Estimate
-  public static final Distance HUB_HEIGHT = Inch.of(71.5); // TODO: Get Better Estimate
+  public static final Distance SHOOTER_HEIGHT = Inch.of(25.5); 
+  public static final Distance HUB_HEIGHT = Inch.of(71.5); 
   public static final Distance FROM_HUB_CENTER_TO_WALL = Inch.of(23.5);
-  public static final Angle MIN_HOOD_ANGLE = Degrees.of(0); // TODO: Get Better Estimate
+  public static final Angle MIN_HOOD_ANGLE = Degrees.of(20); 
   public static final double OPTIMAL_PASSING_ENTRY_SLOPE = -1; // TODO: Tune
   public static final double OPTIMAL_HUB_ENTRY_SLOPE = -1; // TODO: Tune
 

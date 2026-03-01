@@ -3,12 +3,9 @@ package frc.robot.statemachines;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.shooter.LaunchRequest;
-import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
-import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
 import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class LaunchState {
@@ -34,17 +31,24 @@ public class LaunchState {
   public void refreshRequest() {
     currentLaunchRequest = launchCalculator.refreshRequest(targetPose3d, builderType);
 
-    SmartDashboard.putNumber("Launch/Target Robot Angle (Degrees)", currentLaunchRequest.getTargetRobotAngle().getDegrees());
-    SmartDashboard.putNumber("Launch/Target Robot Angular Velocity (Rotations Per Second)", currentLaunchRequest.getTargetRobotAngularVelocity().in(RotationsPerSecond));
-    SmartDashboard.putNumber("Launch/Flywheel Velocity", currentLaunchRequest.getFlywheelVelocity().in(RotationsPerSecond));
-    SmartDashboard.putNumber("Launch/Hood Target", currentLaunchRequest.getHoodTarget().in(Rotations));
+    SmartDashboard.putNumber(
+        "Launch/Target Robot Angle (Degrees)",
+        currentLaunchRequest.getTargetRobotAngle().getDegrees());
+    SmartDashboard.putNumber(
+        "Launch/Target Robot Angular Velocity (Rotations Per Second)",
+        currentLaunchRequest.getTargetRobotAngularVelocity().in(RotationsPerSecond));
+    SmartDashboard.putNumber(
+        "Launch/Flywheel Velocity (Rotations Per Second)",
+        currentLaunchRequest.getFlywheelVelocity().in(RotationsPerSecond));
+    SmartDashboard.putNumber(
+        "Launch/Hood Target (Rotations)", currentLaunchRequest.getHoodTarget().in(Rotations));
   }
 
   public void setTargetPose3d(Pose3d target) {
     this.targetPose3d = target;
   }
 
-  public void setBuilderType(LaunchType builderType){
+  public void setBuilderType(LaunchType builderType) {
     this.builderType = builderType;
   }
 

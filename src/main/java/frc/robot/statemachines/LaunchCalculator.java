@@ -1,8 +1,6 @@
 package frc.robot.statemachines;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -14,10 +12,8 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.shooter.LaunchRequest;
-import frc.robot.subsystems.shooter.LaunchRequestBuilder;
 import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
 import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
 
@@ -25,7 +21,7 @@ public class LaunchCalculator {
 
   private static LaunchCalculator single_instance = null;
 
-  private LaunchCalculator(){}
+  private LaunchCalculator() {}
 
   protected static synchronized LaunchCalculator getInstance() {
     if (single_instance == null) single_instance = new LaunchCalculator();
@@ -120,9 +116,21 @@ public class LaunchCalculator {
                         .getRadians()
                     / loopPeriodSecs));
 
-    if(builderType == LaunchType.MAPPED) return new MappedLaunchRequestBuilder().createLaunchRequest(passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
-    else return new ParabolicLaunchRequestBuilder().createLaunchRequest(passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
-}
+    if (builderType == LaunchType.MAPPED)
+      return new MappedLaunchRequestBuilder()
+          .createLaunchRequest(
+              passing,
+              lookaheadLauncherToTargetDistance,
+              targetRobotAngularVelocity,
+              targetRobotAngle);
+    else
+      return new ParabolicLaunchRequestBuilder()
+          .createLaunchRequest(
+              passing,
+              lookaheadLauncherToTargetDistance,
+              targetRobotAngularVelocity,
+              targetRobotAngle);
+  }
 
   private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {
     Rotation2d fieldToHubAngle = target.minus(robotPose.getTranslation()).getAngle();

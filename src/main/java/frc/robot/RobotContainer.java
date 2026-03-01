@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAndLaunch;
-import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
@@ -52,9 +51,7 @@ public class RobotContainer {
 
   private final DriveAndLaunch driveAndLaunchCommand =
       new DriveAndLaunch(
-          drivetrain,
-          () -> driverJoystick.getLeftY(),
-          () -> driverJoystick.getLeftY());
+          drivetrain, () -> driverJoystick.getLeftY(), () -> driverJoystick.getLeftY());
 
   private final SendableChooser<Command> autoChooser;
 

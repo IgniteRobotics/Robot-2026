@@ -6,17 +6,13 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.statemachines.LaunchState;
-import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveAndLaunch extends Command {
@@ -27,9 +23,7 @@ public class DriveAndLaunch extends Command {
 
   /** Creates a new DriveAndLanuch. */
   public DriveAndLaunch(
-      DrivetrainSubsystem drivetrain,
-      DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier) {
+      DrivetrainSubsystem drivetrain, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     this.drivetrain = drivetrain;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;

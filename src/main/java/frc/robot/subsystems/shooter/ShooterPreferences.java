@@ -13,4 +13,10 @@ public class ShooterPreferences {
 
   public static DoublePreference flywheelLaunchPercent =
       new DoublePreference("Shooter/Launch Percent (for without PID)", 0.1); // in percent
+
+  public static DoublePreference hoodkP = new DoublePreference("Shooter/Hood/kP", 1);
+  public static DoublePreference hoodkD = new DoublePreference("Shooter/Hood/kD", 0);
+
+  public static DoublePreference hoodTargetPreference =
+      new DoublePreference("Shooter/Hood/Target Rotations", 0);
 }

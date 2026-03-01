@@ -3,11 +3,9 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
@@ -17,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.statemachines.LaunchState;
-import frc.robot.subsystems.intake.IntakeConstants;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
@@ -60,8 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMotorFollower
         .getConfigurator()
         .apply(ShooterConstants.createFollowerMotorOutputConfigs());
-    flywheelMotorFollower.setControl(
-        new Follower(flywheelMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
+    // flywheelMotorFollower.setControl(
+    //    new Follower(flywheelMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);
@@ -81,6 +78,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    flywheelMotorFollower.setControl(
+        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     // hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
   }
 
@@ -97,6 +96,15 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Stop Spinning Flywheel");
   }
 
+  public Command stowHood() {
+    return runOnce(() -> hoodTarget = Rotations.of(0));
+  }
+
+  public Command setHoodToPreference() {
+    return runOnce(
+        () -> hoodTarget = Rotations.of(ShooterPreferences.hoodTargetPreference.getValue()));
+  }
+
   private void setFlywheelVoltage(double magnitude) {
     flywheelMotorLeader.setVoltage(magnitude);
     flywheelMotorFollower.setVoltage(magnitude);
@@ -105,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
   public boolean atHoodSetpoint() {
     return Math.abs(hoodMotor.getPosition().getValueAsDouble() - hoodTarget.in(Rotations))
-        < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
+        < ShooterConstants.ALLOWABLE_HOOD_ERROR;
   }
 
   public Command setHoodCommand(Angle position) {

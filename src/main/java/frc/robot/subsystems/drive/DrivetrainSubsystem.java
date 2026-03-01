@@ -46,6 +46,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
   @Override
   public void periodic() {
     super.periodic();
+
     for (VisionMeasurement estimate :
         driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Front)) {
       addVisionMeasurement(
@@ -53,6 +54,23 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
           estimate.getTimestamp(),
           estimate.getTrust());
     }
+
+    for (VisionMeasurement estimate :
+        driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Left)) {
+      addVisionMeasurement(
+          estimate.getEstimatedPose().estimatedPose.toPose2d(),
+          estimate.getTimestamp(),
+          estimate.getTrust());
+    }
+
+    for (VisionMeasurement estimate :
+        driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Right)) {
+      addVisionMeasurement(
+          estimate.getEstimatedPose().estimatedPose.toPose2d(),
+          estimate.getTimestamp(),
+          estimate.getTrust());
+    }
+
     driveState.adjustCurrentDriveStats(this.getStateCopy());
 
     SmartDashboard.putNumber(

@@ -23,6 +23,7 @@ import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 @Logged
 public class RobotContainer {
@@ -44,6 +45,9 @@ public class RobotContainer {
 
   @Logged(name = "Climber")
   public final ClimberSubsystem climber = new ClimberSubsystem();
+
+  @Logged(name = "Vision")
+  public final VisionSubsystem vision = new VisionSubsystem();
 
   private final LaunchState launchState = LaunchState.getInstance();
 
@@ -112,12 +116,6 @@ public class RobotContainer {
   }
 
   public void configureTeleopBindings() {
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
-
-    // joystick.x().onTrue(drivetrain.sysIdSteer());
-    // joystick.y().onTrue(drivetrain.sysIdTranslation());
-
     driverJoystick.a().onTrue(shooter.spinFlywheelCommand());
     driverJoystick.b().onFalse(shooter.stopFlywheelCommand());
 
@@ -141,18 +139,10 @@ public class RobotContainer {
 
     driverJoystick
         .rightTrigger()
-        .whileTrue(indexer.startIndexerNoPID())
-        .onFalse(indexer.stopIndexerNoPID());
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
 
-    operatorJoystick
-        .leftTrigger()
-        .whileTrue(shooter.launchLemonsCommandNoPID())
-        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
-
-    operatorJoystick
-        .rightTrigger()
-        .whileTrue(indexer.startIndexerNoPID())
-        .onFalse(indexer.stopIndexerNoPID());
+    // operatorJoystick.rightTrigger(launchState.activateCalculator(, LaunchType.PARABOLIC);)
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

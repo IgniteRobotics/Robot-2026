@@ -3,8 +3,12 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
+    "Center AUTO",
     "HP AUTO",
-    "HP AUTO - Through tower"
+    "HP AUTO - Through tower",
+    "Comp Autos",
+    "Plus - Test",
+    "Test Paths"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

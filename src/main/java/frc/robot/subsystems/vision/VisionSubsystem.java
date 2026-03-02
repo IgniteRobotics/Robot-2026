@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
@@ -11,10 +12,15 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+@Logged
 public class VisionSubsystem extends SubsystemBase {
 
   private DriveState driveState = DriveState.getInstance();
   private SwerveDriveState driveStats;
+
+  private int count1 = 0;
+  private int count2 = 0;
+  private int count3 = 0;
 
   public class VisionMeasurement {
     private EstimatedRobotPose estimatedPose;
@@ -42,6 +48,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public VisionSubsystem() {}
 
+  @Override
   public void periodic() {
     if (driveState.hasDriveStats()) {
       // this makes sure that the different parts of the periodic use different stats
@@ -55,6 +62,26 @@ public class VisionSubsystem extends SubsystemBase {
             CameraConstants.photonPoseEstimator_Front.update(result);
         if (!estimatedPose.isEmpty()) {
           evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Front);
+        }
+      }
+      // Left Camera
+      CameraConstants.photonPoseEstimator_Left.setReferencePose(driveStats.Pose);
+      var leftCameraResults = CameraConstants.photonCamera_Left.getAllUnreadResults();
+      for (var result : leftCameraResults) {
+        Optional<EstimatedRobotPose> estimatedPose =
+            CameraConstants.photonPoseEstimator_Left.update(result);
+        if (!estimatedPose.isEmpty()) {
+          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Left);
+        }
+      }
+      // Right Camera
+      CameraConstants.photonPoseEstimator_Right.setReferencePose(driveStats.Pose);
+      var rightCameraResults = CameraConstants.photonCamera_Right.getAllUnreadResults();
+      for (var result : rightCameraResults) {
+        Optional<EstimatedRobotPose> estimatedPose =
+            CameraConstants.photonPoseEstimator_Right.update(result);
+        if (!estimatedPose.isEmpty()) {
+          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Right);
         }
       }
     }
@@ -140,6 +167,7 @@ public class VisionSubsystem extends SubsystemBase {
     // uploads the pose with its trust values to the drive statemachine
     // this pose will then be exported to the drivetrain to help navigation
     // note that we use a singular trust value for both the x and y trust values
+
     driveState.addVisionEstimate(
         new VisionMeasurement(
             pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd)),

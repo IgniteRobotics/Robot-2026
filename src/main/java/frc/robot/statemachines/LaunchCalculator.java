@@ -1,5 +1,6 @@
 package frc.robot.statemachines;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.filter.LinearFilter;
@@ -124,14 +125,16 @@ public class LaunchCalculator {
               passing,
               lookaheadLauncherToTargetDistance,
               targetRobotAngularVelocity,
-              targetRobotAngle);
+              targetRobotAngle,
+              Meters.of(launcherToTargetDistance));
     else
       return new ParabolicLaunchRequestBuilder()
           .createLaunchRequest(
               passing,
               lookaheadLauncherToTargetDistance,
               targetRobotAngularVelocity,
-              targetRobotAngle);
+              targetRobotAngle,
+              Meters.of(launcherToTargetDistance));
   }
 
   /*

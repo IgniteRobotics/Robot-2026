@@ -8,12 +8,14 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 
 public class LaunchRequest {
   private Angle launchHoodTarget;
   private AngularVelocity launchVelocity;
   private AngularVelocity targetRobotAngularVelocity;
   private Rotation2d targetRobotAngle;
+  private Distance targetDistance;
   private double timestamp;
 
   public LaunchRequest(
@@ -21,6 +23,7 @@ public class LaunchRequest {
       AngularVelocity launchVelocity,
       AngularVelocity targetRobotAngularVelocity,
       Rotation2d targetRobotAngle,
+      Distance targetDistance,
       double timestamp) {
     this.launchHoodTarget =
         Rotations.of(
@@ -34,6 +37,7 @@ public class LaunchRequest {
                 * 2); // converts from Radians Per Second to Rotations Per Second
     this.targetRobotAngularVelocity = targetRobotAngularVelocity;
     this.targetRobotAngle = targetRobotAngle;
+    this.targetDistance = targetDistance;
     this.timestamp = timestamp;
   }
 
@@ -51,6 +55,10 @@ public class LaunchRequest {
 
   public Rotation2d getTargetRobotAngle() {
     return targetRobotAngle;
+  }
+
+  public Distance getTargetDistance() {
+    return targetDistance;
   }
 
   public double getTimestamp() {

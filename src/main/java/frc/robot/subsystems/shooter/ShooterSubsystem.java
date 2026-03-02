@@ -87,6 +87,10 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Start Spinning Flywheel");
   }
 
+  public Command spinFlywheelCommand(AngularVelocity v) {
+    return runOnce(() -> velocityTarget = v).withName("Spinning To AV");
+  }
+
   public Command stopFlywheelCommand() {
     return runOnce(() -> velocityTarget = RotationsPerSecond.of(0))
         .withName("Stop Spinning Flywheel");
@@ -159,6 +163,61 @@ public class ShooterSubsystem extends SubsystemBase {
               return hoodMotor.getStatorCurrent().getValueAsDouble()
                   > ShooterConstants.SAFE_STATOR_LIMIT.in(Amp);
             });
+  }
+
+  public Command increaseFlywheelCommand() {
+    return runOnce(
+            () ->
+                velocityTarget =
+                    RotationsPerSecond.of(
+                        velocityTarget.magnitude()
+                            + ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
+        .withName("Increase FlyWheel Speed");
+  }
+
+  public Command decreaseFlywheelCommand() {
+    return runOnce(
+            () ->
+                velocityTarget =
+                    RotationsPerSecond.of(
+                        velocityTarget.magnitude()
+                            - ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
+        .withName("Decrease FlyWheel Speed");
+  }
+
+  public Command increaseHoodCommand() {
+    return runOnce(
+            () ->
+                hoodTarget =
+                    Rotations.of(
+                        hoodTarget.magnitude()
+                            + ShooterPreferences.tuningDefaultHoodStepRotations.getValue()))
+        .withName("Increase Hood Angle");
+  }
+
+  public Command decreaseHoodCommand() {
+    return runOnce(
+            () ->
+                hoodTarget =
+                    Rotations.of(
+                        hoodTarget.magnitude()
+                            - ShooterPreferences.tuningDefaultHoodStepRotations.getValue()))
+        .withName("Decrease Hood Angle");
+  }
+
+  public Command startShooterTuningCommand() {
+    return spinFlywheelCommand(
+            RotationsPerSecond.of(ShooterPreferences.tuningDefaultFlywheelRPS.getValue()))
+        .andThen(
+            setHoodCommand(Rotations.of(ShooterPreferences.tuningDefaultHoodRotations.getValue())))
+        .withName("Start Shooter Tuning");
+  }
+
+  public Command stopShooterTuningCommand() {
+    return stopFlywheelCommand()
+        .andThen(
+            setHoodCommand(Rotations.of(ShooterPreferences.tuningDefaultHoodRotations.getValue())))
+        .withName("Stop Shooter Tuning");
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

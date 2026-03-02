@@ -1,5 +1,6 @@
 package frc.robot.statemachines;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
@@ -42,6 +43,8 @@ public class LaunchState {
         currentLaunchRequest.getFlywheelVelocity().in(RotationsPerSecond));
     SmartDashboard.putNumber(
         "Launch/Hood Target (Rotations)", currentLaunchRequest.getHoodTarget().in(Rotations));
+    SmartDashboard.putNumber(
+        "Launch/Distance to Target (Meters)", currentLaunchRequest.getTargetDistance().in(Meters));
   }
 
   public void setTargetPose3d(Pose3d target) {

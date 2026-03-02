@@ -6,7 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -14,10 +13,8 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -112,16 +109,25 @@ public class RobotContainer {
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    // driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    // driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    SmartDashboard.putData(shooter.startShooterTuningCommand());
+    SmartDashboard.putData(shooter.stopShooterTuningCommand());
+    SmartDashboard.putData(shooter.increaseFlywheelCommand());
+    SmartDashboard.putData(shooter.decreaseFlywheelCommand());
+    SmartDashboard.putData(shooter.increaseHoodCommand());
+    SmartDashboard.putData(shooter.decreaseHoodCommand());
+
+    driverJoystick.a().whileTrue(indexer.startFullIndexingNoPID());
   }
 
   public void configureTeleopBindings() {
@@ -192,27 +198,29 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  private SwerveRequest.FieldCentric getDriveAndLaunchRequest(){
+  private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
     LaunchRequest launchRequest = launchState.getLaunchRequest();
-    double rotationalRate = launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
-        + DrivePreferences.rotation_kP.getValue() 
-        * launchRequest.getTargetRobotAngle().minus(driveState.getCurrentDriveStats().Pose.getRotation()).getRadians()
-        + DrivePreferences.rotation_kD.getValue()
-        * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond) - driveState.getFieldVelocity().omegaRadiansPerSecond);
+    double rotationalRate =
+        launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
+            + DrivePreferences.rotation_kP.getValue()
+                * launchRequest
+                    .getTargetRobotAngle()
+                    .minus(driveState.getCurrentDriveStats().Pose.getRotation())
+                    .getRadians()
+            + DrivePreferences.rotation_kD.getValue()
+                * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
+                    - driveState.getFieldVelocity().omegaRadiansPerSecond);
     return DriveConstants.DEFAULT_DRIVE_REQUEST
-                  .withVelocityX(
-                      -1
-                          * Math.copySign(
-                              Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
-                          * DriveConstants
-                              .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
-                  .withVelocityY(
-                      -1
-                          * Math.copySign(
-                              Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
-                          * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
-                  .withRotationalRate(rotationalRate)
-                  .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
-                  .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
+        .withVelocityX(
+            -1
+                * Math.copySign(Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
+                * DriveConstants.MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
+        .withVelocityY(
+            -1
+                * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
+                * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
+        .withRotationalRate(rotationalRate)
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
+        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
   }
 }

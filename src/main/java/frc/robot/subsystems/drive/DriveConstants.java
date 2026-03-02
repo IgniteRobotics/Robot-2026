@@ -28,4 +28,8 @@ public class DriveConstants {
 
   public static final double TRANSLATION_ALIGN_TOLERANCE = 0.01; // meters
   public static final double ROTATION_ALIGN_TOLERANCE = 1; // degrees
+
+  public static final double TRANSLATION_ALIGN_KP = 0.0001;
+  public static final double ROTATION_ALIGN_KP = 6.28;
+
 }

@@ -19,6 +19,7 @@ public class WheelSlipTest extends Command {
   private DrivetrainSubsystem m_drive;
   private double step;
   private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+  private SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   /** Creates a new WheelSlipTest. */
   public WheelSlipTest(DrivetrainSubsystem drive) {
@@ -28,14 +29,12 @@ public class WheelSlipTest extends Command {
   }
 
   public void incrementStep() {
-    step += 0.05;
-    m_drive.setDrivePower(step);
+    step += 0.025;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     m_drive.seedFieldCentric();
     point.withModuleDirection(new Rotation2d(0.0));
@@ -51,7 +50,10 @@ public class WheelSlipTest extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_drive.setDrivePower(step);
+    point.withModuleDirection(new Rotation2d(0.0));
+  }
 
   // Called once the command ends or is interrupted.
   @Override

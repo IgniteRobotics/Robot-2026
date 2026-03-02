@@ -5,21 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Rotate And Move Forward"
+            "name": "Seed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Rotate And Move Backward"
+            "pathName": "Forward Simple"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rotation Simple"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
-  "folder": "Test Autos",
+  "resetOdom": true,
+  "folder": null,
   "choreoAuto": false
 }

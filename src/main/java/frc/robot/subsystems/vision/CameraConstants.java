@@ -28,4 +28,6 @@ public class CameraConstants {
       new PhotonPoseEstimator(layout, photonCameraTransform_Front_STATIC);
 
   public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.2;
+  public static final photonEstimator = new PhotonPoseEstimator(AprilTagFieldLayout, photonCameraTransform_Front_STATIC);
+  
 }

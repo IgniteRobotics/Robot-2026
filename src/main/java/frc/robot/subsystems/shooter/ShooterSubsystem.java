@@ -65,22 +65,18 @@ public class ShooterSubsystem extends SubsystemBase {
 
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionTorqueCurrentFOC(0);
   }
 
   @Override
   public void periodic() {
-    if (launchState.isActivated()) {
-      hoodTarget = launchState.getLaunchRequest().getHoodTarget();
-      velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
-    }
-
+    launchState.refreshRequest();
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    // hoodMotor.setControl(hoodControl.withPosition(hoodTarget.in(Rotations)));
   }
 
   public Command spinFlywheelCommand() {

@@ -1,7 +1,9 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class IntakeConstants {
 
@@ -9,7 +11,7 @@ public class IntakeConstants {
 
   // TODO: Change to actual ports
   public static final int ROLLER_MOTOR_ID = 2;
-  public static final int EXTENSION_MOTOR_ID = 3;
+  public static final int EXTENSION_MOTOR_ID = 1;
 
   // TODO: Tune Roller and Extension Motors
 
@@ -51,6 +53,13 @@ public class IntakeConstants {
     configs.ForwardSoftLimitThreshold = INTAKE_FORWARD_LIMIT;
     configs.ReverseSoftLimitThreshold = INTAKE_REVERSE_LIMIT;
     return configs;
+  }
+
+  public static MotorOutputConfigs createExtensionMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    // newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Coast;
+    return newConfigs;
   }
 
   public static final double SAFE_HOMING_EFFORT = -0.2;

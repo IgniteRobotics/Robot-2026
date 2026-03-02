@@ -1,6 +1,7 @@
 package frc.robot.statemachines;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.vision.CameraConstants;
@@ -15,12 +16,17 @@ public class DriveState {
 
   private HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>> concurrentQueueMap;
 
-  private SwerveDriveState currentDriveStats = null;
+  private SwerveDriveState previousDriveStats = new SwerveDriveState();
+  private SwerveDriveState currentDriveStats = new SwerveDriveState();
 
   private DriveState() {
     concurrentQueueMap = new HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>>();
     concurrentQueueMap.put(
         CameraConstants.photonCameraName_Front, new ConcurrentLinkedQueue<VisionMeasurement>());
+    concurrentQueueMap.put(
+        CameraConstants.photonCameraName_Left, new ConcurrentLinkedQueue<VisionMeasurement>());
+    concurrentQueueMap.put(
+        CameraConstants.photonCameraName_Right, new ConcurrentLinkedQueue<VisionMeasurement>());
   }
 
   public static synchronized DriveState getInstance() {
@@ -56,6 +62,7 @@ public class DriveState {
   }
 
   public void adjustCurrentDriveStats(SwerveDriveState newStats) {
+    previousDriveStats = currentDriveStats;
     currentDriveStats = newStats;
   }
 
@@ -65,5 +72,14 @@ public class DriveState {
 
   public SwerveDriveState getCurrentDriveStats() {
     return currentDriveStats;
+  }
+
+  public SwerveDriveState getPreviousDriveStats() {
+    return previousDriveStats;
+  }
+
+  public ChassisSpeeds getFieldVelocity() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+        getCurrentDriveStats().Speeds, getCurrentDriveStats().Pose.getRotation());
   }
 }

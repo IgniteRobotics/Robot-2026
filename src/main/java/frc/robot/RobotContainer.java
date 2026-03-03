@@ -238,7 +238,7 @@ public class RobotContainer {
             + DrivePreferences.rotation_kD.getValue()
                 * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
                     - driveState.getFieldVelocity().omegaRadiansPerSecond);
-    return DriveConstants.DEFAULT_DRIVE_REQUEST
+    return DriveConstants.AUTO_AIM_DRIVE_REQUEST
         .withVelocityX(
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
@@ -248,7 +248,6 @@ public class RobotContainer {
                 * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                 * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
         .withRotationalRate(rotationalRate)
-        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
-        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
   }
 }

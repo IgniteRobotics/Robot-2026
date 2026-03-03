@@ -26,6 +26,13 @@ public class DriveConstants {
           .withSteerRequestType(SteerRequestType.Position) // Closed Loop Steer (Default)
           .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance); // Prevents "flips"
 
+  // request with only drive deadbands since we're auto steer.=
+  public static final SwerveRequest.FieldCentric AUTO_AIM_DRIVE_REQUEST = 
+    new FieldCentric()
+      .withDeadband(MAX_DRIVE_SPEED * DEADBAND_FACTOR)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withSteerRequestType(SteerRequestType.Position);
+
   public static final double TRANSLATION_ALIGN_TOLERANCE = 0.01; // meters
   public static final double ROTATION_ALIGN_TOLERANCE = 1; // degrees
 

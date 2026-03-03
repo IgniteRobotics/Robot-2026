@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.LaunchRequest;
 
+@Logged
 public class LaunchState {
   private static LaunchState single_instance = null;
 
@@ -19,10 +20,16 @@ public class LaunchState {
     return single_instance;
   }
 
+  AllianceState allianceState = AllianceState.getInstance();
   private LaunchCalculator launchCalculator = LaunchCalculator.getInstance();
+
+  @Logged(name = "Current Launch Request")
   private LaunchRequest currentLaunchRequest = null;
 
+  @Logged(name = "3D Target Pose")
   private Pose3d targetPose3d = Constants.FieldConstants.getHubTarget();
+
+
   private LaunchType builderType = LaunchType.MAPPED;
 
   public LaunchRequest getLaunchRequest() {
@@ -31,18 +38,6 @@ public class LaunchState {
 
   public void refreshRequest() {
     currentLaunchRequest = launchCalculator.refreshRequest(targetPose3d, builderType);
-
-    SmartDashboard.putNumber(
-        "Launch/Target Robot Angle (Degrees)",
-        currentLaunchRequest.getTargetRobotAngle().getDegrees());
-    SmartDashboard.putNumber(
-        "Launch/Target Robot Angular Velocity (Rotations Per Second)",
-        currentLaunchRequest.getTargetRobotAngularVelocity().in(RotationsPerSecond));
-    SmartDashboard.putNumber(
-        "Launch/Flywheel Velocity (Rotations Per Second)",
-        currentLaunchRequest.getFlywheelVelocity().in(RotationsPerSecond));
-    SmartDashboard.putNumber(
-        "Launch/Hood Target (Rotations)", currentLaunchRequest.getHoodTarget().in(Rotations));
   }
 
   public void setTargetPose3d(Pose3d target) {

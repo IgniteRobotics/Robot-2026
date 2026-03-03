@@ -3,12 +3,16 @@
   "robotLength": 0.858,
   "holonomicMode": true,
   "pathFolders": [
-    "Basic Comp Paths",
+    "Basic Comp Paths - LEFT",
+    "Basic Comp Paths - RIGHT",
     "Plus Sign Test",
     "Rotation + Translation Test",
+    "Simple Paths",
     "Square Test"
   ],
   "autoFolders": [
+    "Comp Autos",
+    "Simple Autos",
     "Test Autos"
   ],
   "defaultMaxVel": 3.0,

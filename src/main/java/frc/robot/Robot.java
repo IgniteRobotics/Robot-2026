@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+  ShiftState shiftState = ShiftState.getInstance();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -85,7 +86,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    ShiftState.getInstance().periodic(); // Update shift state and FMS connection status
+    shiftState.periodic(); // Update shift state and FMS connection status
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

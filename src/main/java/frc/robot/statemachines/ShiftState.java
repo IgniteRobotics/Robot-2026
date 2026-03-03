@@ -4,6 +4,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
+@Logged
 public class ShiftState {
 
   private static ShiftState single_instance = null;
@@ -105,10 +106,10 @@ public class ShiftState {
     currentShift = getShiftFromMatchTime(); // Update current shift based on match time
 
     if (isFMSConnected) {
-        String gameData = DriverStation.getGameSpecificMessage();
-        if (gameData.length() > 0) {
-            redWonAuton = (gameData.charAt(0) == 'R'); // true if red won auton, false if blue won auton
-        }
+      String gameData = DriverStation.getGameSpecificMessage();
+      if (gameData.length() > 0) {
+        redWonAuton = (gameData.charAt(0) == 'R'); // true if red won auton, false if blue won auton
+      }
     }
     // Update the internal shiftState based on current match time and redWonAuton
     updateInternalShiftState();

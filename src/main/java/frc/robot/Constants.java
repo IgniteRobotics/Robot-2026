@@ -41,41 +41,41 @@ public final class Constants {
 
     public static final Pose3d BLUE_HUB =
         new Pose3d(
-            Distance.ofBaseUnits(4.623, Meters),
-            Distance.ofBaseUnits(4.041, Meters),
-            Distance.ofBaseUnits(1.435, Meters),
+            Meters.of(4.623),
+            Meters.of(4.041),
+            Meters.of(1.435),
             Rotation3d.kZero);
     public static final Pose3d BLUE_LEFT_PASS =
         new Pose3d(
-            Distance.ofBaseUnits(7, Meters),
-            Distance.ofBaseUnits(1, Meters),
-            Distance.ofBaseUnits(0, Meters),
+            Meters.of(7),
+            Meters.of(1),
+            Meters.of(0),
             Rotation3d.kZero);
     public static final Pose3d BLUE_RIGHT_PASS =
         new Pose3d(
-            Distance.ofBaseUnits(1.0, Meters),
-            Distance.ofBaseUnits(1.0, Meters),
-            Distance.ofBaseUnits(0.0, Meters),
+            Meters.of(1.0),
+            Meters.of(1.0),
+            Meters.of(0.0),
             Rotation3d.kZero);
 
     public static final Pose3d RED_HUB =
         new Pose3d(
-            Distance.ofBaseUnits(12.276, Meters),
-            Distance.ofBaseUnits(4.041, Meters),
-            Distance.ofBaseUnits(1.435, Meters),
+            Meters.of(12.276),
+            Meters.of(4.041),
+            Meters.of(1.435),
             Rotation3d.kZero);
 
     public static final Pose3d RED_LEFT_PASS =
         new Pose3d(
-            Distance.ofBaseUnits(14, Meters),
-            Distance.ofBaseUnits(1, Meters),
-            Distance.ofBaseUnits(0, Meters),
+            Meters.of(14),
+            Meters.of(1),
+            Meters.of(0),
             Rotation3d.kZero);
     public static final Pose3d RED_RIGHT_PASS =
         new Pose3d(
-            Distance.ofBaseUnits(14, Meters),
-            Distance.ofBaseUnits(7, Meters),
-            Distance.ofBaseUnits(0, Meters),
+            Meters.of(14),
+            Meters.of(7),
+            Meters.of(0),
             Rotation3d.kZero);
 
     /* ***** DRIVING POSES ***** */
@@ -83,14 +83,14 @@ public final class Constants {
         new Pose3d(
             RobotConstants.robotCenterToIntakeExtended,
             RobotConstants.robotCenterToEdge,
-            Distance.ofBaseUnits(0.0, Meters),
+            Meters.of(0.0),
             new Rotation3d(Degrees.of(0.0), Degrees.of(0.0), Degrees.of(180.0)));
 
     public static final Pose3d RED_OUTPOST_LOADING =
         new Pose3d(
             layout.getOrigin().getMeasureX().minus(RobotConstants.robotCenterToIntakeExtended),
             layout.getOrigin().getMeasureY().minus(RobotConstants.robotCenterToEdge),
-            Distance.ofBaseUnits(0, Meters),
+            Meters.of(0),
             Rotation3d.kZero);
 
     /* ***** Helpers ***** */

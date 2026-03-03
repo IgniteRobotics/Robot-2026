@@ -1,11 +1,7 @@
 package frc.robot.statemachines;
 
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.LaunchRequest;
 
@@ -28,7 +24,6 @@ public class LaunchState {
 
   @Logged(name = "3D Target Pose")
   private Pose3d targetPose3d = Constants.FieldConstants.getHubTarget();
-
 
   private LaunchType builderType = LaunchType.MAPPED;
 

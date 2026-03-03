@@ -2,8 +2,8 @@ package frc.robot.statemachines;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose3d;
+import frc.robot.Constants;
 import frc.robot.subsystems.shooter.LaunchRequest;
-import frc.robot.subsystems.shooter.ShooterConstants;
 
 @Logged
 public class LaunchState {
@@ -23,7 +23,7 @@ public class LaunchState {
   private LaunchRequest currentLaunchRequest = null;
 
   @Logged(name = "3D Target Pose")
-  private Pose3d targetPose3d = ShooterConstants.RED_TARGET;
+  private Pose3d targetPose3d = Constants.FieldConstants.getHubTarget();
 
   private LaunchType builderType = LaunchType.MAPPED;
 

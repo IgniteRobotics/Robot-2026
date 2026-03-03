@@ -126,20 +126,20 @@ public class RobotContainer {
 
   public void configureTeleopBindings() {
 
-    driverJoystick
-        .a()
-        .whileTrue(intake.setExtendNoPID())
-        .onFalse(
-            intake
-                .stopExtensionNoPID()
-                .andThen(intake.startRollerReverseNoPID())
-                .alongWith(indexer.startIndexerReverseNoPID()));
+    // driverJoystick
+    //     .a()
+    //     .whileTrue(intake.setExtendNoPID())
+    //     .onFalse(
+    //         intake
+    //             .stopExtensionNoPID()
+    //             .andThen(intake.startRollerReverseNoPID())
+    //             .alongWith(indexer.startIndexerReverseNoPID()));
 
-    driverJoystick
-        .b()
-        .onTrue(intake.stopRollerNoPID().alongWith(indexer.stopIndexerNoPID()))
-        .whileTrue(intake.setRetractNoPID())
-        .onFalse(intake.stopExtensionNoPID());
+    // driverJoystick
+    //     .b()
+    //     .onTrue(intake.stopRollerNoPID().alongWith(indexer.stopIndexerNoPID()))
+    //     .whileTrue(intake.setRetractNoPID())
+    //     .onFalse(intake.stopExtensionNoPID());
 
     driverJoystick
         .rightBumper()
@@ -184,6 +184,30 @@ public class RobotContainer {
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    operatorJoystick
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
+
+    operatorJoystick
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
+
+    operatorJoystick
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

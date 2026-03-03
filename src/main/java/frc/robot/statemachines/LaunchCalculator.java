@@ -106,8 +106,9 @@ public class LaunchCalculator {
 
     SmartDashboard.putNumber("Launch Request/Look Ahead Pose/X", lookaheadPose.getX());
     SmartDashboard.putNumber("Launch Request/Look Ahead Pose/Y", lookaheadPose.getY());
-    SmartDashboard.putNumber("Launch Request/Look Ahead Target Distance", lookaheadLauncherToTargetDistance);
- 
+    SmartDashboard.putNumber(
+        "Launch Request/Look Ahead Target Distance", lookaheadLauncherToTargetDistance);
+
     // calcuate rotation angle
     Rotation2d targetRobotAngle =
         target.getTranslation().toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();

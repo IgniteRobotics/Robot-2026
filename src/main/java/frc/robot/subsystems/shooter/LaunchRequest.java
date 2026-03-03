@@ -5,15 +5,25 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
+@Logged
 public class LaunchRequest {
+  @Logged(name = "Launch Hood Angle", importance = Logged.Importance.CRITICAL)
   private Angle launchHoodTarget;
+
+  @Logged(name = "Launch Flywheel Velocity", importance = Logged.Importance.CRITICAL)
   private AngularVelocity launchVelocity;
+
+  @Logged(name = "Target Robot Angular Velocity", importance = Logged.Importance.CRITICAL)
   private AngularVelocity targetRobotAngularVelocity;
+
+  @Logged(name = "Target Robot Angle", importance = Logged.Importance.CRITICAL)
   private Rotation2d targetRobotAngle;
+
   private double timestamp;
 
   public LaunchRequest(

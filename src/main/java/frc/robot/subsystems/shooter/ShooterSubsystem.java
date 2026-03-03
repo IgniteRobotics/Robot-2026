@@ -22,12 +22,12 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
 
-  @Logged(name = "Velocity Target", importance = Importance.CRITICAL)
+  @Logged(name = "Velocity Target (RPS)", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // Rotations Per Second
 
   private VelocityVoltage velocityControl;
 
-  @Logged(name = "Hood Target", importance = Importance.CRITICAL)
+  @Logged(name = "Hood Target (Rotations)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // Rotations
 
   private PositionTorqueCurrentFOC hoodControl;

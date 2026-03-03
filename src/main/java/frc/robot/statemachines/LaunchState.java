@@ -20,8 +20,11 @@ public class LaunchState {
 
   private LaunchCalculator launchCalculator = LaunchCalculator.getInstance();
   private LaunchRequest currentLaunchRequest = null;
-
+  @Logged(name = "3D Target Pose")
   private Pose3d targetPose3d = ShooterConstants.RED_TARGET;
+  @Logged(name = "2D Target Pose")
+  private Pose2d targetPose2d = ShooterConstants.RED_TARGET.toPose2d();
+  
   private LaunchType builderType = LaunchType.MAPPED;
 
   public LaunchRequest getLaunchRequest() {
@@ -43,7 +46,6 @@ public class LaunchState {
     SmartDashboard.putNumber(
         "Launch/Hood Target (Rotations)", currentLaunchRequest.getHoodTarget().in(Rotations));
   }
-
   public void setTargetPose3d(Pose3d target) {
     this.targetPose3d = target;
   }

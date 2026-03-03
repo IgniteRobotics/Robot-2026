@@ -57,8 +57,8 @@ public class ShooterConstants {
   public static final double HOOD_FORWARD_LIMIT = 5.8;
   public static final double HOOD_REVERSE_LIMIT = 0;
   public static final double HOOD_KS = 0;
-  public static final double HOOD_KP = 0;
-  public static final double HOOD_KD = 0;
+  public static final double HOOD_KP = ShooterPreferences.hoodkP.getValue();
+  public static final double HOOD_KD = ShooterPreferences.hoodkD.getValue();
 
   public static Slot0Configs createHoodMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -88,16 +88,14 @@ public class ShooterConstants {
   public static final Current SAFE_STATOR_LIMIT = Amp.of(0.8);
 
   // Conversion Constants
-  public static final Angle ROTATIONS_PER_LAUNCH_DEGREE =
-      Rotations.of(1); // TODO: Get Better Estimate
-  public static final Distance FLYWHEEL_RADIUS = Inch.of(1); // TODO: Get Better Estimate
+  public static final Angle ROTATIONS_PER_LAUNCH_DEGREE = Rotations.of(0.2);
+  public static final Distance FLYWHEEL_RADIUS = Inch.of(2);
 
   // Lemon Yeeting Constants
-  public static final Distance SHOOTER_HEIGHT = Inch.of(65); // TODO: Get Better Estimate
-  public static final Distance HUB_HEIGHT = Inch.of(23); // TODO: Get Better Estimate
+  public static final Distance SHOOTER_HEIGHT = Inch.of(25.5);
+  public static final Distance HUB_HEIGHT = Inch.of(71.5);
   public static final Distance FROM_HUB_CENTER_TO_WALL = Inch.of(23.5);
-  public static final Distance MIN_VERTEX_DISTANCE = Inch.of(23.5);
-  public static final Angle MIN_HOOD_ANGLE = Degrees.of(0); // TODO: Get Better Estimate
+  public static final Angle MIN_HOOD_ANGLE = Degrees.of(20);
   public static final double OPTIMAL_PASSING_ENTRY_SLOPE = -1; // TODO: Tune
   public static final double OPTIMAL_HUB_ENTRY_SLOPE = -1; // TODO: Tune
 

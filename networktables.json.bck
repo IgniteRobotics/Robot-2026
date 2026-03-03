@@ -38,5 +38,101 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/MaxVelocity",
+    "type": "double",
+    "value": 4.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/MaxAccel",
+    "type": "double",
+    "value": 3.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/MaxRotation",
+    "type": "double",
+    "value": 0.15915494309189535,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/MaxAngularAccel",
+    "type": "double",
+    "value": 0.3183098861837907,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/LinearFFMinError",
+    "type": "double",
+    "value": 100.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/RotationFFMinError",
+    "type": "double",
+    "value": 57.29577951308232,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/LinearFFMaxError",
+    "type": "double",
+    "value": 500.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/RotationFFMaxError",
+    "type": "double",
+    "value": 286.4788975654116,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/Autopilot/MinAppliedVelocity",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter/Launch Speed",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter/Hood Launch Position",
+    "type": "double",
+    "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Shooter/Launch Percent (for without PID)",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

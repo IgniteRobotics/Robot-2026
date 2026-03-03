@@ -109,7 +109,7 @@ public class ShooterConstants {
           Rotation3d.kZero);
   public static final Pose3d RED_TARGET =
       new Pose3d(
-          Distance.ofBaseUnits(12.276, Meters),
+          Distance.ofBaseUnits(11.976, Meters), // 12.276
           Distance.ofBaseUnits(4.041, Meters),
           Distance.ofBaseUnits(1.435, Meters),
           Rotation3d.kZero);

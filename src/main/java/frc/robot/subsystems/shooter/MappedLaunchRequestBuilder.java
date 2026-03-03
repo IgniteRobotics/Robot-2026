@@ -14,6 +14,7 @@ import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 
 /** Add your docs here. */
 public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
@@ -75,7 +76,8 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
       boolean passing,
       double distance,
       AngularVelocity targetRobotAngularVelocity,
-      Rotation2d targetRobotAngle) {
+      Rotation2d targetRobotAngle,
+      Distance targetDistance) {
 
     // calculate hood angle
     double hoodAngle =
@@ -92,6 +94,7 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
         AngularVelocity.ofBaseUnits(flywheelSpeed, RadiansPerSecond),
         targetRobotAngularVelocity,
         targetRobotAngle,
+        targetDistance,
         Utils.getCurrentTimeSeconds());
   }
 }

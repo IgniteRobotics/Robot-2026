@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 /** Add your docs here. */
@@ -19,7 +20,8 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       boolean passing,
       double distance,
       AngularVelocity targetRobotAngularVelocity,
-      Rotation2d targetRobotAngle) {
+      Rotation2d targetRobotAngle,
+      Distance targetDistance) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distance;
     double y2 = passing ? 0 : ShooterConstants.HUB_HEIGHT.in(Meters);
@@ -70,6 +72,7 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
         angularVelocity,
         targetRobotAngularVelocity,
         targetRobotAngle,
+        targetDistance,
         Utils.getCurrentTimeSeconds());
   }
 }

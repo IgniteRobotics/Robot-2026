@@ -6,7 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -112,16 +110,28 @@ public class RobotContainer {
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    // driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    // driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    SmartDashboard.putData(shooter.startShooterTuningCommand());
+    SmartDashboard.putData(shooter.stopShooterTuningCommand());
+    SmartDashboard.putData(shooter.increaseFlywheelCommand());
+    SmartDashboard.putData(shooter.decreaseFlywheelCommand());
+    SmartDashboard.putData(shooter.increaseHoodCommand());
+    SmartDashboard.putData(shooter.decreaseHoodCommand());
+
+    driverJoystick
+        .a()
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
   }
 
   public void configureTeleopBindings() {
@@ -159,7 +169,7 @@ public class RobotContainer {
     driverJoystick
         .rightTrigger()
         .whileTrue(indexer.startFullIndexingNoPID())
-        .onFalse(indexer.stopAcceleratorNoPID());
+        .onFalse(indexer.stopFullIndexingNoPID());
     /*
      driverJoystick
          .leftTrigger()

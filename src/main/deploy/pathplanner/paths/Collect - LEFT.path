@@ -3,32 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5,
-        "y": 7.0
+        "x": 6.5,
+        "y": 5.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5,
-        "y": 7.0
+        "x": 6.23250357830652,
+        "y": 6.717714710948497
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5,
-        "y": 7.0
+        "x": 7.66188302425107,
+        "y": 7.146747503566334
       },
       "prevControl": {
-        "x": 2.5,
-        "y": 7.0
+        "x": 7.417959543415542,
+        "y": 7.8788594451551655
+      },
+      "nextControl": {
+        "x": 7.8860485021398,
+        "y": 6.473937232524964
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.8,
+        "y": 2.0
+      },
+      "prevControl": {
+        "x": 7.629810024551348,
+        "y": 0.9438438751506559
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9650053022269222,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,10 +63,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -88.56790381583522
   },
   "reversed": false,
-  "folder": "Simple Pahs",
+  "folder": "Basic Comp Paths - LEFT",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

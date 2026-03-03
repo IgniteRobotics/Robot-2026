@@ -1,18 +1,17 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.Constants;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class CameraConstants {
 
-  private static final AprilTagFieldLayout layout =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+  private static final AprilTagFieldLayout layout = Constants.FieldConstants.layout;
 
   // Front Camera
   public static final String photonCameraName_Front = "FRONT-CAMERA";

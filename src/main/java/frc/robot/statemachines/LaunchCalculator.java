@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
@@ -103,6 +104,11 @@ public class LaunchCalculator {
       lookaheadLauncherToTargetDistance =
           target.getTranslation().toTranslation2d().getDistance(lookaheadPose.getTranslation());
     }
+
+    SmartDashboard.putNumber("Launch Request/Look Ahead Pose/X", lookaheadPose.getX());
+    SmartDashboard.putNumber("Launch Request/Look Ahead Pose/Y", lookaheadPose.getY());
+    SmartDashboard.putNumber(
+        "Launch Request/Look Ahead Target Distance", lookaheadLauncherToTargetDistance);
 
     // calcuate rotation angle
     Rotation2d targetRobotAngle =

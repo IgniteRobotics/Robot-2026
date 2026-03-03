@@ -23,12 +23,12 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX hoodMotor;
 
   @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
-  private AngularVelocity velocityTarget; // Rotations Per Second
+  private AngularVelocity velocityTarget; // *rads* Per Second is the base unit.
 
   private VelocityVoltage velocityControl;
 
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
-  private Angle hoodTarget; // radians
+  private Angle hoodTarget; // radians is the base unit.
 
   private PositionTorqueCurrentFOC hoodControl;
 
@@ -179,7 +179,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return runOnce(
             () ->
                 velocityTarget =
-                    RotationsPerSecond.of(
+                    RadiansPerSecond.of(
                         velocityTarget.magnitude()
                             + ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
         .withName("Increase FlyWheel Speed");
@@ -189,7 +189,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return runOnce(
             () ->
                 velocityTarget =
-                    RotationsPerSecond.of(
+                    RadiansPerSecond.of(
                         velocityTarget.magnitude()
                             - ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
         .withName("Decrease FlyWheel Speed");
@@ -217,7 +217,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command startShooterTuningCommand() {
     return spinFlywheelCommand(
-            RotationsPerSecond.of(ShooterPreferences.tuningDefaultFlywheelRPS.getValue()))
+            RadiansPerSecond.of(ShooterPreferences.tuningDefaultFlywheelRPS.getValue()))
         .andThen(
             setHoodCommand(Rotations.of(ShooterPreferences.tuningDefaultHoodRotations.getValue())))
         .withName("Start Shooter Tuning");

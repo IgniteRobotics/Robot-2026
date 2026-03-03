@@ -20,7 +20,7 @@ public class ShooterPreferences {
   public static DoublePreference hoodTargetPreference =
       new DoublePreference("Shooter/Hood/Target Rotations", 0);
 
-  // unit is *radians per second**
+  // unit is *radians per second** for velocity.
   public static DoublePreference tuningDefaultFlywheelRPS =
       new DoublePreference("Shooter/Tuning/FlywheelRPS", 1000.0 / 60.0 / 2 * Math.PI);
   public static DoublePreference tuningDefaultFlywheelStepRPS =

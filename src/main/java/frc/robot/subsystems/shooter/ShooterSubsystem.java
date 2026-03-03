@@ -22,13 +22,13 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
 
-  @Logged(name = "Velocity Target (RPS)", importance = Importance.CRITICAL)
+  @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // Rotations Per Second
 
   private VelocityVoltage velocityControl;
 
-  @Logged(name = "Hood Target (Rotations)", importance = Importance.CRITICAL)
-  private Angle hoodTarget; // Rotations
+  @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
+  private Angle hoodTarget; // radians
 
   private PositionTorqueCurrentFOC hoodControl;
 
@@ -77,6 +77,16 @@ public class ShooterSubsystem extends SubsystemBase {
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+  }
+
+  @Logged(name = "Velocity Target RPM", importance = Importance.CRITICAL)
+  public double getFlywheelTargetRPM() {
+    return velocityTarget.in(RotationsPerSecond) * 60;
+  }
+
+  @Logged(name = "Hood Angle Rotations", importance = Importance.CRITICAL)
+  public double getHoodTargetRotations() {
+    return hoodTarget.in(Rotations);
   }
 
   public Command spinFlywheelCommand() {
@@ -190,7 +200,7 @@ public class ShooterSubsystem extends SubsystemBase {
             () ->
                 hoodTarget =
                     Rotations.of(
-                        hoodTarget.magnitude()
+                        hoodTarget.in(Rotations)
                             + ShooterPreferences.tuningDefaultHoodStepRotations.getValue()))
         .withName("Increase Hood Angle");
   }
@@ -200,7 +210,7 @@ public class ShooterSubsystem extends SubsystemBase {
             () ->
                 hoodTarget =
                     Rotations.of(
-                        hoodTarget.magnitude()
+                        hoodTarget.in(Rotations)
                             - ShooterPreferences.tuningDefaultHoodStepRotations.getValue()))
         .withName("Decrease Hood Angle");
   }

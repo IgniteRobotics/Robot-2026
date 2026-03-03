@@ -13,6 +13,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
@@ -127,7 +128,10 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
 
-    driverJoystick.a().whileTrue(indexer.startFullIndexingNoPID());
+    driverJoystick
+        .a()
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
   }
 
   public void configureTeleopBindings() {
@@ -165,7 +169,7 @@ public class RobotContainer {
     driverJoystick
         .rightTrigger()
         .whileTrue(indexer.startFullIndexingNoPID())
-        .onFalse(indexer.stopAcceleratorNoPID());
+        .onFalse(indexer.stopFullIndexingNoPID());
     /*
      driverJoystick
          .leftTrigger()

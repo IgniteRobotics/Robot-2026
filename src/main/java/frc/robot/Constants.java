@@ -40,43 +40,19 @@ public final class Constants {
     /* ***** SHOOTING TARGETS ***** */
 
     public static final Pose3d BLUE_HUB =
-        new Pose3d(
-            Meters.of(4.623),
-            Meters.of(4.041),
-            Meters.of(1.435),
-            Rotation3d.kZero);
+        new Pose3d(Meters.of(4.623), Meters.of(4.041), Meters.of(1.435), Rotation3d.kZero);
     public static final Pose3d BLUE_LEFT_PASS =
-        new Pose3d(
-            Meters.of(7),
-            Meters.of(1),
-            Meters.of(0),
-            Rotation3d.kZero);
+        new Pose3d(Meters.of(7), Meters.of(1), Meters.of(0), Rotation3d.kZero);
     public static final Pose3d BLUE_RIGHT_PASS =
-        new Pose3d(
-            Meters.of(1.0),
-            Meters.of(1.0),
-            Meters.of(0.0),
-            Rotation3d.kZero);
+        new Pose3d(Meters.of(1.0), Meters.of(1.0), Meters.of(0.0), Rotation3d.kZero);
 
     public static final Pose3d RED_HUB =
-        new Pose3d(
-            Meters.of(12.276),
-            Meters.of(4.041),
-            Meters.of(1.435),
-            Rotation3d.kZero);
+        new Pose3d(Meters.of(12.276), Meters.of(4.041), Meters.of(1.435), Rotation3d.kZero);
 
     public static final Pose3d RED_LEFT_PASS =
-        new Pose3d(
-            Meters.of(14),
-            Meters.of(1),
-            Meters.of(0),
-            Rotation3d.kZero);
+        new Pose3d(Meters.of(14), Meters.of(1), Meters.of(0), Rotation3d.kZero);
     public static final Pose3d RED_RIGHT_PASS =
-        new Pose3d(
-            Meters.of(14),
-            Meters.of(7),
-            Meters.of(0),
-            Rotation3d.kZero);
+        new Pose3d(Meters.of(14), Meters.of(7), Meters.of(0), Rotation3d.kZero);
 
     /* ***** DRIVING POSES ***** */
     public static final Pose3d BLUE_OUTPOST_LOADING =

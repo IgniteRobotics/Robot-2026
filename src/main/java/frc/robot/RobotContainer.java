@@ -4,7 +4,8 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.SignalLogger;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -15,13 +16,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -49,7 +52,11 @@ public class RobotContainer {
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
+  private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
+
+  private final Command driveAndLaunchCommand =
+      drivetrain.applyRequest(() -> getDriveAndLaunchRequest());
 
   private final SendableChooser<Command> autoChooser;
 
@@ -103,54 +110,145 @@ public class RobotContainer {
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    // driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    // driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    SmartDashboard.putData(shooter.startShooterTuningCommand());
+    SmartDashboard.putData(shooter.stopShooterTuningCommand());
+    SmartDashboard.putData(shooter.increaseFlywheelCommand());
+    SmartDashboard.putData(shooter.decreaseFlywheelCommand());
+    SmartDashboard.putData(shooter.increaseHoodCommand());
+    SmartDashboard.putData(shooter.decreaseHoodCommand());
+
+    driverJoystick
+        .a()
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
   }
 
   public void configureTeleopBindings() {
-    driverJoystick.a().onTrue(shooter.spinFlywheelCommand());
-    driverJoystick.b().onFalse(shooter.stopFlywheelCommand());
 
-    driverJoystick.x().onTrue(intake.startRollerNoPID());
-    driverJoystick.y().onTrue(intake.stopRollerNoPID());
+    // driverJoystick
+    //     .a()
+    //     .whileTrue(intake.setExtendNoPID())
+    //     .onFalse(
+    //         intake
+    //             .stopExtensionNoPID()
+    //             .andThen(intake.startRollerReverseNoPID())
+    //             .alongWith(indexer.startIndexerReverseNoPID()));
+
+    // driverJoystick
+    //     .b()
+    //     .onTrue(intake.stopRollerNoPID().alongWith(indexer.stopIndexerNoPID()))
+    //     .whileTrue(intake.setRetractNoPID())
+    //     .onFalse(intake.stopExtensionNoPID());
 
     driverJoystick
         .rightBumper()
         .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID());
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
 
     driverJoystick
         .leftBumper()
         .whileTrue(intake.setRetractNoPID())
-        .onFalse(intake.stopExtensionNoPID());
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
 
     driverJoystick
         .leftTrigger()
-        .whileTrue(shooter.launchLemonsCommand())
-        .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
+        .whileTrue(shooter.spinFlywheelCommand())
+        .onFalse(shooter.stopFlywheelCommand());
 
     driverJoystick
         .rightTrigger()
         .whileTrue(indexer.startFullIndexingNoPID())
         .onFalse(indexer.stopFullIndexingNoPID());
+    /*
+     driverJoystick
+         .leftTrigger()
+         .whileTrue(shooter.launchLemonsCommand())
+         .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
+    */
 
-    // operatorJoystick.rightTrigger(launchState.activateCalculator(, LaunchType.PARABOLIC);)
+    // driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
+
+    /*
+    driverJoystick
+        .rightTrigger()
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
+    */
+
+    // operatorJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
+    // operatorJoystick
+    //     .rightBumper()
+    //     .whileTrue(indexer.startFullIndexingNoPID())
+    //     .onFalse(indexer.stopFullIndexingNoPID());
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    operatorJoystick
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
+
+    operatorJoystick
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
+
+    operatorJoystick
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+
+  private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
+    LaunchRequest launchRequest = launchState.getLaunchRequest();
+    double rotationalRate =
+        launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
+            + DrivePreferences.rotation_kP.getValue()
+                * launchRequest
+                    .getTargetRobotAngle()
+                    .minus(driveState.getCurrentDriveStats().Pose.getRotation())
+                    .getRadians()
+            + DrivePreferences.rotation_kD.getValue()
+                * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
+                    - driveState.getFieldVelocity().omegaRadiansPerSecond);
+    return DriveConstants.DEFAULT_DRIVE_REQUEST
+        .withVelocityX(
+            -1
+                * Math.copySign(Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
+                * DriveConstants.MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
+        .withVelocityY(
+            -1
+                * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
+                * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
+        .withRotationalRate(rotationalRate)
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
+        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
   }
 }

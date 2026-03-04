@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 /** Add your docs here. */
@@ -19,7 +20,8 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       boolean passing,
       double distance,
       AngularVelocity targetRobotAngularVelocity,
-      Rotation2d targetRobotAngle) {
+      Rotation2d targetRobotAngle,
+      Distance targetDistance) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distance;
     double y2 = passing ? 0 : ShooterConstants.HUB_HEIGHT.in(Meters);
@@ -30,6 +32,7 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
 
     double a, b, vertex, hitWallCheckX;
     Angle theta, motorAngle;
+    int count = 0;
     do {
       // system of equations
       // (y2) = a(x2*x2) + b(x2) + y1
@@ -41,10 +44,11 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       vertex = -1 * b / (2 * a);
       hitWallCheckX = x2 - ShooterConstants.FROM_HUB_CENTER_TO_WALL.in(Meters);
       slope -= 0.05;
-    } while ((!passing
+    } while (count++ < 30
+        && (!passing
             && a * Math.pow(hitWallCheckX, 2) + b * hitWallCheckX + y1
                 < ShooterConstants.HUB_HEIGHT.in(Meters))
-        || (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
+        && (motorAngle.in(Degrees) > ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)));
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
 
@@ -68,6 +72,7 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
         angularVelocity,
         targetRobotAngularVelocity,
         targetRobotAngle,
+        targetDistance,
         Utils.getCurrentTimeSeconds());
   }
 }

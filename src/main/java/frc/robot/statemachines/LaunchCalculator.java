@@ -1,8 +1,8 @@
 package frc.robot.statemachines;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -12,17 +12,21 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.shooter.LaunchRequest;
-import frc.robot.subsystems.shooter.LaunchRequestBuilder;
+import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
+import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
 
 public class LaunchCalculator {
 
-  private Pose3d target;
-  private LaunchRequestBuilder builder;
+  private static LaunchCalculator single_instance = null;
 
-  protected LaunchCalculator(Pose3d target, LaunchRequestBuilder builder) {
-    this.target = target;
-    this.builder = builder;
+  private LaunchCalculator() {}
+
+  protected static synchronized LaunchCalculator getInstance() {
+    if (single_instance == null) single_instance = new LaunchCalculator();
+    return single_instance;
   }
 
   private double loopPeriodSecs = 0.02;
@@ -54,7 +58,7 @@ public class LaunchCalculator {
     passingTimeOfFlightMap.put(2.38, 0.90);
   }
 
-  public LaunchRequest createLaunchRequest() {
+  protected LaunchRequest refreshRequest(Pose3d target, LaunchType builderType) {
 
     boolean passing = target.getZ() < 0.1;
 
@@ -101,9 +105,17 @@ public class LaunchCalculator {
           target.getTranslation().toTranslation2d().getDistance(lookaheadPose.getTranslation());
     }
 
+    SmartDashboard.putNumber("Launch Request/Look Ahead Pose/X", lookaheadPose.getX());
+    SmartDashboard.putNumber("Launch Request/Look Ahead Pose/Y", lookaheadPose.getY());
+    SmartDashboard.putNumber(
+        "Launch Request/Look Ahead Target Distance", lookaheadLauncherToTargetDistance);
+
     // calcuate rotation angle
     Rotation2d targetRobotAngle =
-        getDriveAngle(lookaheadPose, target.getTranslation().toTranslation2d());
+        target.getTranslation().toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();
+
+    // Rotation2d targetRobotAngle = getDriveAngle(lookaheadPose,
+    // target.getTranslation().toTranslation2d());
 
     AngularVelocity targetRobotAngularVelocity =
         RadiansPerSecond.of(
@@ -113,10 +125,25 @@ public class LaunchCalculator {
                         .getRadians()
                     / loopPeriodSecs));
 
-    return builder.createLaunchRequest(
-        passing, lookaheadLauncherToTargetDistance, targetRobotAngularVelocity, targetRobotAngle);
+    if (builderType == LaunchType.MAPPED)
+      return new MappedLaunchRequestBuilder()
+          .createLaunchRequest(
+              passing,
+              lookaheadLauncherToTargetDistance,
+              targetRobotAngularVelocity,
+              targetRobotAngle,
+              Meters.of(launcherToTargetDistance));
+    else
+      return new ParabolicLaunchRequestBuilder()
+          .createLaunchRequest(
+              passing,
+              lookaheadLauncherToTargetDistance,
+              targetRobotAngularVelocity,
+              targetRobotAngle,
+              Meters.of(launcherToTargetDistance));
   }
 
+  /*
   private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {
     Rotation2d fieldToHubAngle = target.minus(robotPose.getTranslation()).getAngle();
     Rotation2d hubAngle =
@@ -130,4 +157,5 @@ public class LaunchCalculator {
     Rotation2d driveAngle = fieldToHubAngle.plus(hubAngle).plus(robotPose.getRotation());
     return driveAngle;
   }
+  */
 }

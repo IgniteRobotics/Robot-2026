@@ -6,6 +6,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.statemachines.DriveState;
 import java.util.Optional;
@@ -17,10 +18,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   private DriveState driveState = DriveState.getInstance();
   private SwerveDriveState driveStats;
-
-  private int count1 = 0;
-  private int count2 = 0;
-  private int count3 = 0;
 
   public class VisionMeasurement {
     private EstimatedRobotPose estimatedPose;
@@ -169,8 +166,10 @@ public class VisionSubsystem extends SubsystemBase {
     // note that we use a singular trust value for both the x and y trust values
 
     driveState.addVisionEstimate(
-        new VisionMeasurement(
-            pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd)),
+        new VisionMeasurement(pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(0, 0, 0)),
         cameraName);
+
+    SmartDashboard.putNumber("Vision/xyStds", xyStds);
+    SmartDashboard.putNumber("Vision/thetaStds", thetaStd);
   }
 }

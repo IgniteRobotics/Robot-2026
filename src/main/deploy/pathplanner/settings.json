@@ -3,22 +3,26 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Center AUTO",
-    "HP AUTO",
-    "HP AUTO - Through tower",
-    "Comp Autos",
-    "Plus - Test",
-    "Test Paths",
     "Basic Comp Paths - LEFT",
     "Basic Comp Paths - RIGHT",
+    "Center AUTO",
+    "Comp Autos",
+    "HP AUTO",
+    "HP AUTO - Through tower",
+    "Left Middle AUTO",
+    "Immediate Shoot - LEFT",
+    "Plus - Test",
     "Plus Sign Test",
     "Rotation + Translation Test",
     "Simple Paths",
-    "Square Test"
+    "Square Test",
+    "Test Paths"
   ],
   "autoFolders": [
-    "Test Autons",
-    "Basic Comp Autons"
+    "Basic Comp Autons",
+    "Other Comp Autons",
+    "Simple Autons",
+    "Test Autons"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

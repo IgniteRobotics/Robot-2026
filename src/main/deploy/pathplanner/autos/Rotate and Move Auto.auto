@@ -26,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Basic Comp Autons",
+  "folder": "Test Autons",
   "choreoAuto": false
 }

@@ -7,31 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to HP - HP AUTO"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HP Reload"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HP to Right Tower (through tower) - HP AUTO"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right Tower through Depot (through tower) - HP AUTO"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot to Shoot - HP AUTO"
+            "pathName": "Start to shoot - SHOOT"
           }
         },
         {
@@ -43,7 +19,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climb - HP AUTO"
+            "pathName": "Shoot to Overbump - SHOOT"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Overbump through Field - SHOOT"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Field to Shoot - SHOOT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to Climb - SHOOT"
           }
         }
       ]

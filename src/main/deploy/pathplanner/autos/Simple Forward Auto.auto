@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Basic Comp Autons",
+  "folder": "Simple Autons",
   "choreoAuto": false
 }

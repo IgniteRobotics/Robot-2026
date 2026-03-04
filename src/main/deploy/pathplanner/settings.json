@@ -17,11 +17,9 @@
     "Square Test"
   ],
   "autoFolders": [
-    "Comp Autos",
-    "Simple Autos",
-    "Test Autos"
+    "Test Autons",
+    "Basic Comp Autons"
   ],
-  "autoFolders": [],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

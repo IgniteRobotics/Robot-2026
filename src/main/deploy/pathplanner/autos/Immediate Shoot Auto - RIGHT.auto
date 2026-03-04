@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to shoot - SHOOT LEFT"
+            "pathName": "Start to shoot - SHOOT RIGHT"
           }
         },
         {
@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Overbump - SHOOT LEFT"
+            "pathName": "Shoot to Overbump - SHOOT RIGHT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Overbump through Field - SHOOT LEFT"
+            "pathName": "Overbump through Field - SHOOT RIGHT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Field to Shoot - SHOOT LEFT"
+            "pathName": "Field to Shoot - SHOOT RIGHT"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climb - SHOOT LEFT"
+            "pathName": "Shoot to Climb - SHOOT RIGHT"
           }
         }
       ]

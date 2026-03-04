@@ -171,10 +171,10 @@ public class RobotContainer {
         .whileTrue(indexer.startFullIndexingNoPID())
         .onFalse(indexer.stopFullIndexingNoPID());
 
-    operatorJoystick
-        .leftTrigger()
+    driverJoystick
+        .b()
         .whileTrue(shooter.spinFlywheelRanged())
-        .onFalse(shooter.stopFlywheelCommand());
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     // driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
 

@@ -7,7 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot - LEFT"
+            "pathName": "Start to HP - HP AUTO"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HP Reload"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP to Right Tower - HP AUTO"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Tower through Depot - HP AUTO"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot to Shoot - HP AUTO"
           }
         },
         {
@@ -19,37 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Overbump - LEFT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Collect - LEFT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Overbump to Shoot - LEFT"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Climb - LEFT"
+            "pathName": "Shoot to Climb - HP AUTO"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Basic Comp Autons",
+  "folder": "Other Comp Autons",
   "choreoAuto": false
 }

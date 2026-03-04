@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot - LEFT"
+            "pathName": "Start to Shoot - CENTER"
           }
         },
         {
@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Overbump - LEFT"
+            "pathName": "Shoot to HP - CENTER"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HP Reload"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect - LEFT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Overbump to Shoot - LEFT"
+            "pathName": "HP to Shoot - CENTER"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climb - LEFT"
+            "pathName": "Shoot to Climb - CENTER"
           }
         }
       ]

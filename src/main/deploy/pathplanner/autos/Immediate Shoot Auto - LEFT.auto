@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot - LEFT"
+            "pathName": "Start to shoot - SHOOT LEFT"
           }
         },
         {
@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Overbump - LEFT"
+            "pathName": "Shoot to Overbump - SHOOT LEFT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect - LEFT"
+            "pathName": "Overbump through Field - SHOOT LEFT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Overbump to Shoot - LEFT"
+            "pathName": "Field to Shoot - SHOOT LEFT"
           }
         },
         {
@@ -43,13 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climb - LEFT"
+            "pathName": "Shoot to Climb - SHOOT LEFT"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Basic Comp Autons",
+  "folder": "Other Comp Autons",
   "choreoAuto": false
 }

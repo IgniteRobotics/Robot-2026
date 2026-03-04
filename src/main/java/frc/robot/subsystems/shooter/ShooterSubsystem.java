@@ -3,7 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
@@ -30,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // radians is the base unit.
 
-  private PositionTorqueCurrentFOC hoodControl;
+  private PositionVoltage hoodControl;
 
   private final LaunchState launchState = LaunchState.getInstance();
 
@@ -67,7 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
     hoodTarget = Rotations.of(0);
-    hoodControl = new PositionTorqueCurrentFOC(0);
+    hoodControl = new PositionVoltage(0);
   }
 
   @Override
@@ -77,6 +77,7 @@ public class ShooterSubsystem extends SubsystemBase {
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
   }
 
   @Logged(name = "Velocity Target RPM", importance = Importance.CRITICAL)
@@ -136,6 +137,14 @@ public class ShooterSubsystem extends SubsystemBase {
     return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
         .andThen(spinFlywheelCommand())
         .withName("Start Launching Lemons");
+  }
+
+  public Command spinFlywheelRanged() {
+    return run(
+        () -> {
+          velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
+          hoodTarget = launchState.getLaunchRequest().getHoodTarget();
+        });
   }
 
   public Command launchLemonsCommandNoPID() {

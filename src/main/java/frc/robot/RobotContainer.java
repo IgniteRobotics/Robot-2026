@@ -161,21 +161,20 @@ public class RobotContainer {
         .whileTrue(intake.setRetractNoPID())
         .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
 
-    driverJoystick
-        .leftTrigger()
-        .whileTrue(shooter.spinFlywheelCommand())
-        .onFalse(shooter.stopFlywheelCommand());
+    // operatorJoystick
+    //     .leftTrigger()
+    //     .whileTrue(shooter.spinFlywheelCommand())
+    //     .onFalse(shooter.stopFlywheelCommand());
 
-    driverJoystick
+    operatorJoystick
         .rightTrigger()
         .whileTrue(indexer.startFullIndexingNoPID())
         .onFalse(indexer.stopFullIndexingNoPID());
-    /*
-     driverJoystick
-         .leftTrigger()
-         .whileTrue(shooter.launchLemonsCommand())
-         .onFalse(shooter.stopLaunchLemonsNoPIDCommand());
-    */
+
+    operatorJoystick
+        .leftTrigger()
+        .whileTrue(shooter.spinFlywheelRanged())
+        .onFalse(shooter.stopFlywheelCommand());
 
     // driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
 
@@ -238,7 +237,7 @@ public class RobotContainer {
             + DrivePreferences.rotation_kD.getValue()
                 * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
                     - driveState.getFieldVelocity().omegaRadiansPerSecond);
-    return DriveConstants.AUTO_AIM_DRIVE_REQUEST
+    return DriveConstants.DEFAULT_DRIVE_REQUEST
         .withVelocityX(
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
@@ -247,7 +246,11 @@ public class RobotContainer {
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                 * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
-        .withRotationalRate(rotationalRate)
-        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
+        .withRotationalRate(
+            -1
+                * Math.copySign(Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
+                * DriveConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
+        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
   }
 }

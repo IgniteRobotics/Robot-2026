@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,32 +38,26 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
 
   // TODO: All of this is made up.  Need real numbers.
   static {
-    minDistance = 1.34;
-    maxDistance = 5.60;
+    minDistance = 0.9;
+    maxDistance = 4.0;
     passingMinDistance = 0.0;
     passingMaxDistance = 100000;
 
-    hoodAngleMap.put(1.34, Rotation2d.fromDegrees(19.0));
-    hoodAngleMap.put(1.78, Rotation2d.fromDegrees(19.0));
-    hoodAngleMap.put(2.17, Rotation2d.fromDegrees(24.0));
-    hoodAngleMap.put(2.81, Rotation2d.fromDegrees(27.0));
-    hoodAngleMap.put(3.82, Rotation2d.fromDegrees(29.0));
-    hoodAngleMap.put(4.09, Rotation2d.fromDegrees(30.0));
-    hoodAngleMap.put(4.40, Rotation2d.fromDegrees(31.0));
-    hoodAngleMap.put(4.77, Rotation2d.fromDegrees(32.0));
-    hoodAngleMap.put(5.57, Rotation2d.fromDegrees(32.0));
-    hoodAngleMap.put(5.60, Rotation2d.fromDegrees(35.0));
+    hoodAngleMap.put(0.99, Rotation2d.fromRotations(0.0));
+    hoodAngleMap.put(1.62, Rotation2d.fromRotations(1.0));
+    hoodAngleMap.put(1.94, Rotation2d.fromRotations(2.4));
+    hoodAngleMap.put(2.53, Rotation2d.fromRotations(3.2));
+    hoodAngleMap.put(3.00, Rotation2d.fromRotations(3.8));
+    hoodAngleMap.put(3.51, Rotation2d.fromRotations(3.8));
+    hoodAngleMap.put(6.00, Rotation2d.fromRotations(6.1)); // put in a value to max out the hood
 
-    flywheelSpeedMap.put(1.34, 210.0);
-    flywheelSpeedMap.put(1.78, 220.0);
-    flywheelSpeedMap.put(2.17, 220.0);
-    flywheelSpeedMap.put(2.81, 230.0);
-    flywheelSpeedMap.put(3.82, 250.0);
-    flywheelSpeedMap.put(4.09, 255.0);
-    flywheelSpeedMap.put(4.40, 260.0);
-    flywheelSpeedMap.put(4.77, 265.0);
-    flywheelSpeedMap.put(5.57, 275.0);
-    flywheelSpeedMap.put(5.60, 290.0);
+    flywheelSpeedMap.put(0.99, 57.7);
+    flywheelSpeedMap.put(1.62, 60.9);
+    flywheelSpeedMap.put(1.94, 66.7);
+    flywheelSpeedMap.put(2.53, 68.8);
+    flywheelSpeedMap.put(3.00, 72.5);
+    flywheelSpeedMap.put(3.51, 78.0);
+    flywheelSpeedMap.put(6.00, 108.0); // put in a value to max out the hood
 
     passingHoodAngleMap.put(passingMinDistance, Rotation2d.fromDegrees(0.0));
     passingHoodAngleMap.put(passingMaxDistance, Rotation2d.fromDegrees(0.0));
@@ -82,16 +76,16 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     // calculate hood angle
     double hoodAngle =
         passing
-            ? passingHoodAngleMap.get(distance).getRadians()
-            : hoodAngleMap.get(distance).getRadians();
+            ? passingHoodAngleMap.get(distance).getRotations()
+            : hoodAngleMap.get(distance).getRotations();
 
     // calculate flywheel speed
     double flywheelSpeed =
         passing ? passingFlywheelSpeedMap.get(distance) : flywheelSpeedMap.get(distance);
 
     return new LaunchRequest(
-        Angle.ofBaseUnits(hoodAngle, Radians),
-        AngularVelocity.ofBaseUnits(flywheelSpeed, RadiansPerSecond),
+        Angle.ofBaseUnits(hoodAngle, Rotations),
+        AngularVelocity.ofBaseUnits(flywheelSpeed, RotationsPerSecond),
         targetRobotAngularVelocity,
         targetRobotAngle,
         targetDistance,

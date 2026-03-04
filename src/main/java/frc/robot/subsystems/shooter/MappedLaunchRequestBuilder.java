@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.Utils;
@@ -76,15 +76,15 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     // calculate hood angle
     double hoodAngle =
         passing
-            ? passingHoodAngleMap.get(distance).getRadians()
-            : hoodAngleMap.get(distance).getRadians();
+            ? passingHoodAngleMap.get(distance).getRotations()
+            : hoodAngleMap.get(distance).getRotations();
 
     // calculate flywheel speed
     double flywheelSpeed =
         passing ? passingFlywheelSpeedMap.get(distance) : flywheelSpeedMap.get(distance);
 
     return new LaunchRequest(
-        Angle.ofBaseUnits(hoodAngle, Radians),
+        Angle.ofBaseUnits(hoodAngle, Rotations),
         AngularVelocity.ofBaseUnits(flywheelSpeed, RotationsPerSecond),
         targetRobotAngularVelocity,
         targetRobotAngle,

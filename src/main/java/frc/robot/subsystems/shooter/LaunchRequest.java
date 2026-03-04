@@ -1,10 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -37,16 +32,8 @@ public class LaunchRequest {
       Rotation2d targetRobotAngle,
       Distance targetDistance,
       double timestamp) {
-    this.launchHoodTarget =
-        Rotations.of(
-            launchHoodTarget.in(Degrees)
-                * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(
-                    Rotations)); // converts froms radians to rotations
-    this.launchVelocity =
-        RotationsPerSecond.of(
-            launchVelocity.in(RadiansPerSecond)
-                / Math.PI
-                * 2); // converts from Radians Per Second to Rotations Per Second
+    this.launchHoodTarget = launchHoodTarget;
+    this.launchVelocity = launchVelocity;
     this.targetRobotAngularVelocity = targetRobotAngularVelocity;
     this.targetRobotAngle = targetRobotAngle;
     this.targetDistance = targetDistance;

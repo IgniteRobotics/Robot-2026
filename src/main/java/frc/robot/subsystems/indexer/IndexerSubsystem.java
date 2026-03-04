@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -144,5 +145,26 @@ public class IndexerSubsystem extends SubsystemBase {
   public Command stopCommand() {
     return runOnce(() -> indexerVelocityTarget = RotationsPerSecond.of(0))
         .withName("Stop Indexing");
+  }
+
+  public Command pulsingIndexCommand() {
+    Timer timer = new Timer();
+    return runEnd(
+            () -> {
+              double cycleTime =
+                  IndexerPreferences.indexerRunTime.getValue()
+                      + IndexerPreferences.indexerPauseTime.getValue();
+              double elapsed = timer.get() % cycleTime;
+              boolean shouldRun = elapsed < IndexerPreferences.indexerRunTime.getValue();
+
+              indexerMotorLeader.set(shouldRun ? IndexerPreferences.indexerPercent.getValue() : 0);
+              acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue());
+            },
+            () -> {
+              indexerMotorLeader.set(0);
+              acceleratorMotor.set(0);
+            })
+        .beforeStarting(() -> timer.restart())
+        .withName("Pulsing Index");
   }
 }

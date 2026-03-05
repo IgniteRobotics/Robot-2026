@@ -138,21 +138,6 @@ public class RobotContainer {
 
   public void configureTeleopBindings() {
 
-    // driverJoystick
-    //     .a()
-    //     .whileTrue(intake.setExtendNoPID())
-    //     .onFalse(
-    //         intake
-    //             .stopExtensionNoPID()
-    //             .andThen(intake.startRollerReverseNoPID())
-    //             .alongWith(indexer.startIndexerReverseNoPID()));
-
-    // driverJoystick
-    //     .b()
-    //     .onTrue(intake.stopRollerNoPID().alongWith(indexer.stopIndexerNoPID()))
-    //     .whileTrue(intake.setRetractNoPID())
-    //     .onFalse(intake.stopExtensionNoPID());
-
     driverJoystick
         .rightBumper()
         .whileTrue(intake.setExtendNoPID())
@@ -163,37 +148,15 @@ public class RobotContainer {
         .whileTrue(intake.setRetractNoPID())
         .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
 
-    // operatorJoystick
-    //     .leftTrigger()
-    //     .whileTrue(shooter.spinFlywheelCommand())
-    //     .onFalse(shooter.stopFlywheelCommand());
-
     operatorJoystick
         .rightTrigger()
         .whileTrue(indexer.pulsingIndexCommand())
         .onFalse(indexer.stopFullIndexingNoPID());
 
-    // operatorJoystick
-    //     .leftTrigger()
-    driverJoystick
-        .a()
+    operatorJoystick
+        .leftTrigger()
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
-
-    // driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
-
-    /*
-    driverJoystick
-        .rightTrigger()
-        .whileTrue(indexer.startFullIndexingNoPID())
-        .onFalse(indexer.stopFullIndexingNoPID());
-    */
-
-    // operatorJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
-    // operatorJoystick
-    //     .rightBumper()
-    //     .whileTrue(indexer.startFullIndexingNoPID())
-    //     .onFalse(indexer.stopFullIndexingNoPID());
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

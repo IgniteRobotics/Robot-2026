@@ -151,30 +151,30 @@ public class RobotContainer {
     //     .whileTrue(intake.setRetractNoPID())
     //     .onFalse(intake.stopExtensionNoPID());
 
-    driverJoystick
-        .rightBumper()
-        .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
+    // driverJoystick
+    //     .rightBumper()
+    //     .whileTrue(intake.setExtendNoPID())
+    //     .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
 
-    driverJoystick
-        .leftBumper()
-        .whileTrue(intake.setRetractNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
+    // driverJoystick
+    //     .leftBumper()
+    //     .whileTrue(intake.setRetractNoPID())
+    //     .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
 
     // operatorJoystick
     //     .leftTrigger()
     //     .whileTrue(shooter.spinFlywheelCommand())
     //     .onFalse(shooter.stopFlywheelCommand());
 
-    operatorJoystick
-        .rightTrigger()
-        .whileTrue(indexer.startFullIndexingNoPID())
-        .onFalse(indexer.stopFullIndexingNoPID());
+    // operatorJoystick
+    //     .rightTrigger()
+    //     .whileTrue(indexer.startFullIndexingNoPID())
+    //     .onFalse(indexer.stopFullIndexingNoPID());
 
-    driverJoystick
-        .b()
-        .whileTrue(shooter.spinFlywheelRanged())
-        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+    // driverJoystick
+    //     .b()
+    //     .whileTrue(shooter.spinFlywheelRanged())
+    //     .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     // driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
 
@@ -192,31 +192,31 @@ public class RobotContainer {
     //     .onFalse(indexer.stopFullIndexingNoPID());
 
     // Reset the field-centric heading on start button press.
-    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    // driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-    operatorJoystick
-        .a()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
+    // operatorJoystick
+    //     .a()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () ->
+    //                 LaunchState.getInstance()
+    //                     .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
 
-    operatorJoystick
-        .x()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
+    // operatorJoystick
+    //     .x()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () ->
+    //                 LaunchState.getInstance()
+    //                     .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
 
-    operatorJoystick
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
+    // operatorJoystick
+    //     .b()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () ->
+    //                 LaunchState.getInstance()
+    //                     .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
 
     //  ------------ Comp Controls
     // Reset the field-centric heading on start button press.

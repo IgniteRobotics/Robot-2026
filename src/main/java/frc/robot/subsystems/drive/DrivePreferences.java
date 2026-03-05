@@ -14,4 +14,7 @@ public final class DrivePreferences {
 
   public static DoublePreference onemeter_speed =
       new DoublePreference("Drive/Speed for 1m (command)");
+
+  public static DoublePreference autoAim_kP = new DoublePreference("Drive/AutoAim/kP", 1);
+  public static DoublePreference autoAim_kD = new DoublePreference("Drive/AutoAim/kD", 0);
 }

@@ -56,7 +56,9 @@ public class RobotContainer {
   private final LaunchState launchState = LaunchState.getInstance();
 
   private final Command driveAndLaunchCommand =
-      drivetrain.applyRequest(() -> getDriveAndLaunchRequest());
+      drivetrain
+          .applyRequest(() -> getDriveAndLaunchRequest())
+          .alongWith(shooter.spinFlywheelRanged());
 
   private final SendableChooser<Command> autoChooser;
 
@@ -171,10 +173,10 @@ public class RobotContainer {
         .whileTrue(indexer.pulsingIndexCommand())
         .onFalse(indexer.stopFullIndexingNoPID());
 
-    operatorJoystick
-        .leftTrigger()
-        // driverJoystick
-        //     .a()
+    // operatorJoystick
+    //     .leftTrigger()
+    driverJoystick
+        .a()
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 

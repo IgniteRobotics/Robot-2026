@@ -52,7 +52,11 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
 
-    motorAngle = Rotations.of(motorAngle.in(Degrees) * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(Rotations)); //converts from hood angle to motor rotations
+    motorAngle =
+        Rotations.of(
+            motorAngle.in(Degrees)
+                * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(
+                    Rotations)); // converts from hood angle to motor rotations
 
     // system of equations
     // (-b/2a) = (velocity)*cos(theta)*t
@@ -62,7 +66,8 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
             Math.sqrt(
                 2 * 9.8 * vertex / (Math.sin(theta.in(Radians)) * Math.cos(theta.in(Radians)))));
 
-    // Calculate angular velocity using the formula: angular velocity (rotations per second) = linear velocity / circumference
+    // Calculate angular velocity using the formula: angular velocity (rotations per second) =
+    // linear velocity / circumference
     double angularVelocityMagnitude =
         velocity.in(MetersPerSecond) / (Math.PI * 2 * ShooterConstants.FLYWHEEL_RADIUS.in(Meters));
 

@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -31,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private Angle extensionTarget; // Rotations
 
   private PositionTorqueCurrentFOC extensionControl;
+
+  private boolean invertRoller = false;
 
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
@@ -62,7 +65,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
+    rollerMotor.setControl(
+        rollerControl.withVelocity(
+            (invertRoller ? -1 : 1) * rollerVelocityTarget.in(RotationsPerSecond)));
     extensionMotor.setControl(
         extensionControl
             .withPosition(extensionTarget.in(Rotations))
@@ -143,11 +148,16 @@ public class IntakeSubsystem extends SubsystemBase {
     return spinRollerCommand()
         .andThen(
             setIntakeExtensionCommand(Rotations.of(IntakePreferences.dislodgePosition.getValue()))
+                .andThen(new WaitCommand(0.2))
                 .andThen(
                     setIntakeExtensionCommand(
                         Rotations.of(IntakePreferences.intakeCollectPosition.getValue()))))
         .repeatedly()
         .withName("Dislodge Intake");
+  }
+
+  public Command invertRollerCommand() {
+    return runOnce(() -> invertRoller = !invertRoller);
   }
 
   public Command homeIntakeCommand() {

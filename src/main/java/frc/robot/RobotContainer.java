@@ -218,6 +218,20 @@ public class RobotContainer {
                     LaunchState.getInstance()
                         .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
 
+    //  ------------ Comp Controls
+    // Reset the field-centric heading on start button press.
+    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    // Direct intake controls: RB -> collect : LB -> stow
+    driverJoystick.rightBumper().onTrue(intake.collectCommand());
+    driverJoystick.leftBumper().onTrue(intake.stowCommand());
+
+    // Roller control: B -> change direction
+    driverJoystick.b().onTrue(intake.invertRollerCommand());
+
+    // Dislodge command: A -> Dislodge lemons
+    driverJoystick.a().whileTrue(intake.dislodgeCommand());
+
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 

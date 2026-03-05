@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5,
-        "y": 5.6
+        "x": 3.338,
+        "y": 5.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.918501779447732,
-        "y": 5.4915159561627895
+        "x": 2.3704845181159406,
+        "y": 5.0860485428938755
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.5,
-        "y": 5.6
+        "x": 1.594908105110159,
+        "y": 4.108851600749693
       },
       "prevControl": {
-        "x": 5.4697790849278345,
-        "y": 5.6
+        "x": 2.8930631021179387,
+        "y": 5.415867786084497
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -1.1726074424252688
   },
   "reversed": false,
-  "folder": "Basic Comp Paths",
+  "folder": "Immediate Shoot - RIGHT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -40.0
+    "rotation": -55.31887958752116
   },
   "useDefaultConstraints": true
 }

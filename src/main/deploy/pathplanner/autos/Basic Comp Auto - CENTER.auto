@@ -7,49 +7,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot"
+            "pathName": "Start to Shoot - CENTER"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Overbump"
+            "name": "Shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect"
+            "pathName": "Shoot to HP - CENTER"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HP Reload"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Overbump to Shoot"
+            "pathName": "HP to Shoot - CENTER"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "Shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climber"
+            "pathName": "Shoot to Climb - CENTER"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Basic Comp Autons",
   "choreoAuto": false
 }

@@ -4,34 +4,36 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.commands.DriveBySpeed;
-import frc.robot.commands.WheelSlipTest;
+import frc.robot.statemachines.DriveState;
+import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.shooter.LaunchRequest;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 @Logged
 public class RobotContainer {
-
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
   private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController driverJoystick = new CommandXboxController(0);
+  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
@@ -41,8 +43,22 @@ public class RobotContainer {
   @Logged(name = "Indexer")
   public final IndexerSubsystem indexer = new IndexerSubsystem();
 
+  @Logged(name = "Shooter")
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
+
   @Logged(name = "Climber")
   public final ClimberSubsystem climber = new ClimberSubsystem();
+
+  @Logged(name = "Vision")
+  public final VisionSubsystem vision = new VisionSubsystem();
+
+  private final DriveState driveState = DriveState.getInstance();
+  private final LaunchState launchState = LaunchState.getInstance();
+
+  private final Command driveAndLaunchCommand =
+      drivetrain
+          .applyRequest(() -> getDriveAndLaunchRequest())
+          .alongWith(shooter.spinFlywheelRanged());
 
   private final SendableChooser<Command> autoChooser;
 
@@ -51,12 +67,13 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
-    configureSubsystemDefaultCommands();
-    configureBindings();
+    // Idle while the robot is disabled. This ensures the configured
+    // neutral mode is applied to the drive motors while disabled.
+    RobotModeTriggers.disabled()
+        .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
   }
 
-  private void configureSubsystemDefaultCommands() {
-
+  public void configureSubsystemDefaultCommands() {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
@@ -64,55 +81,177 @@ public class RobotContainer {
                 DriveConstants.DEFAULT_DRIVE_REQUEST
                     .withVelocityX(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftY(), 2), joystick.getLeftY())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
                             * DriveConstants
                                 .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
                     .withVelocityY(
                         -1
-                            * Math.copySign(Math.pow(joystick.getLeftX(), 2), joystick.getLeftX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                             * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
                     .withRotationalRate(
                         -1
-                            * Math.copySign(Math.pow(joystick.getRightX(), 2), joystick.getRightX())
+                            * Math.copySign(
+                                Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
                             * DriveConstants
                                 .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
                     .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
                     .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
   }
 
-  private void configureBindings() {
+  public void removeSubsystemDefaultCommands() {
+    drivetrain.removeDefaultCommand();
+  }
+
+  public void configureTestBindings() {
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
+
     final var idle = new SwerveRequest.Idle();
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick
-        .b()
-        .whileTrue(
-            drivetrain.applyRequest(
-                () ->
-                    point.withModuleDirection(
-                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+    // driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    // driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
-
-    // joystick.x().onTrue(drivetrain.sysIdSteer());
-    // joystick.y().onTrue(drivetrain.sysIdTranslation());
-    joystick.x().onTrue(new WheelSlipTest(drivetrain));
-    joystick
-        .y()
-        .whileTrue(new DriveBySpeed(drivetrain, DrivePreferences.onemeter_speed)); // Testing only
+    // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Reset the field-centric heading on left bumper press.
-    joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    SmartDashboard.putData(shooter.startShooterTuningCommand());
+    SmartDashboard.putData(shooter.stopShooterTuningCommand());
+    SmartDashboard.putData(shooter.increaseFlywheelCommand());
+    SmartDashboard.putData(shooter.decreaseFlywheelCommand());
+    SmartDashboard.putData(shooter.increaseHoodCommand());
+    SmartDashboard.putData(shooter.decreaseHoodCommand());
+
+    driverJoystick
+        .a()
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
+  }
+
+  public void configureTeleopBindings() {
+
+    // driverJoystick
+    //     .a()
+    //     .whileTrue(intake.setExtendNoPID())
+    //     .onFalse(
+    //         intake
+    //             .stopExtensionNoPID()
+    //             .andThen(intake.startRollerReverseNoPID())
+    //             .alongWith(indexer.startIndexerReverseNoPID()));
+
+    // driverJoystick
+    //     .b()
+    //     .onTrue(intake.stopRollerNoPID().alongWith(indexer.stopIndexerNoPID()))
+    //     .whileTrue(intake.setRetractNoPID())
+    //     .onFalse(intake.stopExtensionNoPID());
+
+    driverJoystick
+        .rightBumper()
+        .whileTrue(intake.setExtendNoPID())
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
+
+    driverJoystick
+        .leftBumper()
+        .whileTrue(intake.setRetractNoPID())
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
+
+    // operatorJoystick
+    //     .leftTrigger()
+    //     .whileTrue(shooter.spinFlywheelCommand())
+    //     .onFalse(shooter.stopFlywheelCommand());
+
+    operatorJoystick
+        .rightTrigger()
+        .whileTrue(indexer.pulsingIndexCommand())
+        .onFalse(indexer.stopFullIndexingNoPID());
+
+    // operatorJoystick
+    //     .leftTrigger()
+    driverJoystick
+        .a()
+        .whileTrue(driveAndLaunchCommand)
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+
+    // driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
+
+    /*
+    driverJoystick
+        .rightTrigger()
+        .whileTrue(indexer.startFullIndexingNoPID())
+        .onFalse(indexer.stopFullIndexingNoPID());
+    */
+
+    // operatorJoystick.leftTrigger().whileTrue(driveAndLaunchCommand.repeatedly());
+    // operatorJoystick
+    //     .rightBumper()
+    //     .whileTrue(indexer.startFullIndexingNoPID())
+    //     .onFalse(indexer.stopFullIndexingNoPID());
+
+    // Reset the field-centric heading on start button press.
+    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+    operatorJoystick
+        .a()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
+
+    operatorJoystick
+        .x()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
+
+    operatorJoystick
+        .b()
+        .onTrue(
+            Commands.runOnce(
+                () ->
+                    LaunchState.getInstance()
+                        .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+
+  private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
+    LaunchRequest launchRequest = launchState.getLaunchRequest();
+    double rotationalRate =
+        launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
+            + DrivePreferences.autoAim_kP.getValue()
+                * launchRequest
+                    .getTargetRobotAngle()
+                    .minus(driveState.getCurrentDriveStats().Pose.getRotation())
+                    .getRadians()
+            + DrivePreferences.autoAim_kD.getValue()
+                * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
+                    - driveState.getFieldVelocity().omegaRadiansPerSecond);
+    return DriveConstants.DEFAULT_DRIVE_REQUEST
+        .withVelocityX(
+            -1
+                * Math.copySign(Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
+                * DriveConstants.MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
+        .withVelocityY(
+            -1
+                * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
+                * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
+        .withRotationalRate(rotationalRate)
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
+        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
   }
 }

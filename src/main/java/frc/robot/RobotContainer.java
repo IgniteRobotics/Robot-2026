@@ -166,16 +166,16 @@ public class RobotContainer {
     //     .whileTrue(shooter.spinFlywheelCommand())
     //     .onFalse(shooter.stopFlywheelCommand());
 
-    // operatorJoystick
-    //     .rightTrigger()
-    driverJoystick
-        .a()
+    operatorJoystick
+        .rightTrigger()
         .whileTrue(indexer.pulsingIndexCommand())
         .onFalse(indexer.stopFullIndexingNoPID());
 
     operatorJoystick
         .leftTrigger()
-        .whileTrue(shooter.spinFlywheelRanged())
+        // driverJoystick
+        //     .a()
+        .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     // driverJoystick.leftTrigger().whileTrue(driveAndLaunchCommand);
@@ -231,12 +231,12 @@ public class RobotContainer {
     LaunchRequest launchRequest = launchState.getLaunchRequest();
     double rotationalRate =
         launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
-            + DrivePreferences.rotation_kP.getValue()
+            + DrivePreferences.autoAim_kP.getValue()
                 * launchRequest
                     .getTargetRobotAngle()
                     .minus(driveState.getCurrentDriveStats().Pose.getRotation())
                     .getRadians()
-            + DrivePreferences.rotation_kD.getValue()
+            + DrivePreferences.autoAim_kD.getValue()
                 * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
                     - driveState.getFieldVelocity().omegaRadiansPerSecond);
     return DriveConstants.DEFAULT_DRIVE_REQUEST
@@ -248,10 +248,7 @@ public class RobotContainer {
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                 * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
-        .withRotationalRate(
-            -1
-                * Math.copySign(Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
-                * DriveConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
+        .withRotationalRate(rotationalRate)
         .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
         .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
   }

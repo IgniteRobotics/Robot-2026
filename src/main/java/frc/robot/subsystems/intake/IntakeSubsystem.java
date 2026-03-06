@@ -4,8 +4,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -19,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import java.util.function.BooleanSupplier;
 
 @Logged
 public class IntakeSubsystem extends SubsystemBase {
@@ -65,11 +64,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
     extensionMotor.setControl(
         extensionControl
             .withPosition(extensionTarget.in(Rotations))
             .withOverrideCoastDurNeutral(true));
+            */
   }
 
   public Command spinRollerCommand() {
@@ -95,7 +96,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command startRollerNoPID(BooleanSupplier b) {
-    return run(() -> rollerMotor.set(b.getAsBoolean() ? IntakePreferences.rollerOutakePercent.getValue() :IntakePreferences.rollerIntakePercent.getValue()))
+    return run(() ->
+            rollerMotor.set(
+                b.getAsBoolean()
+                    ? IntakePreferences.rollerOutakePercent.getValue()
+                    : IntakePreferences.rollerIntakePercent.getValue()))
         .withName("Set Roller Percent");
   }
 

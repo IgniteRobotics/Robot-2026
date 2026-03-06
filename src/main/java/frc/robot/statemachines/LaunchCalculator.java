@@ -118,12 +118,17 @@ public class LaunchCalculator {
     // target.getTranslation().toTranslation2d());
 
     AngularVelocity targetRobotAngularVelocity =
+        // RadiansPerSecond.of(
+        //     driveAngleFilter.calculate(
+        //         targetRobotAngle
+        //
+        // .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
+        //                 .getRadians()
+        //             / loopPeriodSecs));
         RadiansPerSecond.of(
-            driveAngleFilter.calculate(
-                targetRobotAngle
-                        .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
-                        .getRadians()
-                    / loopPeriodSecs));
+            targetRobotAngle
+                .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
+                .getRadians());
 
     if (builderType == LaunchType.MAPPED)
       return new MappedLaunchRequestBuilder()

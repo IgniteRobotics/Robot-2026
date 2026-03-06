@@ -128,7 +128,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command collectCommand() {
     return setIntakeExtensionCommand(
             Rotations.of(IntakePreferences.intakeCollectPosition.getValue()))
-        .andThen(spinRollerCommand())
+        .andThen(startRollerNoPID()) // Set to  spinRollerCommand() after PID tuning
         .withName("Activate Intake Collection");
   }
 

@@ -155,7 +155,7 @@ public class RobotContainer {
     driverJoystick
         .rightBumper()
         .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID(driverJoystick.b())));
 
     driverJoystick
         .leftBumper()

@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -89,6 +91,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command startRollerNoPID() {
     return run(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
+        .withName("Set Roller Percent");
+  }
+
+  public Command startRollerNoPID(BooleanSupplier b) {
+    return run(() -> rollerMotor.set(b.getAsBoolean() ? IntakePreferences.rollerOutakePercent.getValue() :IntakePreferences.rollerIntakePercent.getValue()))
         .withName("Set Roller Percent");
   }
 

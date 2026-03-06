@@ -238,5 +238,29 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Drive/AutoAim/kP",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/AutoAim/kD",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive/AutoAim/MaxDriveSpeed",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

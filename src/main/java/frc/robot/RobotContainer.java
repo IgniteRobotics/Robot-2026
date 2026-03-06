@@ -58,6 +58,7 @@ public class RobotContainer {
   private final Command driveAndLaunchCommand =
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
+          // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged());
 
   private final SendableChooser<Command> autoChooser;
@@ -132,8 +133,8 @@ public class RobotContainer {
 
     driverJoystick
         .a()
-        .whileTrue(indexer.startFullIndexingNoPID())
-        .onFalse(indexer.stopFullIndexingNoPID());
+        .whileTrue(driveAndLaunchCommand)
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
   }
 
   public void configureTeleopBindings() {

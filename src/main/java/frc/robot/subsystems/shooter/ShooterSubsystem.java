@@ -92,9 +92,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command spinFlywheelCommand() {
     return runOnce(
-            () ->
-                velocityTarget =
-                    RotationsPerSecond.of(ShooterPreferences.flywheelLaunchSpeed.getValue()))
+            () -> {
+              velocityTarget =
+                  RotationsPerSecond.of(ShooterPreferences.flywheelLaunchSpeed.getValue());
+              hoodTarget = Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue());
+            })
         .withName("Start Spinning Flywheel");
   }
 

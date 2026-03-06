@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Hub to pouch"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pouch to hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hub_s to center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "collect"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "collect to shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonShoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Test Autons",
+  "choreoAuto": false
+}

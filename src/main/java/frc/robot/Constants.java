@@ -42,7 +42,7 @@ public final class Constants {
     public static final Pose3d BLUE_HUB =
         new Pose3d(Meters.of(4.623), Meters.of(4.06), Meters.of(1.435), Rotation3d.kZero);
     public static final Pose3d BLUE_LEFT_PASS =
-        new Pose3d(Meters.of(7), Meters.of(1), Meters.of(0), Rotation3d.kZero);
+        new Pose3d(Meters.of(1), Meters.of(7), Meters.of(0), Rotation3d.kZero);
     public static final Pose3d BLUE_RIGHT_PASS =
         new Pose3d(Meters.of(1.0), Meters.of(1.0), Meters.of(0.0), Rotation3d.kZero);
 

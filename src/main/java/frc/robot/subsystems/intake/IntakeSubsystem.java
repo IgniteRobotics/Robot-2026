@@ -132,11 +132,27 @@ public class IntakeSubsystem extends SubsystemBase {
         .withName("Activate Intake Collection");
   }
 
+  public Command collectNoPIDCommand() {
+    return setExtendNoPID()
+        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
+        .andThen(stopExtensionNoPID())
+        .andThen(startRollerNoPID())
+        .withName("Activate Intake Collection (NOPID)");
+  }
+
   public Command stowCommand() {
     return setIntakeExtensionCommand(Rotations.of(0))
         .andThen(stopRollerCommand())
         .andThen(setIntakeExtensionCommand(Rotations.of(0)).repeatedly())
         .withName("Stow Intake");
+  }
+
+  public Command stowNoPIDCommand() {
+    return setRetractNoPID()
+        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
+        .andThen(stopExtensionNoPID())
+        .andThen(stopRollerNoPID())
+        .withName("Activate Intake Collection (NOPID)");
   }
 
   public Command dislodgeCommand() {

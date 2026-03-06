@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.statemachines.LaunchState;
 import frc.robot.statemachines.ShiftState;
 
 /**
@@ -100,6 +101,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    LaunchState.getInstance().setTargetPose3d(Constants.FieldConstants.getHubTarget());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

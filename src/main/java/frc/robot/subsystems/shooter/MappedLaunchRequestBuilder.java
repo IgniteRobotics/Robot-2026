@@ -44,25 +44,25 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
 
     hoodAngleMap.put(0.99, Rotation2d.fromRotations(0.0));
     hoodAngleMap.put(1.62, Rotation2d.fromRotations(1.0));
-    hoodAngleMap.put(1.94, Rotation2d.fromRotations(2.4));
-    hoodAngleMap.put(2.53, Rotation2d.fromRotations(3.2));
-    hoodAngleMap.put(3.00, Rotation2d.fromRotations(3.8));
-    hoodAngleMap.put(3.51, Rotation2d.fromRotations(3.8));
+    hoodAngleMap.put(1.94, Rotation2d.fromRotations(2.1));
+    hoodAngleMap.put(2.53, Rotation2d.fromRotations(3.3));
+    hoodAngleMap.put(3.00, Rotation2d.fromRotations(4.0));
+    hoodAngleMap.put(3.51, Rotation2d.fromRotations(4.0));
     hoodAngleMap.put(6.00, Rotation2d.fromRotations(6.1)); // put in a value to max out the hood
 
     flywheelSpeedMap.put(0.99, 57.7);
-    flywheelSpeedMap.put(1.62, 60.9);
-    flywheelSpeedMap.put(1.94, 66.7);
-    flywheelSpeedMap.put(2.53, 68.8);
-    flywheelSpeedMap.put(3.00, 72.5);
-    flywheelSpeedMap.put(3.51, 78.0);
+    flywheelSpeedMap.put(1.62, 61.9);
+    flywheelSpeedMap.put(1.94, 62.7);
+    flywheelSpeedMap.put(2.53, 70.8);
+    flywheelSpeedMap.put(3.00, 74.5);
+    flywheelSpeedMap.put(3.51, 80.0);
     flywheelSpeedMap.put(6.00, 108.0); // put in a value to max out the hood
 
-    passingHoodAngleMap.put(passingMinDistance, Rotation2d.fromDegrees(0.0));
-    passingHoodAngleMap.put(passingMaxDistance, Rotation2d.fromDegrees(0.0));
+    passingHoodAngleMap.put(passingMinDistance, Rotation2d.fromDegrees(3.0));
+    passingHoodAngleMap.put(passingMaxDistance, Rotation2d.fromDegrees(6.1));
 
-    passingFlywheelSpeedMap.put(passingMinDistance, 0.0);
-    passingFlywheelSpeedMap.put(passingMaxDistance, 0.0);
+    passingFlywheelSpeedMap.put(passingMinDistance, 70.0);
+    passingFlywheelSpeedMap.put(passingMaxDistance, 100.0);
   }
 
   public LaunchRequest createLaunchRequest(

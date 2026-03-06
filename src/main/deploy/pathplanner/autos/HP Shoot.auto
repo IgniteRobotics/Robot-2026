@@ -5,33 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Start to HP - HP AUTO"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "HP Reload"
+            "name": "Collect Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HP to Right Tower - HP AUTO"
+            "pathName": "Start To HP - HP SHOOT"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right Tower through Depot - HP AUTO"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot to Shoot - HP AUTO"
+            "pathName": "HP to Shoot - HP SHOOT"
           }
         },
         {
@@ -41,15 +35,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Shoot to Climb - HP AUTO"
+            "name": "Stow Intake"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Other Comp Autons",
+  "folder": "Basic Comp Autons",
   "choreoAuto": false
 }

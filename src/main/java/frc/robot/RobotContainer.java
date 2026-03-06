@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
@@ -61,10 +62,22 @@ public class RobotContainer {
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged());
 
+  private final Command autonShootCommand =
+      drivetrain
+          .applyRequest(() -> getDriveAndLaunchRequest())
+          // .alongWith(shooter.spinFlywheelCommand());
+          .alongWith(shooter.spinFlywheelRanged())
+          .alongWith(
+              new WaitCommand(1)
+                  .andThen(indexer.pulsingIndexCommand().raceWith(new WaitCommand(5))));
+
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
+    NamedCommands.registerCommand("AutonShoot", autonShootCommand);
+    NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
+    NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 

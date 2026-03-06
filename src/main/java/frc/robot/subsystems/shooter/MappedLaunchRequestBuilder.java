@@ -24,8 +24,9 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
   private static final double passingMaxDistance;
 
   // Launching Maps
-  private static final InterpolatingTreeMap<Double, Rotation2d> hoodAngleMap =
-      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
+  //   private static final InterpolatingTreeMap<Double, Rotation2d> hoodAngleMap =
+  //   new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
+  private static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap();
   private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
       new InterpolatingDoubleTreeMap();
 
@@ -42,13 +43,13 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     passingMinDistance = 0.0;
     passingMaxDistance = 100000;
 
-    hoodAngleMap.put(0.99, Rotation2d.fromRotations(0.0));
-    hoodAngleMap.put(1.62, Rotation2d.fromRotations(1.0));
-    hoodAngleMap.put(1.94, Rotation2d.fromRotations(2.1));
-    hoodAngleMap.put(2.53, Rotation2d.fromRotations(3.3));
-    hoodAngleMap.put(3.00, Rotation2d.fromRotations(4.0));
-    hoodAngleMap.put(3.51, Rotation2d.fromRotations(4.0));
-    hoodAngleMap.put(6.00, Rotation2d.fromRotations(6.1)); // put in a value to max out the hood
+    hoodAngleMap.put(0.99, 0.0);
+    hoodAngleMap.put(1.62, 1.0);
+    hoodAngleMap.put(1.94, 2.1);
+    hoodAngleMap.put(2.53, 3.3);
+    hoodAngleMap.put(3.00, 4.0);
+    hoodAngleMap.put(3.51, 4.0);
+    hoodAngleMap.put(6.00, 6.1); // put in a value to max out the hood
 
     flywheelSpeedMap.put(0.99, 57.7);
     flywheelSpeedMap.put(1.62, 64.3);
@@ -74,9 +75,7 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
 
     // calculate hood angle
     double hoodAngle =
-        passing
-            ? passingHoodAngleMap.get(distance).getRotations()
-            : hoodAngleMap.get(distance).getRotations();
+        passing ? passingHoodAngleMap.get(distance).getRotations() : hoodAngleMap.get(distance);
 
     // calculate flywheel speed
     double flywheelSpeed =

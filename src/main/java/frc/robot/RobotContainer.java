@@ -208,13 +208,13 @@ public class RobotContainer {
         .withVelocityX(
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
-                * DriveConstants.MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
+                * DrivePreferences.autoAimMaxSpeed
+                    .getValue()) // Drive forward with negative Y (forward)
         .withVelocityY(
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
-                * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
+                * DrivePreferences.autoAimMaxSpeed.getValue()) // Drive left with negative X (left)
         .withRotationalRate(rotationalRate)
-        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
-        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1);
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
   }
 }

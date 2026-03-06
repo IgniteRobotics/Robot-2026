@@ -33,12 +33,6 @@
           "data": {
             "pathName": "HP to Shoot - HP SHOOT"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutonShoot"
-          }
         }
       ]
     }

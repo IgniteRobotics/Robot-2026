@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "AutonShoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Shoot to Overbump - RIGHT"
@@ -38,12 +32,6 @@
           "type": "path",
           "data": {
             "pathName": "Overbump to Shoot - RIGHT"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutonShoot"
           }
         },
         {

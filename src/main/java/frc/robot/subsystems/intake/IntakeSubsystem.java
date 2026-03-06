@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -134,7 +135,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command collectNoPIDCommand() {
     return setExtendNoPID()
-        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
+        .andThen(new WaitCommand(1))
         .andThen(stopExtensionNoPID())
         .andThen(startRollerNoPID())
         .withName("Activate Intake Collection (NOPID)");
@@ -149,7 +150,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command stowNoPIDCommand() {
     return setRetractNoPID()
-        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
+        .andThen(new WaitCommand(1))
         .andThen(stopExtensionNoPID())
         .andThen(stopRollerNoPID())
         .withName("Activate Intake Collection (NOPID)");

@@ -175,7 +175,7 @@ public class RobotContainer {
     operatorJoystick
         .leftBumper()
         .whileTrue(shooter.spinFlywheelRanged())
-        .onTrue(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

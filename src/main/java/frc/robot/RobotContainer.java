@@ -71,7 +71,7 @@ public class RobotContainer {
           .alongWith(shooter.spinFlywheelRanged())
           .alongWith(
               new WaitCommand(1)
-                  .andThen(indexer.pulsingIndexCommand().raceWith(new WaitCommand(5))));
+                  .andThen(indexer.pulsingIndexCommand().raceWith(new WaitCommand(5)))).raceWith(new WaitCommand(ShooterPreferences.autoAimDeadline.getValue()));
 
   private final SendableChooser<Command> autoChooser;
 
@@ -173,9 +173,7 @@ public class RobotContainer {
 
     operatorJoystick
         .leftTrigger()
-        .whileTrue(
-            driveAndLaunchCommand.raceWith(
-                new WaitCommand(ShooterPreferences.autoAimDeadline.getValue())))
+        .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     operatorJoystick

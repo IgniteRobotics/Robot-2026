@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import java.util.function.BooleanSupplier;
 
 @Logged
 public class IntakeSubsystem extends SubsystemBase {
@@ -95,17 +94,13 @@ public class IntakeSubsystem extends SubsystemBase {
         .withName("Set Roller Percent");
   }
 
-  public Command startRollerNoPID(BooleanSupplier b) {
-    return run(() ->
-            rollerMotor.set(
-                b.getAsBoolean()
-                    ? IntakePreferences.rollerOutakePercent.getValue()
-                    : IntakePreferences.rollerIntakePercent.getValue()))
+  public Command outtakeRollerNoPID() {
+    return run(() -> rollerMotor.set(IntakePreferences.rollerOuttakePercent.getValue()))
         .withName("Set Roller Percent");
   }
 
   public Command startRollerReverseNoPID() {
-    return run(() -> rollerMotor.set(IntakePreferences.rollerOutakePercent.getValue()))
+    return run(() -> rollerMotor.set(IntakePreferences.rollerOuttakePercent.getValue()))
         .withName("Set Roller Reverse Percent");
   }
 

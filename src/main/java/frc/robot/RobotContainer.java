@@ -80,7 +80,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
     NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
-    NamedCommands.registerCommand("HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
+    NamedCommands.registerCommand(
+        "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
@@ -159,12 +160,17 @@ public class RobotContainer {
     driverJoystick
         .rightBumper()
         .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID(driverJoystick.b())));
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
 
     driverJoystick
         .leftBumper()
         .whileTrue(intake.setRetractNoPID())
         .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
+
+    driverJoystick
+        .b()
+        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+        .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
     operatorJoystick
         .rightTrigger()

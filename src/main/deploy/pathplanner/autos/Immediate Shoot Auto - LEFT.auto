@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Overbump through Field - SHOOT LEFT"

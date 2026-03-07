@@ -24,6 +24,7 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterPreferences;
@@ -79,6 +80,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
     NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
+    NamedCommands.registerCommand("HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);

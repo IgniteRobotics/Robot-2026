@@ -27,4 +27,7 @@ public class IntakePreferences {
 
   public static DoublePreference noPIDWait =
       new DoublePreference("Intake/Extension Deadline (No PID)", 1.0); // in seconds
+
+  public static DoublePreference outpostReloadWait =
+      new DoublePreference("Intake/Outpost Reload Waittime", 2.5); // in seconds
 }

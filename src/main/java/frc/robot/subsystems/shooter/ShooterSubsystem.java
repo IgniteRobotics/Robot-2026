@@ -149,6 +149,14 @@ public class ShooterSubsystem extends SubsystemBase {
         });
   }
 
+  public Command spinFlywheelHardCoded(){
+    return run(
+        () -> {
+          velocityTarget = RotationsPerSecond.of(66.5);
+          hoodTarget = Rotations.of(2.38);
+        });
+  }
+
   public Command launchLemonsCommandNoPID() {
     return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
         .andThen(

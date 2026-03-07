@@ -198,5 +198,53 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Indexer/Index Speed",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Indexer/Index Percent (for without PID)",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Indexer/Reverse Index Percent (for without PID)",
+    "type": "double",
+    "value": -0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Indexer/Accelerator Percent (for without PID)",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Indexer/Pulsing Run Time",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Indexer/Pulsing Pause Time",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

@@ -27,7 +27,6 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
-import frc.robot.subsystems.shooter.ShooterPreferences;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -69,15 +68,16 @@ public class RobotContainer {
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged())
-          .alongWith(
-              new WaitCommand(1)
-                  .andThen(indexer.pulsingIndexCommand().raceWith(new WaitCommand(5)))).raceWith(new WaitCommand(ShooterPreferences.autoAimDeadline.getValue()));
+          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
+
+  private final Command stopShotCommand = indexer.stopIndexerNoPID().andThen(shooter.stopFlywheelCommand()).andThen(shooter.stowHood());
 
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
+    NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
     NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
     NamedCommands.registerCommand(

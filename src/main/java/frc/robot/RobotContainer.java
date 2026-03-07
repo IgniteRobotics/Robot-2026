@@ -69,7 +69,11 @@ public class RobotContainer {
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged())
           .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
-        
+
+  private final Command autonShootCommandHard_Coded =
+      shooter
+          .spinFlywheelHardCoded()
+          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
 
   private final Command stopShotCommand =
       indexer
@@ -82,6 +86,7 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
+    NamedCommands.registerCommand("AutonShootHardCoded", autonShootCommandHard_Coded);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
     NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());

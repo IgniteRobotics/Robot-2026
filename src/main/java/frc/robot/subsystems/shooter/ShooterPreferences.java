@@ -29,4 +29,7 @@ public class ShooterPreferences {
       new DoublePreference("Shooter/Tuning/HoodRotations", 0.0);
   public static DoublePreference tuningDefaultHoodStepRotations =
       new DoublePreference("Shooter/Tuning/HoodStepRotations", 0.2);
+
+  public static DoublePreference autoAimDeadline =
+      new DoublePreference("Shooter/Auto Aim Deadline", 5.0); // in seconds
 }

@@ -24,4 +24,7 @@ public class IntakePreferences {
 
   public static DoublePreference dislodgePosition =
       new DoublePreference("Intake/Extension Dislodge Position", 1.5);
+
+  public static DoublePreference noPIDWait =
+      new DoublePreference("Intake/Extension Deadline (No PID)", 1.0); // in seconds
 }

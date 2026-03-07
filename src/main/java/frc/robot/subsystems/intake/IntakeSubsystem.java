@@ -147,7 +147,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command collectNoPIDCommand() {
     return setExtendNoPID()
-        .andThen(new WaitCommand(1))
+        .raceWith(new WaitCommand(IntakePreferences.noPIDWait.getValue()))
         .andThen(stopExtensionNoPID())
         .andThen(startRollerNoPID())
         .withName("Activate Intake Collection (NOPID)");

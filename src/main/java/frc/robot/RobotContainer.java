@@ -26,6 +26,7 @@ import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
+import frc.robot.subsystems.shooter.ShooterPreferences;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -170,7 +171,9 @@ public class RobotContainer {
 
     operatorJoystick
         .leftTrigger()
-        .whileTrue(driveAndLaunchCommand)
+        .whileTrue(
+            driveAndLaunchCommand.raceWith(
+                new WaitCommand(ShooterPreferences.autoAimDeadline.getValue())))
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     operatorJoystick

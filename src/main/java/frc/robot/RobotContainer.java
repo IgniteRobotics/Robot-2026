@@ -79,6 +79,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
     NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
+    autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Idle while the robot is disabled. This ensures the configured

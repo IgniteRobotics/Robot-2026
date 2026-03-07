@@ -149,7 +149,7 @@ public class ShooterSubsystem extends SubsystemBase {
         });
   }
 
-  public Command spinFlywheelHardCoded(){
+  public Command spinFlywheelHardCoded() {
     return run(
         () -> {
           velocityTarget = RotationsPerSecond.of(66.5);

@@ -63,11 +63,17 @@ public class RobotContainer {
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged());
 
+  /*
   private final Command autonShootCommand =
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged())
+          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
+        */
+  private final Command autonShootCommand =
+      shooter
+          .spinFlywheelRanged()
           .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
 
   private final Command stopShotCommand =

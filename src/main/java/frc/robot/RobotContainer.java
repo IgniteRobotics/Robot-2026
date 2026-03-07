@@ -70,7 +70,11 @@ public class RobotContainer {
           .alongWith(shooter.spinFlywheelRanged())
           .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
 
-  private final Command stopShotCommand = indexer.stopFullIndexingNoPID().andThen(shooter.stopFlywheelCommand()).andThen(shooter.stowHood());
+  private final Command stopShotCommand =
+      indexer
+          .stopFullIndexingNoPID()
+          .andThen(shooter.stopFlywheelCommand())
+          .andThen(shooter.stowHood());
 
   private final SendableChooser<Command> autoChooser;
 

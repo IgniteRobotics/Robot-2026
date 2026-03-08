@@ -48,7 +48,7 @@
   "folder": "Immediate Shoot - LEFT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 56.071323149334354
+    "rotation": 56.07132314933436
   },
   "useDefaultConstraints": true
 }

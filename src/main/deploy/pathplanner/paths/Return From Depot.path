@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.25,
-        "y": 4.0
+        "x": 0.577,
+        "y": 4.92
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.082727633491432,
-        "y": 1.8730084818696446
+        "x": 0.5441084337349397,
+        "y": 7.575578313253011
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.847,
-        "y": 0.65
+        "x": 2.25,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 1.3949057055025293,
-        "y": 1.6765242538024667
+        "x": 1.910072289156626,
+        "y": 9.116385542168675
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.3510074231177034,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.25641974735566
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Center AUTO",
+  "folder": "Shoot Then Depot Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

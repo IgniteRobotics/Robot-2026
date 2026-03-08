@@ -23,7 +23,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 3.0
                 }
               }
             ]
@@ -44,19 +44,38 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to HP - CENTER"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HP Reload"
+            "pathName": "Shoot to Depot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HP to Shoot - CENTER"
+            "pathName": "Return From Depot"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutonShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShot"
           }
         }
       ]

@@ -5,21 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Start to HP - HP AUTO"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "HP Reload"
+            "name": "AutonShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HP to Right Tower - HP AUTO"
+            "pathName": "Hub to pouch"
           }
         },
         {
@@ -31,13 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Tower through Depot - HP AUTO"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot to Shoot - HP AUTO"
+            "pathName": "pouch to hub"
           }
         },
         {
@@ -49,13 +37,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climb - HP AUTO"
+            "pathName": "hub_s to center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "collect"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "collect to shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonShoot"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Other Comp Autons",
+  "folder": "Test Autons",
   "choreoAuto": false
 }

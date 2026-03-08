@@ -127,10 +127,11 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command stopFullIndexingNoPID() {
-    return run(() -> {
-          indexerMotorLeader.set(0);
-          acceleratorMotor.set(0);
-        })
+    return runOnce(
+            () -> {
+              indexerMotorLeader.set(0);
+              acceleratorMotor.set(0);
+            })
         .withName("Stop Full Indexing No PID");
   }
 

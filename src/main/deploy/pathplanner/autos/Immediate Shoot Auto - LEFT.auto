@@ -13,13 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "AutonShoot"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Shoot to Overbump - SHOOT LEFT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
           }
         },
         {
@@ -37,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "AutonShoot"
           }
         },
         {

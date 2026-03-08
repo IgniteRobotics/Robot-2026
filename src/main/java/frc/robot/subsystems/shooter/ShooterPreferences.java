@@ -29,4 +29,7 @@ public class ShooterPreferences {
       new DoublePreference("Shooter/Tuning/HoodRotations", 0.0);
   public static DoublePreference tuningDefaultHoodStepRotations =
       new DoublePreference("Shooter/Tuning/HoodStepRotations", 0.2);
+
+  public static DoublePreference passingFlywheelSpeed =
+      new DoublePreference("Shooter/Tuning/Flywheel Pass Speed", 62);
 }

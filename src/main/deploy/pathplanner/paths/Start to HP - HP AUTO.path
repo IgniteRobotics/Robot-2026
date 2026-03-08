@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 0.5,
+        "x": 0.85,
         "y": 0.64
       },
       "prevControl": {
-        "x": 2.353873425242809,
+        "x": 2.703873425242809,
         "y": 0.6383105690369354
       },
       "nextControl": null,
@@ -48,7 +48,7 @@
   "folder": "HP AUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.04387247602065
+    "rotation": 179.04387247602068
   },
   "useDefaultConstraints": true
 }

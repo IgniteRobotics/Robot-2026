@@ -34,30 +34,6 @@
           "data": {
             "name": "StopShot"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Collect Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to HP - CENTER"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HP Reload"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HP to Shoot - CENTER"
-          }
         }
       ]
     }

@@ -23,9 +23,28 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutonShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 9.0
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "AutonShoot"
+            "name": "StopShot"
           }
         }
       ]

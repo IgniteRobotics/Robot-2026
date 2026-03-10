@@ -124,6 +124,7 @@ public class IntakeSubsystem extends SubsystemBase {
         .withName("Extend Intake Percent");
   }
 
+
   public Command setRetractNoPID() {
     return run(() -> extensionMotor.set(IntakePreferences.retractPercent.getValue()))
         .withName("Retract Intake Percent");

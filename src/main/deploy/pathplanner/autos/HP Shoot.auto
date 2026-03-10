@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Points"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Collect Intake"
@@ -38,6 +32,12 @@
           "type": "named",
           "data": {
             "name": "AutonShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow Intake"
           }
         }
       ]

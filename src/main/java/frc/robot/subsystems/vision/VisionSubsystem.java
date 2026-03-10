@@ -7,14 +7,14 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.DriveState;
-import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 @Logged
@@ -35,17 +35,17 @@ public class VisionSubsystem extends SubsystemBase {
   */
 
   public class VisionMeasurement {
-    private EstimatedRobotPose estimatedPose;
+    private Pose2d estimatedPose;
     private double timestamp;
     private Vector<N3> trustValues;
 
-    public VisionMeasurement(EstimatedRobotPose pose, double time, Vector<N3> trust) {
+    public VisionMeasurement(Pose2d pose, double time, Vector<N3> trust) {
       estimatedPose = pose;
       timestamp = time;
       trustValues = trust;
     }
 
-    public EstimatedRobotPose getEstimatedPose() {
+    public Pose2d getEstimatedPose() {
       return estimatedPose;
     }
 
@@ -65,148 +65,82 @@ public class VisionSubsystem extends SubsystemBase {
     if (driveState.hasDriveStats()) {
       // this makes sure that the different parts of the periodic use different stats
       driveStats = driveState.getCurrentDriveStats();
+
       // Front Camera
       // This is FIFO, so the oldest is given first and the newest last'
-      CameraConstants.photonPoseEstimator_Front.setReferencePose(driveStats.Pose);
       var frontCameraResults = CameraConstants.photonCamera_Front.getAllUnreadResults();
-      for (var result : frontCameraResults) {
-        Optional<EstimatedRobotPose> estimatedPose =
-            CameraConstants.photonPoseEstimator_Front.update(result);
-        if (!estimatedPose.isEmpty()) {
-          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Front);
-        }
-      }
+      for (var result : frontCameraResults)
+        createMeasurement(result, CameraConstants.photonCameraName_Front);
+
       // Left Camera
-      CameraConstants.photonPoseEstimator_Left.setReferencePose(driveStats.Pose);
       var leftCameraResults = CameraConstants.photonCamera_Left.getAllUnreadResults();
-      for (var result : leftCameraResults) {
-        Optional<EstimatedRobotPose> estimatedPose =
-            CameraConstants.photonPoseEstimator_Left.update(result);
-        if (!estimatedPose.isEmpty()) {
-          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Left);
-        }
-      }
+      for (var result : leftCameraResults)
+        createMeasurement(result, CameraConstants.photonCameraName_Left);
+
       // Right Camera
-      CameraConstants.photonPoseEstimator_Right.setReferencePose(driveStats.Pose);
       var rightCameraResults = CameraConstants.photonCamera_Right.getAllUnreadResults();
-      for (var result : rightCameraResults) {
-        Optional<EstimatedRobotPose> estimatedPose =
-            CameraConstants.photonPoseEstimator_Right.update(result);
-        if (!estimatedPose.isEmpty()) {
-          evaluateMeasurement(estimatedPose.get(), CameraConstants.photonCameraName_Right);
-        }
-      }
+      for (var result : rightCameraResults)
+        createMeasurement(result, CameraConstants.photonCameraName_Right);
     }
   }
 
-  public void setPipeline(int index) {
-    CameraConstants.photonCamera_Front.setPipelineIndex(index);
+  // code from PoseEstimator class
+  private void createMeasurement(PhotonPipelineResult result, String cameraName) {
+    PhotonTrackedTarget lowestAmbiguityTarget = null;
+
+    double lowestAmbiguityScore = 10;
+    for (PhotonTrackedTarget target : result.targets) {
+      double targetPoseAmbiguity = target.getPoseAmbiguity();
+      // Make sure the target is a Fiducial target.
+      if (targetPoseAmbiguity != -1 && targetPoseAmbiguity < lowestAmbiguityScore) {
+        lowestAmbiguityScore = targetPoseAmbiguity;
+        lowestAmbiguityTarget = target;
+      }
+    }
+
+    // Although there are confirmed to be targets, none of them may be fiducial
+    // targets.
+    if (lowestAmbiguityTarget == null
+        || lowestAmbiguityScore > CameraConstants.MAXIMUM_ALLOWED_AMBIGUITY) return;
+
+    int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
+
+    Pose3d targetPosition = CameraConstants.FIELD_LAYOUT.getTagPose(targetFiducialId).get();
+
+    evaluateMeasurement(
+        targetPosition
+            .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse())
+            .transformBy(CameraConstants.cameraTransformMap.get(cameraName).inverse()),
+        lowestAmbiguityTarget,
+        cameraName);
   }
 
   // evaluates the estimations before export
-  private void evaluateMeasurement(EstimatedRobotPose pose, String cameraName) {
-    // default trust values (NOTE: higher values means less trust)
-    // the trust values are equivalent to standard deviations
-    double xyStds = 0.5;
-    double thetaStd = 0.5;
+  private void evaluateMeasurement(Pose3d pose, PhotonTrackedTarget targetUsed, String cameraName) {
 
-    // "maximum value" variable instatiation
-    double maxTargetArea = 0;
-    double highestAmbiguity = 0;
-
-    // iterates through every target (AprilTag) used to calculate the pose
-    for (PhotonTrackedTarget target : pose.targetsUsed) {
-      if (target.getPoseAmbiguity() > highestAmbiguity) {
-        highestAmbiguity = target.getPoseAmbiguity();
-      }
-      if (target.area > maxTargetArea) {
-        maxTargetArea = target.area;
-      }
-    }
-
-    /*
-    if (cameraName.equals("FRONT-CAMERA")) highestAmbiguityFront = highestAmbiguity;
-    else if (cameraName.equals("LEFT-CAMERA")) highestAmbiguityLeft = highestAmbiguity;
-    else if (cameraName.equals("RIGHT-CAMERA")) highestAmbiguityRight = highestAmbiguity;
-    */
-    if (cameraName.equals("FRONT-CAMERA"))
-      SmartDashboard.putNumber("Front Camera Highest Ambiguity", highestAmbiguity);
-    else if (cameraName.equals("LEFT-CAMERA"))
-      SmartDashboard.putNumber("Left Camera Highest Ambiguity", highestAmbiguity);
-    else if (cameraName.equals("RIGHT-CAMERA"))
-      SmartDashboard.putNumber("Right Camera Highest Ambiguity", highestAmbiguity);
-
-    // if the pose has a target with too much ambiguity, don't use it
-    if (highestAmbiguity > CameraConstants.MAXIMUM_ALLOWED_AMBIGUITY) return;
-
-    // precalculated value (distance from past robot pose to estimated pose)
-    double poseDistance =
-        pose.estimatedPose
-            .toPose2d()
-            .getTranslation()
-            .getDistance(driveStats.Pose.getTranslation());
-
-    if (cameraName.equals("FRONT-CAMERA"))
-      SmartDashboard.putNumber("Front Camera Pose Distance", poseDistance);
-    else if (cameraName.equals("LEFT-CAMERA"))
-      SmartDashboard.putNumber("Left Camera Pose Distance", poseDistance);
-    else if (cameraName.equals("RIGHT-CAMERA"))
-      SmartDashboard.putNumber("Right Camera Pose Distance", poseDistance);
+    double estimateDistance =
+        driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
+    double robotToTagDistance =
+        pose.getTranslation()
+            .getDistance(
+                CameraConstants.FIELD_LAYOUT
+                    .getTagPose(targetUsed.getFiducialId())
+                    .get()
+                    .getTranslation());
 
     if (!RobotModeTriggers.disabled().getAsBoolean()
-        && poseDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) return;
+        && estimateDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) return;
 
-    // if the target is large
-    // at 2m, the target is .5% of the image.
-    // at 1m, the target is 2.5% of the image.
-    if (maxTargetArea > 2) {
-      // we're not moving, trust the pose
-      if (driveStats.Speeds.vxMetersPerSecond + driveStats.Speeds.vyMetersPerSecond < 0.2) {
-        xyStds = 0.05;
-        if (driveStats.Speeds.omegaRadiansPerSecond < 0.1) {
-          thetaStd = 0.05;
-        }
-        // new pose is close to the old pose, trust the pose
-      } else if (poseDistance < 0.5) {
-        xyStds = 0.15;
-        thetaStd = 0.15;
-      }
-    } else if (maxTargetArea > 0.5) {
-      // we're not moving, trust the pose
-      if (driveStats.Speeds.vxMetersPerSecond + driveStats.Speeds.vyMetersPerSecond < 0.2) {
-        xyStds = 0.1;
-        thetaStd = 0.1;
-        if (driveStats.Speeds.omegaRadiansPerSecond < 0.1) {
-          thetaStd = 0.1;
-        }
-        // new pose is close to the old pose, trust the pose
-      } else if (poseDistance < 0.5) {
-        xyStds = 0.25;
-        thetaStd = 0.25;
-      }
-      // if targets are faraway, we need to have a smaller ambiguity
-    } else if (highestAmbiguity > 0.1) {
-      xyStds = 0.75;
-      thetaStd = 0.75;
-    }
+    double xyStdDev = CameraConstants.XY_STD_DEV_COEFFICIENT * Math.pow(robotToTagDistance, 1.2);
 
-    // if you're spinning, bail.
-    if (driveStats.Speeds.omegaRadiansPerSecond > Math.PI) {
-      return;
-    } else if (driveStats.Speeds.omegaRadiansPerSecond
-        > 0.5) { // if you're rotating quickly, trust the pose less
-      thetaStd = 0.75;
-    }
-
-    // uploads the pose with its trust values to the drive statemachine
-    // this pose will then be exported to the drivetrain to help navigation
-    // note that we use a singular trust value for both the x and y trust values
+    double thetaStdDev =
+        CameraConstants.THETA_STD_DEV_COEFFICIENT * Math.pow(robotToTagDistance, 1.2);
 
     driveState.addVisionEstimate(
-        new VisionMeasurement(pose, Utils.getCurrentTimeSeconds(), VecBuilder.fill(0, 0, 0)),
+        new VisionMeasurement(
+            pose.toPose2d(),
+            Utils.getCurrentTimeSeconds(),
+            VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
         cameraName);
-
-    SmartDashboard.putNumber("Vision/xyStds", xyStds);
-    SmartDashboard.putNumber("Vision/thetaStds", thetaStd);
   }
 }

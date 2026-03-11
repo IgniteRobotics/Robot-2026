@@ -112,6 +112,47 @@ public class ShiftState {
   }
 
   /**
+   * Returns the end time (in remaining match seconds) for the given shift.
+   *
+   * @param shift The shift to get the end time for
+   * @return The end time in seconds, or -1 for NONE/unknown
+   */
+  private double getShiftEndTime(Shift shift) {
+    switch (shift) {
+      case AUTONOMOUS:
+        return 0.0; // Auto countdown is independent; ends when matchTime reaches 0
+      case TRANSITION:
+        return TRANSITION_END_TIME;
+      case SHIFT_1:
+        return SHIFT_1_END_TIME;
+      case SHIFT_2:
+        return SHIFT_2_END_TIME;
+      case SHIFT_3:
+        return SHIFT_3_END_TIME;
+      case SHIFT_4:
+        return SHIFT_4_END_TIME;
+      case ENDGAME:
+        return ENDGAME_END_TIME;
+      case NONE:
+      default:
+        return -1;
+    }
+  }
+
+  /**
+   * Returns the time in seconds until the current shift ends.
+   *
+   * @return Time remaining in the current shift, or -1 for NONE/unknown state
+   */
+  public double getTimeUntilShiftEnd() {
+    double shiftEndTime = getShiftEndTime(currentShift);
+    if (shiftEndTime < 0) {
+      return -1;
+    }
+    return DriverStation.getMatchTime() - shiftEndTime;
+  }
+
+  /**
    * Returns a formatted countdown string showing time remaining until the current shift ends.
    *
    * <p>Format: "XX.YY" (e.g., "05.25" for 5.25 seconds remaining)
@@ -121,40 +162,10 @@ public class ShiftState {
    */
   @Logged(name = "Shift Countdown")
   public String getShiftCountdownString() {
-    double matchTime = DriverStation.getMatchTime();
-    double shiftEndTime;
+    double timeRemaining = getTimeUntilShiftEnd();
 
-    switch (currentShift) {
-      case AUTONOMOUS:
-        // Autonomous ends when teleop starts (at TELEOP_START_TIME remaining)
-        shiftEndTime = TELEOP_START_TIME;
-        break;
-      case TRANSITION:
-        shiftEndTime = TRANSITION_END_TIME;
-        break;
-      case SHIFT_1:
-        shiftEndTime = SHIFT_1_END_TIME;
-        break;
-      case SHIFT_2:
-        shiftEndTime = SHIFT_2_END_TIME;
-        break;
-      case SHIFT_3:
-        shiftEndTime = SHIFT_3_END_TIME;
-        break;
-      case SHIFT_4:
-        shiftEndTime = SHIFT_4_END_TIME;
-        break;
-      case ENDGAME:
-        shiftEndTime = ENDGAME_END_TIME;
-        break;
-      case NONE:
-      default:
-        return "--:--";
-    }
-
-    double timeRemaining = matchTime - shiftEndTime;
     if (timeRemaining < 0) {
-      return "00.00";
+      return "--:--";
     }
 
     return formatCountdownString(timeRemaining);
@@ -162,14 +173,14 @@ public class ShiftState {
 
   private String formatCountdownString(double timeSeconds) {
     int seconds = (int) timeSeconds;
-    int hundredths = (int) ((timeSeconds - seconds) * 100);
+    int tenths = (int) ((timeSeconds - seconds) * 10);
 
-    // Clamp hundredths to 0-99 range (handle floating point precision)
-    if (hundredths > 99) {
-      hundredths = 99;
+    // Clamp tenths to 0-9 range (handle floating point precision)
+    if (tenths > 9) {
+      tenths = 9;
     }
 
-    return String.format("%02d.%02d", seconds, hundredths);
+    return String.format("%02d.%d", seconds, tenths);
   }
 
   public void periodic() {
@@ -185,7 +196,8 @@ public class ShiftState {
     }
     // Update the internal shiftState based on current match time and redWonAuton
     updateInternalShiftState();
-    //explicitly push to dashboards
+    // explicitly push to dashboards
     SmartDashboard.putString("Shift/Countdown", getShiftCountdownString());
+    SmartDashboard.putString("Shift/Current", currentShift.name());
   }
 }

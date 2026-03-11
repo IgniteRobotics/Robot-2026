@@ -46,7 +46,14 @@ public class UISubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     boolean canScore = ShiftState.getInstance().isOurHubActive();
-    double timeToNextTransition = getTimeUntilNextTransition();
+    double timeToNextTransition = ShiftState.getInstance().getTimeUntilShiftEnd();
+    ShiftState.Shift currentShift = ShiftState.getInstance().getShiftFromMatchTime();
+
+    // Force red when autonomous or match ends (time ran out)
+    if ((currentShift == ShiftState.Shift.AUTONOMOUS || currentShift == ShiftState.Shift.ENDGAME)
+        && timeToNextTransition <= 0) {
+      canScore = false;
+    }
 
     // Detect state transitions
     if (canScore != lastCanScore) {
@@ -88,44 +95,6 @@ public class UISubsystem extends SubsystemBase {
 
     // Update last state
     lastCanScore = canScore;
-  }
-
-  /**
-   * Gets the time in seconds until the next scoring window transition. Returns -1 if in a period
-   * where both hubs are active (no transition expected).
-   */
-  private double getTimeUntilNextTransition() {
-    ShiftState.Shift currentShift = ShiftState.getInstance().getShiftFromMatchTime();
-    double matchTime = edu.wpi.first.wpilibj.DriverStation.getMatchTime();
-
-    switch (currentShift) {
-      case AUTONOMOUS:
-        // Transition to TRANSITION period at TELEOP_START_TIME
-        return matchTime - ShiftState.TELEOP_START_TIME;
-
-      case TRANSITION:
-        // Transition to SHIFT_1 at TRANSITION_END_TIME
-        return matchTime - ShiftState.TRANSITION_END_TIME;
-
-      case SHIFT_1:
-        return matchTime - ShiftState.SHIFT_1_END_TIME;
-
-      case SHIFT_2:
-        return matchTime - ShiftState.SHIFT_2_END_TIME;
-
-      case SHIFT_3:
-        return matchTime - ShiftState.SHIFT_3_END_TIME;
-
-      case SHIFT_4:
-        return matchTime - ShiftState.SHIFT_4_END_TIME;
-
-      case ENDGAME:
-        // No more transitions in endgame
-        return -1;
-
-      default:
-        return -1;
-    }
   }
 
   /** Returns the color hex code based on current feedback state. */

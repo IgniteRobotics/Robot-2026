@@ -26,14 +26,10 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // *rads* Per Second is the base unit.
 
-  private VelocityVoltage velocityControl;
-
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // radians is the base unit.
 
-  @Logged(name = "Accelerator Velocity Target", importance = Importance.CRITICAL)
-  private AngularVelocity acceleratorVelocityTarget;
-
+  private VelocityVoltage velocityControl;
   private PositionVoltage hoodControl;
   private VelocityVoltage acceleratorControl;
 
@@ -82,7 +78,6 @@ public class ShooterSubsystem extends SubsystemBase {
         .getConfigurator()
         .apply(ShooterConstants.createAcceleratorMotorOutputsConfigs());
 
-    acceleratorVelocityTarget = RotationsPerSecond.of(0);
     acceleratorControl = new VelocityVoltage(0);
 
     velocityTarget = RotationsPerSecond.of(0);
@@ -98,12 +93,15 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     launchState.refreshRequest();
+    
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    acceleratorMotor.setControl(
+        acceleratorControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    
     hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
-    // acceleratorMotor.setControl(acceleratorControl.withVelocity(acceleratorVelocityTarget.in(RotationsPerSecond))); // After PID tuning
   }
 
   @Logged(name = "Velocity Target RPM", importance = Importance.CRITICAL)
@@ -123,12 +121,12 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Start Launching Lemons");
   }
 
-  public Command launchLemonsRanged() { // SpinFlywheelRanged and start accelerator
-    return spinFlywheelRanged().andThen(startAccelerator());
+  public Command launchLemonsRanged() { // Main command for start launching
+    return spinFlywheelRanged();
   }
 
-  public Command stopLaunchingLemons() { // Stop flywheel & accelerator and stow hood
-    return stopFlywheelCommand().andThen(stopAccelerator()).andThen(stowHood());
+  public Command stopLaunchingLemons() { // Main command for stopping - stop flywheel and stow hood
+    return stopFlywheelCommand().andThen(stowHood());
   }
 
   /* Flywheel Commands */
@@ -197,14 +195,6 @@ public class ShooterSubsystem extends SubsystemBase {
   /* Accelerator Commands */
   private void setAcceleratorVoltage(double magnitude) {
     acceleratorMotor.setVoltage(magnitude);
-  }
-
-  public Command startAccelerator() {
-    return runOnce(() -> acceleratorVelocityTarget = velocityTarget);
-  }
-
-  public Command stopAccelerator() {
-    return runOnce(() -> acceleratorVelocityTarget = RotationsPerSecond.of(0));
   }
 
   /* NoPID Commands */

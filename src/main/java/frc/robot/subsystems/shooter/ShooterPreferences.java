@@ -35,4 +35,7 @@ public class ShooterPreferences {
 
   protected static DoublePreference acceleratorPercent =
       new DoublePreference("Indexer/Accelerator Percent (for without PID)", 0.1); // in percent
+
+  protected static DoublePreference acceleratorVelocity =
+      new DoublePreference("Indexer/Accelerator Velocity", 0.1); // in percent
 }

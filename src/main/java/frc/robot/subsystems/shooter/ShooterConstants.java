@@ -96,6 +96,7 @@ public class ShooterConstants {
     slot.kD = ACCELERATOR_KD;
     return slot;
   }
+
   public static MotorOutputConfigs createAcceleratorMotorOutputsConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;

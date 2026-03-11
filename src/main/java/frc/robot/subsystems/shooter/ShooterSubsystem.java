@@ -66,7 +66,6 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
     acceleratorMotor = new TalonFX(ShooterConstants.ACCELERATOR_MOTOR_ID);
 
-
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
     flywheelMotorFollower
@@ -104,6 +103,7 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
+    // acceleratorMotor.setControl(acceleratorControl.withVelocity(acceleratorVelocityTarget.in(RotationsPerSecond))); // After PID tuning
   }
 
   @Logged(name = "Velocity Target RPM", importance = Importance.CRITICAL)
@@ -116,19 +116,22 @@ public class ShooterSubsystem extends SubsystemBase {
     return hoodTarget.in(Rotations);
   }
 
-  private void setAcceleratorVoltage(double magnitude) {
-    acceleratorMotor.setVoltage(magnitude);
+  /* Main Commands */
+  public Command launchLemonsCommand() {
+    return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
+        .andThen(spinFlywheelCommand())
+        .withName("Start Launching Lemons");
   }
 
-  public Command startAcceleratorNoPID() {
-    return run(() -> acceleratorMotor.set(ShooterPreferences.acceleratorPercent.getValue()))
-        .withName("Set Acceleration Percent");
-  }
-  
-  public Command stopAcceleratorNoPID() {
-    return runOnce(() -> acceleratorMotor.set(0)).withName("Stop Accelerator Percent");
+  public Command launchLemonsRanged() { // SpinFlywheelRanged and start accelerator
+    return spinFlywheelRanged().andThen(startAccelerator());
   }
 
+  public Command stopLaunchingLemons() { // Stop flywheel & accelerator and stow hood
+    return stopFlywheelCommand().andThen(stopAccelerator()).andThen(stowHood());
+  }
+
+  /* Flywheel Commands */
   public Command spinFlywheelCommand() {
     return runOnce(
             () -> {
@@ -148,6 +151,28 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Stop Spinning Flywheel");
   }
 
+  private void setFlywheelVoltage(double magnitude) {
+    flywheelMotorLeader.setVoltage(magnitude);
+    flywheelMotorFollower.setVoltage(magnitude);
+  }
+
+  public Command spinFlywheelRanged() {
+    return run(
+        () -> {
+          velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
+          hoodTarget = launchState.getLaunchRequest().getHoodTarget();
+        });
+  }
+
+  public Command spinFlywheelHardCoded() {
+    return run(() -> {
+          velocityTarget = RotationsPerSecond.of(66.5);
+          hoodTarget = Rotations.of(2.38);
+        })
+        .andThen(startAcceleratorNoPID());
+  }
+
+  /* Hood Commands */
   public Command stowHood() {
     return runOnce(() -> hoodTarget = Rotations.of(0));
   }
@@ -155,11 +180,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command setHoodToPreference() {
     return runOnce(
         () -> hoodTarget = Rotations.of(ShooterPreferences.hoodTargetPreference.getValue()));
-  }
-
-  private void setFlywheelVoltage(double magnitude) {
-    flywheelMotorLeader.setVoltage(magnitude);
-    flywheelMotorFollower.setVoltage(magnitude);
   }
 
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
@@ -174,26 +194,27 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Set Hood Angle");
   }
 
-  public Command launchLemonsCommand() {
-    return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
-        .andThen(spinFlywheelCommand())
-        .withName("Start Launching Lemons");
+  /* Accelerator Commands */
+  private void setAcceleratorVoltage(double magnitude) {
+    acceleratorMotor.setVoltage(magnitude);
   }
 
-  public Command spinFlywheelRanged() {
-    return run(
-        () -> {
-          velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
-          hoodTarget = launchState.getLaunchRequest().getHoodTarget();
-        });
+  public Command startAccelerator() {
+    return runOnce(() -> acceleratorVelocityTarget = velocityTarget);
   }
 
-  public Command spinFlywheelHardCoded() {
-    return run(
-        () -> {
-          velocityTarget = RotationsPerSecond.of(66.5);
-          hoodTarget = Rotations.of(2.38);
-        });
+  public Command stopAccelerator() {
+    return runOnce(() -> acceleratorVelocityTarget = RotationsPerSecond.of(0));
+  }
+
+  /* NoPID Commands */
+  public Command startAcceleratorNoPID() {
+    return run(() -> acceleratorMotor.set(ShooterPreferences.acceleratorPercent.getValue()))
+        .withName("Set Acceleration Percent");
+  }
+
+  public Command stopAcceleratorNoPID() {
+    return runOnce(() -> acceleratorMotor.set(0)).withName("Stop Accelerator Percent");
   }
 
   public Command launchLemonsCommandNoPID() {
@@ -218,10 +239,7 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Stop Launching Lemons (No PID)");
   }
 
-  public Command stowCommand() {
-    return stopFlywheelCommand().andThen(setHoodCommand(Rotations.of(0))).withName("Stow Shooter");
-  }
-
+  /* Testing Commands */
   public Command homeShooterCommand() {
     return runEnd(
             () -> hoodMotor.set(ShooterConstants.SAFE_HOMING_EFFORT.Output),

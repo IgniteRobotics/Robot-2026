@@ -21,6 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorLeader;
   private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
+  private final TalonFX acceleratorMotor;
 
   @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // *rads* Per Second is the base unit.
@@ -30,7 +31,11 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // radians is the base unit.
 
+  @Logged(name = "Accelerator Velocity Target", importance = Importance.CRITICAL)
+  private AngularVelocity acceleratorVelocityTarget;
+
   private PositionVoltage hoodControl;
+  private VelocityVoltage acceleratorControl;
 
   private final LaunchState launchState = LaunchState.getInstance();
 
@@ -44,10 +49,23 @@ public class ShooterSubsystem extends SubsystemBase {
               state -> SignalLogger.writeString("SysIdFlywheel_State", state.toString())),
           new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
 
+  final SysIdRoutine m_sysIdRoutineAccelerator =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              null, // Use default ramp rate (1 V/s)
+              Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+              null, // Use default timeout (10 s)
+              // Log state with SignalLogger class
+              state -> SignalLogger.writeString("SysIdAccelerator_State", state.toString())),
+          new SysIdRoutine.Mechanism(
+              output -> setAcceleratorVoltage(output.magnitude()), null, this));
+
   public ShooterSubsystem() {
     flywheelMotorLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEADER_MOTOR_ID);
     flywheelMotorFollower = new TalonFX(ShooterConstants.FLYWHEEL_FOLLOWER_MOTOR_ID);
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
+    acceleratorMotor = new TalonFX(ShooterConstants.ACCELERATOR_MOTOR_ID);
+
 
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
@@ -59,6 +77,14 @@ public class ShooterSubsystem extends SubsystemBase {
         .apply(ShooterConstants.createFollowerMotorOutputConfigs());
     // flywheelMotorFollower.setControl(
     //    new Follower(flywheelMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
+
+    acceleratorMotor.getConfigurator().apply(ShooterConstants.createAcceleratorMotorSlot0Configs());
+    acceleratorMotor
+        .getConfigurator()
+        .apply(ShooterConstants.createAcceleratorMotorOutputsConfigs());
+
+    acceleratorVelocityTarget = RotationsPerSecond.of(0);
+    acceleratorControl = new VelocityVoltage(0);
 
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);
@@ -88,6 +114,19 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "Hood Angle Rotations", importance = Importance.CRITICAL)
   public double getHoodTargetRotations() {
     return hoodTarget.in(Rotations);
+  }
+
+  private void setAcceleratorVoltage(double magnitude) {
+    acceleratorMotor.setVoltage(magnitude);
+  }
+
+  public Command startAcceleratorNoPID() {
+    return run(() -> acceleratorMotor.set(ShooterPreferences.acceleratorPercent.getValue()))
+        .withName("Set Acceleration Percent");
+  }
+  
+  public Command stopAcceleratorNoPID() {
+    return runOnce(() -> acceleratorMotor.set(0)).withName("Stop Accelerator Percent");
   }
 
   public Command spinFlywheelCommand() {

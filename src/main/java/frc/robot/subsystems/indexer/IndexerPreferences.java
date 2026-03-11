@@ -15,9 +15,6 @@ final class IndexerPreferences {
   protected static DoublePreference indexerReversePercent =
       new DoublePreference("Indexer/Reverse Index Percent (for without PID)", -0.1); // in percent
 
-  protected static DoublePreference acceleratorPercent =
-      new DoublePreference("Indexer/Accelerator Percent (for without PID)", 0.1); // in percent
-
   protected static DoublePreference indexerRunTime =
       new DoublePreference("Indexer/Pulsing Run Time", 2.0); // in seconds
 

@@ -19,6 +19,7 @@ public class ShooterConstants {
   public static final int FLYWHEEL_LEADER_MOTOR_ID = 5;
   public static final int FLYWHEEL_FOLLOWER_MOTOR_ID = 6;
   public static final int HOOD_MOTOR_ID = 4;
+  public static final int ACCELERATOR_MOTOR_ID = 8;
 
   public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
@@ -78,6 +79,26 @@ public class ShooterConstants {
   public static MotorOutputConfigs createHoodMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
+  }
+
+  protected static final double ACCELERATOR_KS = 0;
+  protected static final double ACCELERATOR_KV = 0;
+  protected static final double ACCELERATOR_KP = 0;
+  protected static final double ACCELERATOR_KD = 0;
+
+  protected static Slot0Configs createAcceleratorMotorSlot0Configs() {
+    Slot0Configs slot = new Slot0Configs();
+    slot.kS = ACCELERATOR_KS;
+    slot.kV = ACCELERATOR_KV;
+    slot.kP = ACCELERATOR_KP;
+    slot.kD = ACCELERATOR_KD;
+    return slot;
+  }
+  public static MotorOutputConfigs createAcceleratorMotorOutputsConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }

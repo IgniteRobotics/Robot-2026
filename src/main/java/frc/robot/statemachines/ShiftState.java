@@ -3,6 +3,7 @@ package frc.robot.statemachines;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 @Logged
 public class ShiftState {
@@ -184,5 +185,7 @@ public class ShiftState {
     }
     // Update the internal shiftState based on current match time and redWonAuton
     updateInternalShiftState();
+    //explicitly push to dashboards
+    SmartDashboard.putString("Shift/Countdown", getShiftCountdownString());
   }
 }

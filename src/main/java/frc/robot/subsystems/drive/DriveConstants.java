@@ -46,5 +46,5 @@ public class DriveConstants {
   public static final AngularAcceleration WHEEL_RADIUS_TEST_RAMP_RATE =
       RadiansPerSecondPerSecond.of(0.05);
   // TODO: NEED ACTUAL VALUE
-  public static final Distance DRIVETRAIN_RADIUS = Inches.of(25);
+  public static final Distance DRIVETRAIN_RADIUS = Inches.of(15.365);
 }

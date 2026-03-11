@@ -343,9 +343,9 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
                           (state.headingDelta * DriveConstants.DRIVETRAIN_RADIUS.in(Inches))
                               / wheelDelta;
 
-                      SmartDashboard.getNumber(
+                      SmartDashboard.putNumber(
                           "Wheel Radius Characterization/Wheel Delta", wheelDelta);
-                      SmartDashboard.getNumber(
+                      SmartDashboard.putNumber(
                           "Wheel Radius Characterization/Wheel Radius", wheelRadius);
                     })))
         .withName("Wheel Radius Characterization Test");

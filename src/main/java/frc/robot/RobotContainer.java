@@ -161,6 +161,7 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.decreaseFlywheelCommand());
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
+    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
 
     driverJoystick
         .a()

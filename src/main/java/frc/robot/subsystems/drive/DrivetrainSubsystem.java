@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.hardware.CANrange;
@@ -273,7 +274,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
   public Command wheelRadiusCharacterization() {
     SlewRateLimiter limiter =
-        new SlewRateLimiter(DriveConstants.WHEEL_RADIUS_TEST_MAX_VELOCITY.in(RadiansPerSecond));
+        new SlewRateLimiter(
+            DriveConstants.WHEEL_RADIUS_TEST_RAMP_RATE.in(RadiansPerSecondPerSecond));
     WheelRadiusCharacterizationState state = new WheelRadiusCharacterizationState();
 
     return Commands.parallel(
@@ -284,15 +286,15 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
                 // Turn in place, accelerating up to full speed
                 Commands.run(
-                    () ->
-                        this.applyRequest(
-                            () ->
-                                new FieldCentric()
-                                    .withSteerRequestType(SteerRequestType.Position)
-                                    .withRotationalRate(
-                                        limiter.calculate(
-                                            DriveConstants.WHEEL_RADIUS_TEST_MAX_VELOCITY.in(
-                                                RadiansPerSecond)))),
+                    () -> {
+                      double rate =
+                          limiter.calculate(
+                              DriveConstants.WHEEL_RADIUS_TEST_MAX_VELOCITY.in(RadiansPerSecond));
+                      this.setControl(
+                          new FieldCentric()
+                              .withSteerRequestType(SteerRequestType.Position)
+                              .withRotationalRate(rate));
+                    },
                     this)),
 
             // Measurement sequence
@@ -336,7 +338,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
                       double wheelDelta = 0.0;
                       for (int i = 0; i < 4; i++) {
                         wheelDelta +=
-                            Math.abs(positions[i] - state.startingWheelPositions[i]) / 4.0;
+                            Math.abs(positions[i] - state.startingWheelPositions[i])
+                                / (4.0 * 6.746031746031747);
                       }
 
                       double wheelRadius =
@@ -344,10 +347,13 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
                               / wheelDelta;
 
                       SmartDashboard.putNumber(
+                          "Wheel Radius Characterization/Heading Delta", state.headingDelta);
+                      SmartDashboard.putNumber(
                           "Wheel Radius Characterization/Wheel Delta", wheelDelta);
                       SmartDashboard.putNumber(
                           "Wheel Radius Characterization/Wheel Radius", wheelRadius);
                     })))
+        .finallyDo(() -> this.setControl(new SwerveRequest.Idle()))
         .withName("Wheel Radius Characterization Test");
   }
 }

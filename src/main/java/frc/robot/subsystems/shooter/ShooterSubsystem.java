@@ -93,14 +93,20 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     launchState.refreshRequest();
-    
+
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     acceleratorMotor.setControl(
-        acceleratorControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    
+        acceleratorControl.withVelocity(
+            velocityTarget.in(RotationsPerSecond)
+                    > ShooterConstants.MAX_ACCELERATOR_RPS
+                        * ShooterConstants.FLYWHEEL_TO_ACCELERATOR_RATIO
+                ? ShooterConstants.MAX_ACCELERATOR_RPS
+                : velocityTarget.in(RotationsPerSecond)
+                    * ShooterConstants.FLYWHEEL_TO_ACCELERATOR_RATIO));
+
     hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
   }
 

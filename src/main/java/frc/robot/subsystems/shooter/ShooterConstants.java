@@ -118,4 +118,7 @@ public class ShooterConstants {
   public static final Angle MIN_HOOD_ANGLE = Degrees.of(20);
   public static final double OPTIMAL_PASSING_ENTRY_SLOPE = -1; // TODO: Tune
   public static final double OPTIMAL_HUB_ENTRY_SLOPE = -1; // TODO: Tune
+
+  public static final double MAX_ACCELERATOR_RPS = 95;
+  public static final double FLYWHEEL_TO_ACCELERATOR_RATIO = 0.167; // TODO: Tune
 }

@@ -335,15 +335,6 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
                       positions[3] =
                           this.getModule(3).getDriveMotor().getPosition().getValue().in(Radians);
 
-                      SmartDashboard.putNumber(
-                          "Wheel Radius Characterization/Front Left Position", positions[0]);
-                      SmartDashboard.putNumber(
-                          "Wheel Radius Characterization/Front Right Position", positions[1]);
-                      SmartDashboard.putNumber(
-                          "Wheel Radius Characterization/Rear Left Position", positions[2]);
-                      SmartDashboard.putNumber(
-                          "Wheel Radius Characterization/Rear Right Position", positions[3]);
-
                       double wheelDelta = 0.0;
                       for (int i = 0; i < 4; i++) {
                         wheelDelta +=

@@ -30,4 +30,6 @@ public class IntakePreferences {
 
   public static DoublePreference outpostReloadWait =
       new DoublePreference("Intake/Outpost Reload Waittime", 2.5); // in seconds
+  public static DoublePreference MowingIntakeSpeed = 
+      new DoublePreference("MidfieldMow", 2)//rotation per seconds 
 }

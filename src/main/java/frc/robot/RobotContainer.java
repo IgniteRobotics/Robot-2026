@@ -180,6 +180,10 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(intake.setRetractNoPID())
         .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
+        /*
+         * .a()
+         * .whileTrue(motor.getConfiguration.apply(config chosen, PersistMode.no Persist))
+         */
 
     driverJoystick
         .b()

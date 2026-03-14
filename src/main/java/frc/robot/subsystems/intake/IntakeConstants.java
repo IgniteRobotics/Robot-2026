@@ -4,17 +4,19 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.PersistMode;
+
 
 public class IntakeConstants {
 
   private IntakeConstants() {}
-
+  
   // TODO: Change to actual ports
   public static final int ROLLER_MOTOR_ID = 2;
   public static final int EXTENSION_MOTOR_ID = 1;
 
   // TODO: Tune Roller and Extension Motors
-
   // Roller Motor
   public static final double ROLLER_KS = 0;
   public static final double ROLLER_KV = 0;
@@ -29,6 +31,8 @@ public class IntakeConstants {
     slot.kD = ROLLER_KD;
     return slot;
   }
+
+  
 
   // Extension Motor
   public static final double ALLOWABLE_EXTENSION_ERROR = 0.1;
@@ -60,6 +64,28 @@ public class IntakeConstants {
     // newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
+  }
+
+  public static TalonFXConfiguration setslot0(){
+    var config = new TalonFXConfiguration();
+    config.Slot0.kP = 0.0;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    return config;
+  }
+  public static TalonFXConfiguration setslot1(){
+    var config = new TalonFXConfiguration();
+    config.Slot1.kP = 0.0;
+    config.Slot1.kI = 0.0;
+    config.Slot1.kD = 0.0;
+    return config;
+  }
+  public static TalonFXConfiguration setslor2(){
+    var config = new TalonFXConfiguration();
+    config.Slot2.kP = 0.0;
+    config.Slot2.kI = 0.0;
+    config.Slot2.kD = 0.0;
+    return config;
   }
 
   public static final double SAFE_HOMING_EFFORT = -0.2;

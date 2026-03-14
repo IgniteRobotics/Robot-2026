@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,16 +26,41 @@ public class VisionSubsystem extends SubsystemBase {
   private DriveState driveState = DriveState.getInstance();
   private SwerveDriveState driveStats;
 
-  /*
-  @Logged(name = "Highest Ambiguity Front Camera", importance = Importance.CRITICAL)
-  private double highestAmbiguityFront;
+  @Logged(name = "Front Camera/Results Accepted", importance = Importance.CRITICAL)
+  private long frontCameraResultsAccepted = 0;
 
-  @Logged(name = "Highest Ambiguity Left Camera", importance = Importance.CRITICAL)
-  private double highestAmbiguityLeft;
+  @Logged(name = "Front Camera/Results Rejected/Total", importance = Importance.CRITICAL)
+  private long frontCameraResultsRejectedTotal = 0;
 
-  @Logged(name = "Highest Ambiguity Right Camera", importance = Importance.CRITICAL)
-  private double highestAmbiguityRight;
-  */
+  @Logged(name = "Front Camera/Results Rejected/Ambiguity", importance = Importance.CRITICAL)
+  private long frontCameraResultsRejectedDueToAmbiguity = 0;
+
+  @Logged(name = "Front Camera/Results Rejected/Jumping", importance = Importance.CRITICAL)
+  private long frontCameraResultsRejectedDueToJumping = 0;
+
+  @Logged(name = "Left Camera/Results Accepted", importance = Importance.CRITICAL)
+  private long leftCameraResultsAccepted = 0;
+
+  @Logged(name = "Left Camera/Results Rejected/Total", importance = Importance.CRITICAL)
+  private long leftCameraResultsRejectedTotal = 0;
+
+  @Logged(name = "Left Camera/Results Rejected/Ambiguity", importance = Importance.CRITICAL)
+  private long leftCameraResultsRejectedDueToAmbiguity = 0;
+
+  @Logged(name = "Left Camera/Results Rejected/Jumping", importance = Importance.CRITICAL)
+  private long leftCameraResultsRejectedDueToJumping = 0;
+
+  @Logged(name = "Right Camera/Results Accepted", importance = Importance.CRITICAL)
+  private long rightCameraResultsAccepted = 0;
+
+  @Logged(name = "Right Camera/Results Rejected/Total", importance = Importance.CRITICAL)
+  private long rightCameraResultsRejectedTotal = 0;
+
+  @Logged(name = "Right Camera/Results Rejected/Ambiguity", importance = Importance.CRITICAL)
+  private long rightCameraResultsRejectedDueToAmbiguity = 0;
+
+  @Logged(name = "Right Camera/Results Rejected/Jumping", importance = Importance.CRITICAL)
+  private long rightCameraResultsRejectedDueToJumping = 0;
 
   public class VisionMeasurement {
     private Pose2d estimatedPose;
@@ -114,7 +140,10 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Although there are confirmed to be targets, none of them may be fiducial
       // targets.
-      if (lowestAmbiguityScore > CameraConstants.MAXIMUM_ALLOWED_AMBIGUITY) return;
+      if (lowestAmbiguityScore > CameraConstants.MAXIMUM_ALLOWED_AMBIGUITY) {
+        logBadResult(cameraName, "AMBIGUITY");
+        return;
+      }
 
       int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
 
@@ -135,7 +164,10 @@ public class VisionSubsystem extends SubsystemBase {
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
     if (!RobotModeTriggers.disabled().getAsBoolean()
-        && estimateDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) return;
+        && estimateDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) {
+      logBadResult(cameraName, "JUMPING");
+      return;
+    }
 
     double averageRobotToTagDistance = 0;
     for (int target : targetsUsed)
@@ -161,6 +193,8 @@ public class VisionSubsystem extends SubsystemBase {
             Utils.getCurrentTimeSeconds(),
             VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
         cameraName);
+
+    incrementAccepted(cameraName);
   }
 
   // evaluates the estimations before export
@@ -187,5 +221,29 @@ public class VisionSubsystem extends SubsystemBase {
             Utils.getCurrentTimeSeconds(),
             VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
         cameraName);
+
+    incrementAccepted(cameraName);
+  }
+
+  private void incrementAccepted(String cameraName) {
+    if (cameraName.equals(CameraConstants.photonCameraName_Front)) frontCameraResultsAccepted++;
+    if (cameraName.equals(CameraConstants.photonCameraName_Left)) leftCameraResultsAccepted++;
+    if (cameraName.equals(CameraConstants.photonCameraName_Right)) rightCameraResultsAccepted++;
+  }
+
+  private void logBadResult(String cameraName, String type) {
+    if (cameraName.equals(CameraConstants.photonCameraName_Front)) {
+      frontCameraResultsRejectedTotal++;
+      if (type.equals("AMBIGUITY")) frontCameraResultsRejectedDueToAmbiguity++;
+      else if (type.equals("JUMPING")) frontCameraResultsRejectedDueToJumping++;
+    } else if (cameraName.equals(CameraConstants.photonCameraName_Left)) {
+      leftCameraResultsRejectedTotal++;
+      if (type.equals("AMBIGUITY")) leftCameraResultsRejectedDueToAmbiguity++;
+      else if (type.equals("JUMPING")) leftCameraResultsRejectedDueToJumping++;
+    } else if (cameraName.equals(CameraConstants.photonCameraName_Right)) {
+      rightCameraResultsRejectedTotal++;
+      if (type.equals("AMBIGUITY")) rightCameraResultsRejectedDueToAmbiguity++;
+      else if (type.equals("JUMPING")) rightCameraResultsRejectedDueToJumping++;
+    }
   }
 }

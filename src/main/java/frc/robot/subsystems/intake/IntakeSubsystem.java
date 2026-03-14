@@ -33,8 +33,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private PositionTorqueCurrentFOC extensionControl;
 
-  private boolean invertRoller = false;
-
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -65,15 +63,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /*
     rollerMotor.setControl(
-        rollerControl.withVelocity(
-            (invertRoller ? -1 : 1) * rollerVelocityTarget.in(RotationsPerSecond)));
+        rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
     extensionMotor.setControl(
         extensionControl
             .withPosition(extensionTarget.in(Rotations))
             .withOverrideCoastDurNeutral(true));
-            */
   }
 
   public Command spinRollerCommand() {
@@ -177,10 +172,6 @@ public class IntakeSubsystem extends SubsystemBase {
                         Rotations.of(IntakePreferences.intakeCollectPosition.getValue()))))
         .repeatedly()
         .withName("Dislodge Intake");
-  }
-
-  public Command invertRollerCommand() {
-    return runOnce(() -> invertRoller = !invertRoller);
   }
 
   public Command homeIntakeCommand() {

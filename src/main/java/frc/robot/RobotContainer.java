@@ -170,26 +170,19 @@ public class RobotContainer {
   }
 
   public void configureTeleopBindings() {
-    driverJoystick
-        .rightBumper()
-        .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
-
-    driverJoystick
-        .b()
-        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
-        .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
-
+    // Index while holding right trigger
     operatorJoystick
         .rightTrigger()
         .whileTrue(indexer.pulsingIndexCommand())
         .onFalse(indexer.stopFullIndexingNoPID());
 
+    // Auto-aim and shoot while holding left trigger
     operatorJoystick
         .leftTrigger()
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
+    // Shoot with distance-based flywheel and hood while holding left bumper
     operatorJoystick
         .leftBumper()
         .whileTrue(shooter.spinFlywheelRanged())
@@ -199,11 +192,19 @@ public class RobotContainer {
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     // Direct intake controls: RB -> collect : LB -> stow
-    driverJoystick.rightBumper().onTrue(intake.collectCommand());
-    driverJoystick.leftBumper().onTrue(intake.stowCommand());
+    driverJoystick
+        .rightBumper()
+        .whileTrue(intake.setExtendNoPID())
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
+
+    //driverJoystick.rightBumper().onTrue(intake.collectCommand()); PID controls
+    //driverJoystick.leftBumper().onTrue(intake.stowCommand()); PID controls
 
     // Roller control: B -> change direction
-    driverJoystick.b().onTrue(intake.invertRollerCommand());
+    driverJoystick
+        .b()
+        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+        .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
     // Dislodge command: A -> Dislodge lemons
     driverJoystick.a().whileTrue(intake.dislodgeCommand());

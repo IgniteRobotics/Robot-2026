@@ -5,21 +5,21 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.Constants;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class CameraConstants {
 
-  private static final AprilTagFieldLayout layout =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+  private static final AprilTagFieldLayout layout = Constants.FieldConstants.layout;
 
   // Front Camera
   public static final String photonCameraName_Front = "FRONT-CAMERA";
 
   public static final Transform3d photonCameraTransform_Front =
       new Transform3d(
-          new Translation3d(-0.1651, 0, 0.7191), new Rotation3d(0, Math.toRadians(-20), 0));
+          new Translation3d(-0.1638, 0, 0.7192), new Rotation3d(0, Math.toRadians(-20), 0));
 
   public static final PhotonCamera photonCamera_Front = new PhotonCamera(photonCameraName_Front);
 
@@ -32,7 +32,7 @@ public class CameraConstants {
 
   public static final Transform3d photonCameraTransform_Left =
       new Transform3d(
-          new Translation3d(-0.2435, 0.3174, 0.3908),
+          new Translation3d(-0.2680, 0.3164, 0.451),
           new Rotation3d(0, Math.toRadians(-20), Math.toRadians(120)));
 
   public static final PhotonCamera photonCamera_Left = new PhotonCamera(photonCameraName_Left);
@@ -46,7 +46,7 @@ public class CameraConstants {
 
   public static final Transform3d photonCameraTransform_Right =
       new Transform3d(
-          new Translation3d(-0.2435, -0.3175, 0.3908),
+          new Translation3d(-0.2680, -0.3164, 0.451),
           new Rotation3d(0, Math.toRadians(-20), Math.toRadians(-120)));
 
   public static final PhotonCamera photonCamera_Right = new PhotonCamera(photonCameraName_Right);

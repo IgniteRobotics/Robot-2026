@@ -8,8 +8,6 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -54,11 +52,11 @@ public class ShooterConstants {
   }
 
   public static final double ALLOWABLE_HOOD_ERROR = 0.1;
-  public static final double HOOD_FORWARD_LIMIT = 5.8;
+  public static final double HOOD_FORWARD_LIMIT = 6.2;
   public static final double HOOD_REVERSE_LIMIT = 0;
   public static final double HOOD_KS = 0;
-  public static final double HOOD_KP = ShooterPreferences.hoodkP.getValue();
-  public static final double HOOD_KD = ShooterPreferences.hoodkD.getValue();
+  public static final double HOOD_KP = 2.0;
+  public static final double HOOD_KD = 0;
 
   public static Slot0Configs createHoodMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -70,8 +68,8 @@ public class ShooterConstants {
 
   public static SoftwareLimitSwitchConfigs createHoodSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
-    configs.ForwardSoftLimitEnable = false;
-    configs.ReverseSoftLimitEnable = false;
+    configs.ForwardSoftLimitEnable = true;
+    configs.ReverseSoftLimitEnable = true;
     configs.ForwardSoftLimitThreshold = HOOD_FORWARD_LIMIT;
     configs.ReverseSoftLimitThreshold = HOOD_REVERSE_LIMIT;
     return configs;
@@ -79,7 +77,7 @@ public class ShooterConstants {
 
   public static MotorOutputConfigs createHoodMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
@@ -98,19 +96,4 @@ public class ShooterConstants {
   public static final Angle MIN_HOOD_ANGLE = Degrees.of(20);
   public static final double OPTIMAL_PASSING_ENTRY_SLOPE = -1; // TODO: Tune
   public static final double OPTIMAL_HUB_ENTRY_SLOPE = -1; // TODO: Tune
-
-  // TODO:  verify these!
-  // funnel poses.
-  public static final Pose3d BLUE_TARGET =
-      new Pose3d(
-          Distance.ofBaseUnits(4.623, Meters),
-          Distance.ofBaseUnits(4.041, Meters),
-          Distance.ofBaseUnits(1.435, Meters),
-          Rotation3d.kZero);
-  public static final Pose3d RED_TARGET =
-      new Pose3d(
-          Distance.ofBaseUnits(12.276, Meters),
-          Distance.ofBaseUnits(4.041, Meters),
-          Distance.ofBaseUnits(1.435, Meters),
-          Rotation3d.kZero);
 }

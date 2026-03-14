@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 /** Add your docs here. */
@@ -19,7 +20,8 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
       boolean passing,
       double distance,
       AngularVelocity targetRobotAngularVelocity,
-      Rotation2d targetRobotAngle) {
+      Rotation2d targetRobotAngle,
+      Distance targetDistance) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distance;
     double y2 = passing ? 0 : ShooterConstants.HUB_HEIGHT.in(Meters);
@@ -50,6 +52,12 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
 
     if (motorAngle.in(Degrees) < ShooterConstants.MIN_HOOD_ANGLE.in(Degrees)) return null;
 
+    motorAngle =
+        Rotations.of(
+            motorAngle.in(Degrees)
+                * ShooterConstants.ROTATIONS_PER_LAUNCH_DEGREE.in(
+                    Rotations)); // converts from hood angle to motor rotations
+
     // system of equations
     // (-b/2a) = (velocity)*cos(theta)*t
     // 2g(t) = (velocity)*sin(theta)
@@ -58,18 +66,20 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
             Math.sqrt(
                 2 * 9.8 * vertex / (Math.sin(theta.in(Radians)) * Math.cos(theta.in(Radians)))));
 
-    // Calculate angular velocity using the formula: omega = v / r
+    // Calculate angular velocity using the formula: angular velocity (rotations per second) =
+    // linear velocity / circumference
     double angularVelocityMagnitude =
-        velocity.in(MetersPerSecond) / ShooterConstants.FLYWHEEL_RADIUS.in(Meters);
+        velocity.in(MetersPerSecond) / (Math.PI * 2 * ShooterConstants.FLYWHEEL_RADIUS.in(Meters));
 
     // Create a typed AngularVelocity object (optional, for use within the units library ecosystem)
-    AngularVelocity angularVelocity = RadiansPerSecond.of(angularVelocityMagnitude);
+    AngularVelocity angularVelocity = RotationsPerSecond.of(angularVelocityMagnitude);
 
     return new LaunchRequest(
         motorAngle,
         angularVelocity,
         targetRobotAngularVelocity,
         targetRobotAngle,
+        targetDistance,
         Utils.getCurrentTimeSeconds());
   }
 }

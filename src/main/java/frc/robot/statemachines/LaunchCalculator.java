@@ -1,5 +1,6 @@
 package frc.robot.statemachines;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.filter.LinearFilter;
@@ -11,6 +12,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.statemachines.LaunchState.LaunchType;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
@@ -103,6 +105,11 @@ public class LaunchCalculator {
           target.getTranslation().toTranslation2d().getDistance(lookaheadPose.getTranslation());
     }
 
+    SmartDashboard.putNumber("Launch Request/Look Ahead Pose/X", lookaheadPose.getX());
+    SmartDashboard.putNumber("Launch Request/Look Ahead Pose/Y", lookaheadPose.getY());
+    SmartDashboard.putNumber(
+        "Launch Request/Look Ahead Target Distance", lookaheadLauncherToTargetDistance);
+
     // calcuate rotation angle
     Rotation2d targetRobotAngle =
         target.getTranslation().toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();
@@ -111,12 +118,17 @@ public class LaunchCalculator {
     // target.getTranslation().toTranslation2d());
 
     AngularVelocity targetRobotAngularVelocity =
+        // RadiansPerSecond.of(
+        //     driveAngleFilter.calculate(
+        //         targetRobotAngle
+        //
+        // .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
+        //                 .getRadians()
+        //             / loopPeriodSecs));
         RadiansPerSecond.of(
-            driveAngleFilter.calculate(
-                targetRobotAngle
-                        .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
-                        .getRadians()
-                    / loopPeriodSecs));
+            targetRobotAngle
+                .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
+                .getRadians());
 
     if (builderType == LaunchType.MAPPED)
       return new MappedLaunchRequestBuilder()
@@ -124,14 +136,16 @@ public class LaunchCalculator {
               passing,
               lookaheadLauncherToTargetDistance,
               targetRobotAngularVelocity,
-              targetRobotAngle);
+              targetRobotAngle,
+              Meters.of(launcherToTargetDistance));
     else
       return new ParabolicLaunchRequestBuilder()
           .createLaunchRequest(
               passing,
               lookaheadLauncherToTargetDistance,
               targetRobotAngularVelocity,
-              targetRobotAngle);
+              targetRobotAngle,
+              Meters.of(launcherToTargetDistance));
   }
 
   /*

@@ -7,49 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot"
+            "pathName": "Points"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start To HP - HP SHOOT"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Overbump"
+            "pathName": "HP to Shoot - HP SHOOT"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Collect"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Overbump to Shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Climber"
+            "name": "AutonShoot"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Basic Comp Autons",
   "choreoAuto": false
 }

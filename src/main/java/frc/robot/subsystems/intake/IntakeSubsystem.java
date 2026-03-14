@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -62,11 +63,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
     extensionMotor.setControl(
         extensionControl
             .withPosition(extensionTarget.in(Rotations))
             .withOverrideCoastDurNeutral(true));
+            */
   }
 
   public Command spinRollerCommand() {
@@ -91,8 +94,13 @@ public class IntakeSubsystem extends SubsystemBase {
         .withName("Set Roller Percent");
   }
 
+  public Command outtakeRollerNoPID() {
+    return run(() -> rollerMotor.set(IntakePreferences.rollerOuttakePercent.getValue()))
+        .withName("Set Roller Percent");
+  }
+
   public Command startRollerReverseNoPID() {
-    return run(() -> rollerMotor.set(IntakePreferences.rollerOutakePercent.getValue()))
+    return run(() -> rollerMotor.set(IntakePreferences.rollerOuttakePercent.getValue()))
         .withName("Set Roller Reverse Percent");
   }
 
@@ -128,8 +136,16 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command collectCommand() {
     return setIntakeExtensionCommand(
             Rotations.of(IntakePreferences.intakeCollectPosition.getValue()))
-        .andThen(spinRollerCommand())
+        .andThen(startRollerNoPID()) // Set to  spinRollerCommand() after PID tuning
         .withName("Activate Intake Collection");
+  }
+
+  public Command collectNoPIDCommand() {
+    return setExtendNoPID()
+        .raceWith(new WaitCommand(IntakePreferences.noPIDWait.getValue()))
+        .andThen(stopExtensionNoPID())
+        .andThen(startRollerNoPID())
+        .withName("Activate Intake Collection (NOPID)");
   }
 
   public Command stowCommand() {
@@ -137,6 +153,14 @@ public class IntakeSubsystem extends SubsystemBase {
         .andThen(stopRollerCommand())
         .andThen(setIntakeExtensionCommand(Rotations.of(0)).repeatedly())
         .withName("Stow Intake");
+  }
+
+  public Command stowNoPIDCommand() {
+    return setRetractNoPID()
+        .andThen(new WaitCommand(1))
+        .andThen(stopExtensionNoPID())
+        .andThen(stopRollerNoPID())
+        .withName("Activate Intake Collection (NOPID)");
   }
 
   public Command dislodgeCommand() {

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -58,19 +60,49 @@ public class RobotContainer {
   private final Command driveAndLaunchCommand =
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
+          // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged());
+
+  private final Command autonShootCommand =
+      drivetrain
+          .applyRequest(() -> getDriveAndLaunchRequest())
+          // .alongWith(shooter.spinFlywheelCommand());
+          .alongWith(shooter.spinFlywheelRanged())
+          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
+
+  private final Command autonShootCommandHard_Coded =
+      shooter
+          .spinFlywheelHardCoded()
+          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
+
+  private final Command stopShotCommand =
+      indexer
+          .stopFullIndexingNoPID()
+          .andThen(shooter.stopFlywheelCommand())
+          .andThen(shooter.stowHood());
 
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
+    NamedCommands.registerCommand("AutonShoot", autonShootCommand);
+    NamedCommands.registerCommand("AutonShootHardCoded", autonShootCommandHard_Coded);
+    NamedCommands.registerCommand("StopShot", stopShotCommand);
+    NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
+    NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
+    NamedCommands.registerCommand(
+        "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
+    autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
+
+    configureSubsystemDefaultCommands();
+    configureTeleopBindings();
   }
 
   public void configureSubsystemDefaultCommands() {
@@ -129,58 +161,25 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.decreaseFlywheelCommand());
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
+    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
 
     driverJoystick
         .a()
-        .whileTrue(indexer.startFullIndexingNoPID())
-        .onFalse(indexer.stopFullIndexingNoPID());
+        .whileTrue(driveAndLaunchCommand)
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
   }
 
   public void configureTeleopBindings() {
-
-    // driverJoystick
-    //     .a()
-    //     .whileTrue(intake.setExtendNoPID())
-    //     .onFalse(
-    //         intake
-    //             .stopExtensionNoPID()
-    //             .andThen(intake.startRollerReverseNoPID())
-    //             .alongWith(indexer.startIndexerReverseNoPID()));
-
-    // driverJoystick
-    //     .b()
-    //     .onTrue(intake.stopRollerNoPID().alongWith(indexer.stopIndexerNoPID()))
-    //     .whileTrue(intake.setRetractNoPID())
-    //     .onFalse(intake.stopExtensionNoPID());
-
-    // driverJoystick
-    //     .rightBumper()
-    //     .whileTrue(intake.setExtendNoPID())
-    //     .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
     driverJoystick
         .rightBumper()
         .whileTrue(intake.setExtendNoPID())
         .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
 
-    // driverJoystick
-    //     .leftBumper()
-    //     .whileTrue(intake.setRetractNoPID())
-    //     .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
+    driverJoystick
+        .b()
+        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+        .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
-    // operatorJoystick
-    //     .leftTrigger()
-    //     .whileTrue(shooter.spinFlywheelCommand())
-    //     .onFalse(shooter.stopFlywheelCommand());
-
-    // operatorJoystick
-    //     .rightTrigger()
-    //     .whileTrue(indexer.startFullIndexingNoPID())
-    //     .onFalse(indexer.stopFullIndexingNoPID());
-
-    // driverJoystick
-    //     .b()
-    //     .whileTrue(shooter.spinFlywheelRanged())
-    //     .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
     operatorJoystick
         .rightTrigger()
         .whileTrue(indexer.pulsingIndexCommand())
@@ -191,34 +190,11 @@ public class RobotContainer {
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
-    // Reset the field-centric heading on start button press.
-    // driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    operatorJoystick
+        .leftBumper()
+        .whileTrue(shooter.spinFlywheelRanged())
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
-    // operatorJoystick
-    //     .a()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () ->
-    //                 LaunchState.getInstance()
-    //                     .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
-
-    // operatorJoystick
-    //     .x()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () ->
-    //                 LaunchState.getInstance()
-    //                     .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
-
-    // operatorJoystick
-    //     .b()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () ->
-    //                 LaunchState.getInstance()
-    //                     .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
-
-    //  ------------ Comp Controls
     // Reset the field-centric heading on start button press.
     driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 

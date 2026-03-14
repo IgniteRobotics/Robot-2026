@@ -19,9 +19,15 @@ public class IntakePreferences {
 
   public static DoublePreference rollerIntakePercent =
       new DoublePreference("Intake/Roller Intake Percent (for without PID)", 0.1); // in percent
-  public static DoublePreference rollerOutakePercent =
-      new DoublePreference("Intake/Roller Outake Percent (for without PID)", -0.1); // in percent
+  public static DoublePreference rollerOuttakePercent =
+      new DoublePreference("Intake/Roller Outtake Percent (for without PID)", -0.1); // in percent
 
   public static DoublePreference dislodgePosition =
       new DoublePreference("Intake/Extension Dislodge Position", 1.5);
+
+  public static DoublePreference noPIDWait =
+      new DoublePreference("Intake/Extension Deadline (No PID)", 1.0); // in seconds
+
+  public static DoublePreference outpostReloadWait =
+      new DoublePreference("Intake/Outpost Reload Waittime", 2.5); // in seconds
 }

@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot - CENTER"
+            "pathName": "Start to pre-depot - DEPOT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot to shoot - DEPOT"
           }
         },
         {
@@ -23,7 +35,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 9.0
                 }
               }
             ]
@@ -33,30 +45,6 @@
           "type": "named",
           "data": {
             "name": "StopShot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Collect Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to HP - CENTER"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HP Reload"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HP to Shoot - CENTER"
           }
         }
       ]

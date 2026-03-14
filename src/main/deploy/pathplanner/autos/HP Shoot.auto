@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to HP - HP AUTO"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HP Reload"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HP to Right Tower - HP AUTO"
+            "pathName": "Points"
           }
         },
         {
@@ -31,13 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Tower through Depot - HP AUTO"
+            "pathName": "Start To HP - HP SHOOT"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Depot to Shoot - HP AUTO"
+            "pathName": "HP to Shoot - HP SHOOT"
           }
         },
         {
@@ -45,17 +39,11 @@
           "data": {
             "name": "AutonShoot"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Climb - HP AUTO"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Other Comp Autons",
+  "folder": "Basic Comp Autons",
   "choreoAuto": false
 }

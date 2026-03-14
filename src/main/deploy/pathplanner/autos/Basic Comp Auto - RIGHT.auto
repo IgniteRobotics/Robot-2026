@@ -11,15 +11,40 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutonShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "StopShot"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Shoot to Overbump - RIGHT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
           }
         },
         {
@@ -35,9 +60,28 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutonShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "StopShot"
           }
         },
         {

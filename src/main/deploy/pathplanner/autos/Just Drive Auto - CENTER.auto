@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to Shoot - CENTER"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to HP - CENTER"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP to Shoot - CENTER"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Basic Comp Autons",
+  "choreoAuto": false
+}

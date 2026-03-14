@@ -7,7 +7,50 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot - LEFT"
+            "pathName": "Start to Shoot - CENTER"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutonShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to Depot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Return From Depot"
           }
         },
         {
@@ -33,61 +76,6 @@
           "type": "named",
           "data": {
             "name": "StopShot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Overbump - LEFT"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Collect Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Collect - LEFT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Overbump to Shoot - LEFT"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutonShoot"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 10.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopShot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Climb - LEFT"
           }
         }
       ]

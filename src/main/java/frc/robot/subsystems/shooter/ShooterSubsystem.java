@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.preferences.DoublePreference;
 import frc.robot.statemachines.LaunchState;
 
 @Logged
@@ -102,6 +103,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command spinFlywheelCommand(AngularVelocity v) {
     return runOnce(() -> velocityTarget = v).withName("Spinning To AV");
+  }
+
+  public Command spinFlyWheelCommand(DoublePreference d) {
+    return runOnce(() -> velocityTarget = RotationsPerSecond.of(d.getValue()));
   }
 
   public Command stopFlywheelCommand() {
@@ -198,8 +203,8 @@ public class ShooterSubsystem extends SubsystemBase {
     return runOnce(
             () ->
                 velocityTarget =
-                    RadiansPerSecond.of(
-                        velocityTarget.magnitude()
+                    RotationsPerSecond.of(
+                        velocityTarget.in(RotationsPerSecond)
                             + ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
         .withName("Increase FlyWheel Speed");
   }
@@ -208,8 +213,8 @@ public class ShooterSubsystem extends SubsystemBase {
     return runOnce(
             () ->
                 velocityTarget =
-                    RadiansPerSecond.of(
-                        velocityTarget.magnitude()
+                    RotationsPerSecond.of(
+                        velocityTarget.in(RotationsPerSecond)
                             - ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
         .withName("Decrease FlyWheel Speed");
   }
@@ -235,8 +240,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command startShooterTuningCommand() {
-    return spinFlywheelCommand(
-            RadiansPerSecond.of(ShooterPreferences.tuningDefaultFlywheelRPS.getValue()))
+    return spinFlyWheelCommand(ShooterPreferences.tuningDefaultFlywheelRPS)
         .andThen(
             setHoodCommand(Rotations.of(ShooterPreferences.tuningDefaultHoodRotations.getValue())))
         .withName("Start Shooter Tuning");

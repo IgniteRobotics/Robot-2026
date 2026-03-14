@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.epilogue.Logged;
@@ -8,6 +10,8 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.DriveState;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -18,6 +22,17 @@ public class VisionSubsystem extends SubsystemBase {
 
   private DriveState driveState = DriveState.getInstance();
   private SwerveDriveState driveStats;
+
+  /*
+  @Logged(name = "Highest Ambiguity Front Camera", importance = Importance.CRITICAL)
+  private double highestAmbiguityFront;
+
+  @Logged(name = "Highest Ambiguity Left Camera", importance = Importance.CRITICAL)
+  private double highestAmbiguityLeft;
+
+  @Logged(name = "Highest Ambiguity Right Camera", importance = Importance.CRITICAL)
+  private double highestAmbiguityRight;
+  */
 
   public class VisionMeasurement {
     private EstimatedRobotPose estimatedPose;
@@ -109,6 +124,18 @@ public class VisionSubsystem extends SubsystemBase {
       }
     }
 
+    /*
+    if (cameraName.equals("FRONT-CAMERA")) highestAmbiguityFront = highestAmbiguity;
+    else if (cameraName.equals("LEFT-CAMERA")) highestAmbiguityLeft = highestAmbiguity;
+    else if (cameraName.equals("RIGHT-CAMERA")) highestAmbiguityRight = highestAmbiguity;
+    */
+    if (cameraName.equals("FRONT-CAMERA"))
+      SmartDashboard.putNumber("Front Camera Highest Ambiguity", highestAmbiguity);
+    else if (cameraName.equals("LEFT-CAMERA"))
+      SmartDashboard.putNumber("Left Camera Highest Ambiguity", highestAmbiguity);
+    else if (cameraName.equals("RIGHT-CAMERA"))
+      SmartDashboard.putNumber("Right Camera Highest Ambiguity", highestAmbiguity);
+
     // if the pose has a target with too much ambiguity, don't use it
     if (highestAmbiguity > CameraConstants.MAXIMUM_ALLOWED_AMBIGUITY) return;
 
@@ -118,6 +145,16 @@ public class VisionSubsystem extends SubsystemBase {
             .toPose2d()
             .getTranslation()
             .getDistance(driveStats.Pose.getTranslation());
+
+    if (cameraName.equals("FRONT-CAMERA"))
+      SmartDashboard.putNumber("Front Camera Pose Distance", poseDistance);
+    else if (cameraName.equals("LEFT-CAMERA"))
+      SmartDashboard.putNumber("Left Camera Pose Distance", poseDistance);
+    else if (cameraName.equals("RIGHT-CAMERA"))
+      SmartDashboard.putNumber("Right Camera Pose Distance", poseDistance);
+
+    if (!RobotModeTriggers.disabled().getAsBoolean()
+        && poseDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) return;
 
     // if the target is large
     // at 2m, the target is .5% of the image.

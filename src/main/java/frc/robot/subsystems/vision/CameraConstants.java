@@ -51,5 +51,5 @@ public class CameraConstants {
         }
       };
 
-  public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.2;
+  public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.25;
 }

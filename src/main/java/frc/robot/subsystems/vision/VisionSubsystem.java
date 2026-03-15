@@ -163,11 +163,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
-    if (!RobotModeTriggers.disabled().getAsBoolean()
-        && estimateDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) {
-      logBadResult(cameraName, "JUMPING");
-      return;
-    }
+    // if (!RobotModeTriggers.disabled().getAsBoolean()
+    //     && estimateDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) {
+    //   logBadResult(cameraName, "JUMPING");
+    //   return;
+    // }
 
     double averageRobotToTagDistance = 0;
     for (int target : targetsUsed)

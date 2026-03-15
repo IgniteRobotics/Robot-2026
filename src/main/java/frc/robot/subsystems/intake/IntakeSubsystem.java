@@ -90,7 +90,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command startRollerNoPID() {
-    return run(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
+    return runOnce(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
         .withName("Set Roller Percent");
   }
 
@@ -157,10 +157,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command stowNoPIDCommand() {
     return setRetractNoPID()
-        .andThen(new WaitCommand(1))
+        .raceWith(new WaitCommand(1))
         .andThen(stopExtensionNoPID())
         .andThen(stopRollerNoPID())
-        .withName("Activate Intake Collection (NOPID)");
+        .withName("Activate Intake Stow (NOPID)");
   }
 
   public Command dislodgeCommand() {

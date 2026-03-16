@@ -44,8 +44,6 @@ public class ShiftState {
   @Logged(name = "Current Shift")
   private Shift currentShift = Shift.NONE;
 
-  private boolean isFMSConnected = DriverStation.isFMSAttached();
-
   @Logged(name = "Red Won Auton")
   private boolean redWonAuton = true; // Set to true if red wins auton, false if blue wins auton
 
@@ -184,16 +182,13 @@ public class ShiftState {
   }
 
   public void periodic() {
-    // Update FMS connection status
-    isFMSConnected = DriverStation.isFMSAttached(); // Update periodically
     currentShift = getShiftFromMatchTime(); // Update current shift based on match time
 
-    if (isFMSConnected) {
-      String gameData = DriverStation.getGameSpecificMessage();
-      if (gameData.length() > 0) {
-        redWonAuton = (gameData.charAt(0) == 'R'); // true if red won auton, false if blue won auton
-      }
+    String gameData = DriverStation.getGameSpecificMessage();
+    if (gameData.length() > 0) {
+      redWonAuton = (gameData.charAt(0) == 'R'); // true if red won auton, false if blue won auton
     }
+
     // Update the internal shiftState based on current match time and redWonAuton
     updateInternalShiftState();
     // explicitly push to dashboards

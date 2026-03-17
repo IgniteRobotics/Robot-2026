@@ -267,6 +267,10 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     double headingDelta = 0.0;
   }
 
+  public Command setXCommand() {
+    return Commands.run(() -> this.setControl(new SwerveRequest.SwerveDriveBrake()));
+  }
+
   public Command wheelRadiusCharacterization() {
     SlewRateLimiter limiter =
         new SlewRateLimiter(

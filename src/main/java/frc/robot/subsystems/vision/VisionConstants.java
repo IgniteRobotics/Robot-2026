@@ -8,7 +8,7 @@ import frc.robot.Constants;
 import java.util.HashMap;
 import org.photonvision.PhotonCamera;
 
-public class CameraConstants {
+public class VisionConstants {
 
   // field layout
   public static final AprilTagFieldLayout FIELD_LAYOUT = Constants.FieldConstants.layout;
@@ -52,4 +52,6 @@ public class CameraConstants {
       };
 
   public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.25;
+  public static final double OMEGA_PENALTY = 0.5;
 }
+

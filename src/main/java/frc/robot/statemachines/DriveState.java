@@ -4,7 +4,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.vision.CameraConstants;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,11 +22,11 @@ public class DriveState {
   private DriveState() {
     concurrentQueueMap = new HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>>();
     concurrentQueueMap.put(
-        CameraConstants.photonCameraName_Front, new ConcurrentLinkedQueue<VisionMeasurement>());
+        VisionConstants.photonCameraName_Front, new ConcurrentLinkedQueue<VisionMeasurement>());
     concurrentQueueMap.put(
-        CameraConstants.photonCameraName_Left, new ConcurrentLinkedQueue<VisionMeasurement>());
+        VisionConstants.photonCameraName_Left, new ConcurrentLinkedQueue<VisionMeasurement>());
     concurrentQueueMap.put(
-        CameraConstants.photonCameraName_Right, new ConcurrentLinkedQueue<VisionMeasurement>());
+        VisionConstants.photonCameraName_Right, new ConcurrentLinkedQueue<VisionMeasurement>());
   }
 
   public static synchronized DriveState getInstance() {

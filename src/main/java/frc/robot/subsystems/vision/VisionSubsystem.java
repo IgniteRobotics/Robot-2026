@@ -1,7 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.epilogue.Logged;
@@ -13,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.DriveState;
 import java.util.List;
 import org.photonvision.targeting.MultiTargetPNPResult;
@@ -96,19 +93,19 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Front Camera
       // This is FIFO, so the oldest is given first and the newest last'
-      var frontCameraResults = CameraConstants.photonCamera_Front.getAllUnreadResults();
+      var frontCameraResults = VisionConstants.photonCamera_Front.getAllUnreadResults();
       for (var result : frontCameraResults)
-        evaluateResult(result, CameraConstants.photonCameraName_Front);
+        evaluateResult(result, VisionConstants.photonCameraName_Front);
 
       // Left Camera
-      var leftCameraResults = CameraConstants.photonCamera_Left.getAllUnreadResults();
+      var leftCameraResults = VisionConstants.photonCamera_Left.getAllUnreadResults();
       for (var result : leftCameraResults)
-        evaluateResult(result, CameraConstants.photonCameraName_Left);
+        evaluateResult(result, VisionConstants.photonCameraName_Left);
 
       // Right Camera
-      var rightCameraResults = CameraConstants.photonCamera_Right.getAllUnreadResults();
+      var rightCameraResults = VisionConstants.photonCamera_Right.getAllUnreadResults();
       for (var result : rightCameraResults)
-        evaluateResult(result, CameraConstants.photonCameraName_Right);
+        evaluateResult(result, VisionConstants.photonCameraName_Right);
     }
   }
 
@@ -117,14 +114,14 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (!result.multitagResult.isEmpty()
         && result.multitagResult.get().estimatedPose.ambiguity
-            < CameraConstants.MAXIMUM_ALLOWED_AMBIGUITY) {
+            < VisionConstants.MAXIMUM_ALLOWED_AMBIGUITY) {
       MultiTargetPNPResult multiTargetPNPResult = result.multitagResult.get();
       Pose3d estimatedPose =
           Pose3d.kZero
               .plus(multiTargetPNPResult.estimatedPose.best)
-              .relativeTo(CameraConstants.FIELD_LAYOUT.getOrigin())
-              .plus(CameraConstants.cameraTransformMap.get(cameraName).inverse());
-      evaluateEstimation(estimatedPose, multiTargetPNPResult.fiducialIDsUsed, cameraName);
+              .relativeTo(VisionConstants.FIELD_LAYOUT.getOrigin())
+              .plus(VisionConstants.cameraTransformMap.get(cameraName).inverse());
+      evaluateEstimation(estimatedPose, result.getTimestampSeconds(), multiTargetPNPResult.fiducialIDsUsed, cameraName);
     } else if (result.hasTargets()) {
       PhotonTrackedTarget lowestAmbiguityTarget = null;
       double lowestAmbiguityScore = 10;
@@ -140,107 +137,117 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Although there are confirmed to be targets, none of them may be fiducial
       // targets.
-      if (lowestAmbiguityScore > CameraConstants.MAXIMUM_ALLOWED_AMBIGUITY) {
+      if (lowestAmbiguityScore > VisionConstants.MAXIMUM_ALLOWED_AMBIGUITY) {
         logBadResult(cameraName, "AMBIGUITY");
         return;
       }
 
       int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
 
-      Pose3d targetPosition = CameraConstants.FIELD_LAYOUT.getTagPose(targetFiducialId).get();
+      Pose3d targetPosition = VisionConstants.FIELD_LAYOUT.getTagPose(targetFiducialId).get();
 
       evaluateEstimation(
           targetPosition
               .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse())
-              .transformBy(CameraConstants.cameraTransformMap.get(cameraName).inverse()),
+              .transformBy(VisionConstants.cameraTransformMap.get(cameraName).inverse()),
+          result.getTimestampSeconds(),
           targetFiducialId,
           cameraName);
     }
   }
 
   // evaluates the estimations before export
-  private void evaluateEstimation(Pose3d pose, List<Short> targetsUsed, String cameraName) {
+  private void evaluateEstimation(Pose3d pose, double captureTime, List<Short> targetsUsed, String cameraName) {
+
+    // field constraints
+    if (pose.getX() < 0 || pose.getY() < 0 || pose.getX() > 16.7 || pose.getY() > 8.2) return;
 
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
-    // if (!RobotModeTriggers.disabled().getAsBoolean()
-    //     && estimateDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) {
-    //   logBadResult(cameraName, "JUMPING");
-    //   return;
-    // }
+    if (!RobotModeTriggers.disabled().getAsBoolean()
+        && estimateDistance > VisionPreferences.jumpLimit.getValue()) {
+      logBadResult(cameraName, "JUMPING");
+      return;
+    }
 
     double averageRobotToTagDistance = 0;
     for (int target : targetsUsed)
       averageRobotToTagDistance +=
           pose.getTranslation()
                   .getDistance(
-                      CameraConstants.FIELD_LAYOUT.getTagPose(target).get().getTranslation())
+                      VisionConstants.FIELD_LAYOUT.getTagPose(target).get().getTranslation())
               / targetsUsed.size();
 
     double xyStdDev =
-        CameraConstants.XY_STD_DEV_COEFFICIENT
+        VisionPreferences.xyStdDevCoef.getValue()
             * Math.pow(averageRobotToTagDistance, 1.2)
-            / Math.pow(targetsUsed.size(), 2);
+            / targetsUsed.size();
 
     double thetaStdDev =
-        CameraConstants.THETA_STD_DEV_COEFFICIENT
+        VisionPreferences.thetaStdDevCoef.getValue()
+            * (1
+                + driveStats.Speeds.omegaRadiansPerSecond
+                    * VisionPreferences.omegaPenalty.getValue())
             * Math.pow(averageRobotToTagDistance, 1.2)
-            / Math.pow(targetsUsed.size(), 2);
+            / targetsUsed.size();
 
     driveState.addVisionEstimate(
         new VisionMeasurement(
-            pose.toPose2d(),
-            Utils.getCurrentTimeSeconds(),
-            VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
+            pose.toPose2d(), captureTime, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
         cameraName);
 
     incrementAccepted(cameraName);
   }
 
   // evaluates the estimations before export
-  private void evaluateEstimation(Pose3d pose, int targetUsed, String cameraName) {
+  private void evaluateEstimation(Pose3d pose, double captureTime, int targetUsed, String cameraName) {
+
+    // field constraints
+    if (pose.getX() < 0 || pose.getY() < 0 || pose.getX() > 16.7 || pose.getY() > 8.2) return;
 
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
     if (!RobotModeTriggers.disabled().getAsBoolean()
-        && estimateDistance > TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.02) return;
+        && estimateDistance > VisionPreferences.jumpLimit.getValue()) return;
 
     double robotToTagDistance =
         pose.getTranslation()
             .getDistance(
-                CameraConstants.FIELD_LAYOUT.getTagPose(targetUsed).get().getTranslation());
+                VisionConstants.FIELD_LAYOUT.getTagPose(targetUsed).get().getTranslation());
 
-    double xyStdDev = CameraConstants.XY_STD_DEV_COEFFICIENT * Math.pow(robotToTagDistance, 1.2);
+    double xyStdDev = VisionPreferences.xyStdDevCoef.getValue() * Math.pow(robotToTagDistance, 1.2);
 
     double thetaStdDev =
-        CameraConstants.THETA_STD_DEV_COEFFICIENT * Math.pow(robotToTagDistance, 1.2);
+        VisionPreferences.thetaStdDevCoef.getValue()
+            * (1
+                + driveStats.Speeds.omegaRadiansPerSecond
+                    * VisionPreferences.omegaPenalty.getValue())
+            * Math.pow(robotToTagDistance, 1.2);
 
     driveState.addVisionEstimate(
         new VisionMeasurement(
-            pose.toPose2d(),
-            Utils.getCurrentTimeSeconds(),
-            VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
+            pose.toPose2d(), captureTime, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
         cameraName);
 
     incrementAccepted(cameraName);
   }
 
   private void incrementAccepted(String cameraName) {
-    if (cameraName.equals(CameraConstants.photonCameraName_Front)) frontCameraResultsAccepted++;
-    if (cameraName.equals(CameraConstants.photonCameraName_Left)) leftCameraResultsAccepted++;
-    if (cameraName.equals(CameraConstants.photonCameraName_Right)) rightCameraResultsAccepted++;
+    if (cameraName.equals(VisionConstants.photonCameraName_Front)) frontCameraResultsAccepted++;
+    if (cameraName.equals(VisionConstants.photonCameraName_Left)) leftCameraResultsAccepted++;
+    if (cameraName.equals(VisionConstants.photonCameraName_Right)) rightCameraResultsAccepted++;
   }
 
   private void logBadResult(String cameraName, String type) {
-    if (cameraName.equals(CameraConstants.photonCameraName_Front)) {
+    if (cameraName.equals(VisionConstants.photonCameraName_Front)) {
       frontCameraResultsRejectedTotal++;
       if (type.equals("AMBIGUITY")) frontCameraResultsRejectedDueToAmbiguity++;
       else if (type.equals("JUMPING")) frontCameraResultsRejectedDueToJumping++;
-    } else if (cameraName.equals(CameraConstants.photonCameraName_Left)) {
+    } else if (cameraName.equals(VisionConstants.photonCameraName_Left)) {
       leftCameraResultsRejectedTotal++;
       if (type.equals("AMBIGUITY")) leftCameraResultsRejectedDueToAmbiguity++;
       else if (type.equals("JUMPING")) leftCameraResultsRejectedDueToJumping++;
-    } else if (cameraName.equals(CameraConstants.photonCameraName_Right)) {
+    } else if (cameraName.equals(VisionConstants.photonCameraName_Right)) {
       rightCameraResultsRejectedTotal++;
       if (type.equals("AMBIGUITY")) rightCameraResultsRejectedDueToAmbiguity++;
       else if (type.equals("JUMPING")) rightCameraResultsRejectedDueToJumping++;

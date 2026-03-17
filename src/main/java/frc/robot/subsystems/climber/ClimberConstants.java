@@ -13,7 +13,7 @@ final class ClimberConstants {
 
   private ClimberConstants() {}
 
-  //TODO move to real ID when implemented.
+  // TODO move to real ID when implemented.
   protected static final int CLIMB_MOTOR_ID = 19;
 
   // TODO: Tune motor

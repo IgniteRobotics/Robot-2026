@@ -3,15 +3,16 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class IntakeConstants {
 
   private IntakeConstants() {}
 
-  // TODO: Change to actual ports
   public static final int ROLLER_MOTOR_ID = 2;
   public static final int EXTENSION_MOTOR_ID = 1;
+  public static final int ROLLER_FOLLOWER_MOTOR_ID = 10;
 
   // TODO: Tune Roller and Extension Motors
 
@@ -20,6 +21,20 @@ public class IntakeConstants {
   public static final double ROLLER_KV = 0;
   public static final double ROLLER_KP = 0;
   public static final double ROLLER_KD = 0;
+
+  public static MotorOutputConfigs createRotorLeaderMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
+  }
+
+  public static MotorOutputConfigs createRotorFollowerMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
+  }
 
   public static Slot0Configs createRollerMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();

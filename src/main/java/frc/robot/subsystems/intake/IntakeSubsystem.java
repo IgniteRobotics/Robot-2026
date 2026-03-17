@@ -5,9 +5,11 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
@@ -20,7 +22,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
 public class IntakeSubsystem extends SubsystemBase {
-  private final TalonFX rollerMotor;
+  private final TalonFX rollerLeader;
+  private final TalonFX rollerFollower;
   private final TalonFX extensionMotor;
 
   @Logged(name = "Roller Velocity Target", importance = Importance.CRITICAL)
@@ -44,10 +47,18 @@ public class IntakeSubsystem extends SubsystemBase {
           new SysIdRoutine.Mechanism(output -> setRollerVoltage(output.magnitude()), null, this));
 
   public IntakeSubsystem() {
-    rollerMotor = new TalonFX(IntakeConstants.ROLLER_MOTOR_ID);
+    rollerLeader = new TalonFX(IntakeConstants.ROLLER_MOTOR_ID);
+    rollerFollower = new TalonFX(IntakeConstants.ROLLER_FOLLOWER_MOTOR_ID);
     extensionMotor = new TalonFX(IntakeConstants.EXTENSION_MOTOR_ID);
 
-    rollerMotor.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRotorLeaderMotorOutputConfigs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRotorFollowerMotorOutputConfigs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
+
+    rollerFollower.setControl(
+        new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));
+
     rollerVelocityTarget = RotationsPerSecond.of(0);
     rollerControl = new VelocityVoltage(0);
 
@@ -86,26 +97,31 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private void setRollerVoltage(double magnitude) {
-    rollerMotor.setVoltage(magnitude);
+    rollerLeader.setVoltage(magnitude);
   }
 
   public Command startRollerNoPID() {
-    return runOnce(() -> rollerMotor.set(IntakePreferences.rollerIntakePercent.getValue()))
+    return runOnce(() -> rollerLeader.set(IntakePreferences.rollerIntakePercent.getValue()))
+        .withName("Set Roller Percent");
+  }
+
+  public Command testRollerNoPID() {
+    return runOnce(() -> rollerLeader.set(IntakePreferences.testRollerIntakePercent.getValue()))
         .withName("Set Roller Percent");
   }
 
   public Command outtakeRollerNoPID() {
-    return run(() -> rollerMotor.set(IntakePreferences.rollerOuttakePercent.getValue()))
+    return run(() -> rollerLeader.set(IntakePreferences.rollerOuttakePercent.getValue()))
         .withName("Set Roller Percent");
   }
 
   public Command startRollerReverseNoPID() {
-    return run(() -> rollerMotor.set(IntakePreferences.rollerOuttakePercent.getValue()))
+    return run(() -> rollerLeader.set(IntakePreferences.rollerOuttakePercent.getValue()))
         .withName("Set Roller Reverse Percent");
   }
 
   public Command stopRollerNoPID() {
-    return runOnce(() -> rollerMotor.set(0)).withName("Stop Roller No PID");
+    return runOnce(() -> rollerLeader.set(0)).withName("Stop Roller No PID");
   }
 
   @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)

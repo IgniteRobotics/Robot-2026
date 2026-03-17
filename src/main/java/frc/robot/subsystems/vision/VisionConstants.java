@@ -54,4 +54,3 @@ public class VisionConstants {
   public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.25;
   public static final double OMEGA_PENALTY = 0.5;
 }
-

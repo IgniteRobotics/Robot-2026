@@ -196,8 +196,7 @@ public class RobotContainer {
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(drivetrain.setXCommand()
-            .andThen(indexer.pulsingIndexCommand()))
+        .whileTrue(drivetrain.setXCommand().andThen(indexer.pulsingIndexCommand()))
         .onFalse(indexer.stopFullIndexingNoPID());
 
     operatorJoystick

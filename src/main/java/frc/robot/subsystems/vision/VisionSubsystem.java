@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
@@ -121,7 +120,11 @@ public class VisionSubsystem extends SubsystemBase {
               .plus(multiTargetPNPResult.estimatedPose.best)
               .relativeTo(VisionConstants.FIELD_LAYOUT.getOrigin())
               .plus(VisionConstants.cameraTransformMap.get(cameraName).inverse());
-      evaluateEstimation(estimatedPose, result.getTimestampSeconds(), multiTargetPNPResult.fiducialIDsUsed, cameraName);
+      evaluateEstimation(
+          estimatedPose,
+          result.getTimestampSeconds(),
+          multiTargetPNPResult.fiducialIDsUsed,
+          cameraName);
     } else if (result.hasTargets()) {
       PhotonTrackedTarget lowestAmbiguityTarget = null;
       double lowestAmbiguityScore = 10;
@@ -157,7 +160,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   // evaluates the estimations before export
-  private void evaluateEstimation(Pose3d pose, double captureTime, List<Short> targetsUsed, String cameraName) {
+  private void evaluateEstimation(
+      Pose3d pose, double captureTime, List<Short> targetsUsed, String cameraName) {
 
     // field constraints
     if (pose.getX() < 0 || pose.getY() < 0 || pose.getX() > 16.7 || pose.getY() > 8.2) return;
@@ -200,7 +204,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   // evaluates the estimations before export
-  private void evaluateEstimation(Pose3d pose, double captureTime, int targetUsed, String cameraName) {
+  private void evaluateEstimation(
+      Pose3d pose, double captureTime, int targetUsed, String cameraName) {
 
     // field constraints
     if (pose.getX() < 0 || pose.getY() < 0 || pose.getX() > 16.7 || pose.getY() > 8.2) return;

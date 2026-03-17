@@ -13,8 +13,8 @@ final class ClimberConstants {
 
   private ClimberConstants() {}
 
-  // TODO: Change to actual port
-  protected static final int CLIMB_MOTOR_ID = 10;
+  //TODO move to real ID when implemented.
+  protected static final int CLIMB_MOTOR_ID = 19;
 
   // TODO: Tune motor
   protected static final Angle ALLOWABLE_CLIMB_ERROR = Rotations.of(0.1);

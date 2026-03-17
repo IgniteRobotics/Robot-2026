@@ -7,6 +7,9 @@ import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.generated.TunerConstants;
 
 public class DriveConstants {
@@ -38,4 +41,9 @@ public class DriveConstants {
 
   public static final double TRANSLATION_ALIGN_KP = 0.0001;
   public static final double ROTATION_ALIGN_KP = 6.28;
+
+  public static final AngularVelocity WHEEL_RADIUS_TEST_MAX_VELOCITY = RadiansPerSecond.of(Math.PI);
+  public static final AngularAcceleration WHEEL_RADIUS_TEST_RAMP_RATE =
+      RadiansPerSecondPerSecond.of(0.05);
+  public static final Distance DRIVETRAIN_RADIUS = Inches.of(15.365);
 }

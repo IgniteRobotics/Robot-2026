@@ -28,6 +28,7 @@ import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.ui.UISubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 @Logged
@@ -53,6 +54,10 @@ public class RobotContainer {
 
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
+
+  @Logged(name = "UI Feedback")
+  public final UISubsystem uiFeedback =
+      new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
@@ -100,6 +105,9 @@ public class RobotContainer {
     // neutral mode is applied to the drive motors while disabled.
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
+
+    // Rumble driver controller when teleop starts
+    RobotModeTriggers.teleop().onTrue(uiFeedback.timedRumbleCommand(driverJoystick.getHID(), 5.0));
 
     configureSubsystemDefaultCommands();
     configureTeleopBindings();
@@ -161,6 +169,7 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.decreaseFlywheelCommand());
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
+    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
 
     driverJoystick
         .a()
@@ -187,7 +196,7 @@ public class RobotContainer {
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(indexer.pulsingIndexCommand())
+        .whileTrue(drivetrain.setXCommand().andThen(indexer.pulsingIndexCommand()))
         .onFalse(indexer.stopFullIndexingNoPID());
 
     operatorJoystick
@@ -226,6 +235,8 @@ public class RobotContainer {
                 () ->
                     LaunchState.getInstance()
                         .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
+
+    operatorJoystick.y().whileTrue(uiFeedback.manualRumbleCommand(driverJoystick.getHID()));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

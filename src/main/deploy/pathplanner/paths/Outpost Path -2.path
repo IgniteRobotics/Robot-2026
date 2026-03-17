@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.34,
-        "y": 2.5
+        "x": 0.4938659058487873,
+        "y": 0.6255542168715817
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.35622540250447216,
-        "y": 4.966261180679786
+        "x": 1.0249277108433734,
+        "y": 1.7401807228915662
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.32,
-        "y": 7.112
+        "x": 0.53,
+        "y": 2.658
       },
       "prevControl": {
-        "x": 0.3524508050089445,
-        "y": 5.8788694096601075
+        "x": 0.5987469879518073,
+        "y": 2.2537831325301205
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "HP AUTO - Through tower",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

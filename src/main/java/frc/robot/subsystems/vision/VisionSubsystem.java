@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
@@ -124,7 +123,11 @@ public class VisionSubsystem extends SubsystemBase {
               .plus(multiTargetPNPResult.estimatedPose.best)
               .relativeTo(CameraConstants.FIELD_LAYOUT.getOrigin())
               .plus(CameraConstants.cameraTransformMap.get(cameraName).inverse());
-      evaluateEstimation(estimatedPose, multiTargetPNPResult.fiducialIDsUsed, cameraName);
+      evaluateEstimation(
+          estimatedPose,
+          result.getTimestampSeconds(),
+          multiTargetPNPResult.fiducialIDsUsed,
+          cameraName);
     } else if (result.hasTargets()) {
       PhotonTrackedTarget lowestAmbiguityTarget = null;
       double lowestAmbiguityScore = 10;
@@ -153,13 +156,15 @@ public class VisionSubsystem extends SubsystemBase {
           targetPosition
               .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse())
               .transformBy(CameraConstants.cameraTransformMap.get(cameraName).inverse()),
+          result.getTimestampSeconds(),
           targetFiducialId,
           cameraName);
     }
   }
 
   // evaluates the estimations before export
-  private void evaluateEstimation(Pose3d pose, List<Short> targetsUsed, String cameraName) {
+  private void evaluateEstimation(
+      Pose3d pose, double captureTime, List<Short> targetsUsed, String cameraName) {
 
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
@@ -189,16 +194,15 @@ public class VisionSubsystem extends SubsystemBase {
 
     driveState.addVisionEstimate(
         new VisionMeasurement(
-            pose.toPose2d(),
-            Utils.getCurrentTimeSeconds(),
-            VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
+            pose.toPose2d(), captureTime, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
         cameraName);
 
     incrementAccepted(cameraName);
   }
 
   // evaluates the estimations before export
-  private void evaluateEstimation(Pose3d pose, int targetUsed, String cameraName) {
+  private void evaluateEstimation(
+      Pose3d pose, double captureTime, int targetUsed, String cameraName) {
 
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
@@ -217,9 +221,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     driveState.addVisionEstimate(
         new VisionMeasurement(
-            pose.toPose2d(),
-            Utils.getCurrentTimeSeconds(),
-            VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
+            pose.toPose2d(), captureTime, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
         cameraName);
 
     incrementAccepted(cameraName);

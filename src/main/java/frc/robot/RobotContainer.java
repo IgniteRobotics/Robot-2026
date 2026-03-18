@@ -97,7 +97,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
-    NamedCommands.registerCommand("Mowing", intake.collectNoPIDCommand())//make a parameter that runs this action for a set amount of time when at mid-field
+    NamedCommands.registerCommand(
+        "Mowing",
+        intake.collectNoPIDCommand()); // make a parameter that runs this action for a set amount of
+    // time when at mid-field
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
@@ -192,7 +195,12 @@ public class RobotContainer {
 
     driverJoystick
         .b()
-        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))/* .alongWith(shooter.spinFlywheelCommand))*/ 
+        .whileTrue(
+            intake
+                .outtakeRollerNoPID()
+                .alongWith(
+                    indexer
+                        .startIndexerReverseNoPID())) /* .alongWith(shooter.spinFlywheelCommand))*/
         .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
     operatorJoystick

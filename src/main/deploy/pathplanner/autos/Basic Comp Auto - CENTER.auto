@@ -36,27 +36,85 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Collect Intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot to HP - CENTER"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Collect Intake"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Shoot to HP - CENTER"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HP Reload"
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "HP to Shoot - CENTER"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutonShoot"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 3.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Stow Intake"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow Intake"
           }
         }
       ]

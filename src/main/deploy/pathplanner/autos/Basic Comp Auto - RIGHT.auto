@@ -83,12 +83,6 @@
           "data": {
             "name": "StopShot"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Climb - RIGHT"
-          }
         }
       ]
     }

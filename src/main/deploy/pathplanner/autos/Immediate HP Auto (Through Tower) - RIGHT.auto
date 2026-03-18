@@ -5,33 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Collect Intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start to HP - HP AUTO"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Collect Intake"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Start to HP - HP AUTO"
+            "waitTime": 2.0
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "HP Reload"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HP to Right Tower (through tower) - HP AUTO"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stow Intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HP to Right Tower (through tower) - HP AUTO"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stow Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -47,15 +61,54 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "AutonShoot"
+            "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutonShoot"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 3.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Stow Intake"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Shoot to Climb - HP AUTO"
+            "name": "StopShot"
           }
         }
       ]

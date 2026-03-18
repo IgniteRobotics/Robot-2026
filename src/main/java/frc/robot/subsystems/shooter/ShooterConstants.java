@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 
@@ -119,6 +120,6 @@ public class ShooterConstants {
   public static final double OPTIMAL_PASSING_ENTRY_SLOPE = -1; // TODO: Tune
   public static final double OPTIMAL_HUB_ENTRY_SLOPE = -1; // TODO: Tune
 
-  public static final double MAX_ACCELERATOR_RPS = 95;
+  public static final AngularVelocity MAX_ACCELERATOR_VELOCITY = RotationsPerSecond.of(95);
   public static final double FLYWHEEL_TO_ACCELERATOR_RATIO = 0.167; // TODO: Tune
 }

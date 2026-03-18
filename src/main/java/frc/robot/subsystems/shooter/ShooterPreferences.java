@@ -34,8 +34,5 @@ public class ShooterPreferences {
       new DoublePreference("Shooter/Tuning/Flywheel Pass Speed", 62);
 
   protected static DoublePreference acceleratorPercent =
-      new DoublePreference("Indexer/Accelerator Percent (for without PID)", 0.1); // in percent
-
-  protected static DoublePreference acceleratorVelocity =
-      new DoublePreference("Indexer/Accelerator Velocity", 0.1); // in percent
+      new DoublePreference("Shooter/Accelerator Percent (for without PID)", 0.1); // in percent
 }

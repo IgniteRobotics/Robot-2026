@@ -71,8 +71,6 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMotorFollower
         .getConfigurator()
         .apply(ShooterConstants.createFollowerMotorOutputConfigs());
-    // flywheelMotorFollower.setControl(
-    //    new Follower(flywheelMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
     acceleratorMotor.getConfigurator().apply(ShooterConstants.createAcceleratorMotorSlot0Configs());
     acceleratorMotor
@@ -99,14 +97,14 @@ public class ShooterSubsystem extends SubsystemBase {
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     flywheelMotorFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+
     acceleratorMotor.setControl(
         acceleratorControl.withVelocity(
-            velocityTarget.in(RotationsPerSecond)
-                    > ShooterConstants.MAX_ACCELERATOR_RPS
-                        * ShooterConstants.FLYWHEEL_TO_ACCELERATOR_RATIO
-                ? ShooterConstants.MAX_ACCELERATOR_RPS
-                : velocityTarget.in(RotationsPerSecond)
-                    * ShooterConstants.FLYWHEEL_TO_ACCELERATOR_RATIO));
+            Math.min(
+                velocityTarget.in(RotationsPerSecond)
+                    * ShooterConstants.FLYWHEEL_TO_ACCELERATOR_RATIO,
+                ShooterConstants.MAX_ACCELERATOR_VELOCITY.in(RotationsPerSecond)
+                    * ShooterConstants.FLYWHEEL_TO_ACCELERATOR_RATIO)));
 
     hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
   }

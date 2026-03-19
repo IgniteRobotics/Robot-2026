@@ -31,7 +31,7 @@ public class IntakeConstants {
 
   public static MotorOutputConfigs createRotorFollowerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
@@ -47,11 +47,11 @@ public class IntakeConstants {
 
   // Extension Motor
   public static final double ALLOWABLE_EXTENSION_ERROR = 0.1;
-  public static final double INTAKE_FORWARD_LIMIT = 100;
-  public static final double INTAKE_REVERSE_LIMIT = 0;
+  public static final double INTAKE_FORWARD_LIMIT = 14.55;
+  public static final double INTAKE_REVERSE_LIMIT = 0.1;
   public static final double EXTENSION_KS = 0;
-  public static final double EXTENSION_KP = 0;
-  public static final double EXTENSION_KD = 0;
+  public static final double EXTENSION_KP = 6.0;
+  public static final double EXTENSION_KD = 0.2;
 
   public static Slot0Configs createExtensionMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -63,8 +63,8 @@ public class IntakeConstants {
 
   public static SoftwareLimitSwitchConfigs createExtensionSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
-    configs.ForwardSoftLimitEnable = false;
-    configs.ReverseSoftLimitEnable = false;
+    configs.ForwardSoftLimitEnable = true;
+    configs.ReverseSoftLimitEnable = true;
     configs.ForwardSoftLimitThreshold = INTAKE_FORWARD_LIMIT;
     configs.ReverseSoftLimitThreshold = INTAKE_REVERSE_LIMIT;
     return configs;

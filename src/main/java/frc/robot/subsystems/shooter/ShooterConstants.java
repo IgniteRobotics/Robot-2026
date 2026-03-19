@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 
@@ -19,6 +20,7 @@ public class ShooterConstants {
   public static final int FLYWHEEL_LEADER_MOTOR_ID = 5;
   public static final int FLYWHEEL_FOLLOWER_MOTOR_ID = 6;
   public static final int HOOD_MOTOR_ID = 4;
+  public static final int ACCELERATOR_MOTOR_ID = 8;
 
   public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
@@ -82,6 +84,27 @@ public class ShooterConstants {
     return newConfigs;
   }
 
+  protected static final double ACCELERATOR_KS = 0;
+  protected static final double ACCELERATOR_KV = 0;
+  protected static final double ACCELERATOR_KP = 0;
+  protected static final double ACCELERATOR_KD = 0;
+
+  protected static Slot0Configs createAcceleratorMotorSlot0Configs() {
+    Slot0Configs slot = new Slot0Configs();
+    slot.kS = ACCELERATOR_KS;
+    slot.kV = ACCELERATOR_KV;
+    slot.kP = ACCELERATOR_KP;
+    slot.kD = ACCELERATOR_KD;
+    return slot;
+  }
+
+  public static MotorOutputConfigs createAcceleratorMotorOutputsConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
+  }
+
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);
   public static final Current SAFE_STATOR_LIMIT = Amp.of(0.8);
 
@@ -96,4 +119,7 @@ public class ShooterConstants {
   public static final Angle MIN_HOOD_ANGLE = Degrees.of(20);
   public static final double OPTIMAL_PASSING_ENTRY_SLOPE = -1; // TODO: Tune
   public static final double OPTIMAL_HUB_ENTRY_SLOPE = -1; // TODO: Tune
+
+  public static final AngularVelocity MAX_ACCELERATOR_VELOCITY = RotationsPerSecond.of(95);
+  public static final double FLYWHEEL_TO_ACCELERATOR_RATIO = 0.167; // TODO: Tune
 }

@@ -67,11 +67,12 @@ public class LaunchCalculator {
     ChassisSpeeds robotSpeeds = DriveState.getInstance().getCurrentDriveStats().Speeds;
 
     // predicted pose
-    estimatedRobotPose.exp(
-        new Twist2d(
-            robotSpeeds.vxMetersPerSecond * phaseDelay,
-            robotSpeeds.vyMetersPerSecond * phaseDelay,
-            robotSpeeds.omegaRadiansPerSecond * phaseDelay));
+    estimatedRobotPose =
+        estimatedRobotPose.exp(
+            new Twist2d(
+                robotSpeeds.vxMetersPerSecond * phaseDelay,
+                robotSpeeds.vyMetersPerSecond * phaseDelay,
+                robotSpeeds.omegaRadiansPerSecond * phaseDelay));
 
     // TODO:  for now assume they're the same.  calculate offsets later
     Pose2d launcherPose = estimatedRobotPose;

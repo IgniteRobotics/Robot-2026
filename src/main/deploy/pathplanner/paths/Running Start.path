@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.34,
-        "y": 2.5
+        "x": 3.570120732060186,
+        "y": 5.382
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.35622540250447216,
-        "y": 4.966261180679786
+        "x": 2.5798608720116274,
+        "y": 5.365078007318875
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.32,
-        "y": 7.112
+        "x": 2.578,
+        "y": 5.382
       },
       "prevControl": {
-        "x": 0.3524508050089445,
-        "y": 5.8788694096601075
+        "x": 3.3342926070601853,
+        "y": 5.367303240740741
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 179.76330713199755
   },
   "reversed": false,
-  "folder": "HP AUTO - Through tower",
+  "folder": "Mid-field",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 179.4146984343675
   },
   "useDefaultConstraints": true
 }

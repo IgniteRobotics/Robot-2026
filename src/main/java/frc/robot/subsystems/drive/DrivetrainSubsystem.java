@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -28,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.DriveState;
-import frc.robot.subsystems.vision.CameraConstants;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 
 public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
@@ -44,7 +45,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         TunerConstants.BackLeft,
         TunerConstants.BackRight);
 
-    drive_canrange = new CANrange(9, "rio");
+    drive_canrange = new CANrange(9, new CANBus("rio"));
 
     applySteerGains();
     applyDriveGains();
@@ -57,27 +58,21 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     super.periodic();
 
     for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Front)) {
+        driveState.grabVisionEstimateList(VisionConstants.photonCameraName_Front)) {
       addVisionMeasurement(
-          estimate.getEstimatedPose().estimatedPose.toPose2d(),
-          estimate.getTimestamp(),
-          estimate.getTrust());
+          estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
     }
 
     for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Left)) {
+        driveState.grabVisionEstimateList(VisionConstants.photonCameraName_Left)) {
       addVisionMeasurement(
-          estimate.getEstimatedPose().estimatedPose.toPose2d(),
-          estimate.getTimestamp(),
-          estimate.getTrust());
+          estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
     }
 
     for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(CameraConstants.photonCameraName_Right)) {
+        driveState.grabVisionEstimateList(VisionConstants.photonCameraName_Right)) {
       addVisionMeasurement(
-          estimate.getEstimatedPose().estimatedPose.toPose2d(),
-          estimate.getTimestamp(),
-          estimate.getTrust());
+          estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
     }
 
     driveState.adjustCurrentDriveStats(this.getStateCopy());
@@ -270,6 +265,10 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     double[] startingWheelPositions = new double[4];
     Rotation2d lastHeading = Rotation2d.kZero;
     double headingDelta = 0.0;
+  }
+
+  public Command setXCommand() {
+    return Commands.run(() -> this.setControl(new SwerveRequest.SwerveDriveBrake()));
   }
 
   public Command wheelRadiusCharacterization() {

@@ -19,12 +19,6 @@
                 "data": {
                   "pathName": "Start To HP - HP SHOOT"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Collect Intake"
-                }
               }
             ]
           }
@@ -32,13 +26,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.33
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HP to Shoot - HP SHOOT"
+            "pathName": "HP to Right Tower (through tower) - HP AUTO"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Tower through Depot (through tower) - HP AUTO"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot to shoot - DEPOT"
           }
         },
         {

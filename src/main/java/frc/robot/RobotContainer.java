@@ -24,6 +24,7 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
@@ -175,19 +176,28 @@ public class RobotContainer {
         .a()
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+
+    driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
+
+    driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
   }
 
   public void configureTeleopBindings() {
 
     driverJoystick
         .rightBumper()
-        .whileTrue(intake.setExtendNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
+        // .whileTrue(intake.setExtendNoPID())
+        .onTrue(
+            intake
+                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+                .andThen(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID())));
 
     driverJoystick
         .leftBumper()
-        .whileTrue(intake.setRetractNoPID())
-        .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
+        .onTrue(
+            intake
+                .stopRollerNoPID()
+                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
 
     driverJoystick
         .b()

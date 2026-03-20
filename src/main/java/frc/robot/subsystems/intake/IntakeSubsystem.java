@@ -58,6 +58,8 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerFollower.getConfigurator().apply(IntakeConstants.createRotorFollowerMotorOutputConfigs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
 
     rollerFollower.setControl(
         new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));

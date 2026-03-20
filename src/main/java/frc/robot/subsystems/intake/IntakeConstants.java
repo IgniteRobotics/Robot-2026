@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -44,6 +45,13 @@ public class IntakeConstants {
     slot.kP = ROLLER_KP;
     slot.kD = ROLLER_KD;
     return slot;
+  }
+
+  public static CurrentLimitsConfigs createRollerMotorCurrentLimitsConfigs() {
+    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+    config.StatorCurrentLimitEnable = true;
+    config.StatorCurrentLimit = 40.0;
+    return config;
   }
 
   // Extension Motor

@@ -35,16 +35,18 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     hoodAngleMap.put(1.62, 1.0);
     hoodAngleMap.put(1.94, 2.1);
     hoodAngleMap.put(2.53, 3.3);
-    hoodAngleMap.put(3.00, 4.0);
-    hoodAngleMap.put(3.51, 4.0);
+    hoodAngleMap.put(2.65, 2.2);
+    hoodAngleMap.put(3.15, 2.8);
+    hoodAngleMap.put(3.84, 4.2);
     hoodAngleMap.put(6.00, 6.1); // put in a value to max out the hood
 
     flywheelSpeedMap.put(0.99, 57.7);
     flywheelSpeedMap.put(1.62, 64.3);
     flywheelSpeedMap.put(1.94, 64.7);
     flywheelSpeedMap.put(2.53, 70.8);
-    flywheelSpeedMap.put(3.00, 74.5);
-    flywheelSpeedMap.put(3.51, 80.0);
+    flywheelSpeedMap.put(2.65, 75.4);
+    flywheelSpeedMap.put(3.15, 75.4);
+    flywheelSpeedMap.put(3.84, 108.0);
     flywheelSpeedMap.put(6.00, 108.0); // put in a value to max out the hood
   }
 

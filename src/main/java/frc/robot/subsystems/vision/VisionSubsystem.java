@@ -200,8 +200,8 @@ public class VisionSubsystem extends SubsystemBase {
             * Math.pow(averageRobotToTagDistance, 1.2)
             / targetsUsed.size();
 
-    //if we're resetting the pose, trust the vision measurements
-    if (resettingPose){
+    // if we're resetting the pose, trust the vision measurements
+    if (resettingPose) {
       xyStdDev = 0;
       thetaStdDev = 0;
     }
@@ -240,8 +240,8 @@ public class VisionSubsystem extends SubsystemBase {
                 + driveStats.Speeds.omegaRadiansPerSecond
                     * VisionPreferences.omegaPenalty.getValue())
             * Math.pow(robotToTagDistance, 1.2);
-    
-    if (resettingPose){
+
+    if (resettingPose) {
       xyStdDev = 0;
       thetaStdDev = 0;
     }

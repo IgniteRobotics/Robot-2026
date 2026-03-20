@@ -189,6 +189,7 @@ public class IntakeSubsystem extends SubsystemBase {
         .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
         .andThen(setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue()))
         .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .repeatedly()
         .withName("Agitate Intake");
   }
 

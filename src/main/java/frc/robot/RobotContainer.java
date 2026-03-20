@@ -210,6 +210,11 @@ public class RobotContainer {
         .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
         .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
+    //stop the roller without retracting.
+    driverJoystick
+        .a()
+        .onTrue(intake.stopRollerNoPID());
+
     operatorJoystick
         .rightTrigger()
         .whileTrue(drivetrain.setXCommand().alongWith(indexer.pulsingIndexCommand()))

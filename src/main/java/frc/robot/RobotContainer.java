@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
-import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
@@ -50,8 +49,8 @@ public class RobotContainer {
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  @Logged(name = "Climber")
-  public final ClimberSubsystem climber = new ClimberSubsystem();
+  //   @Logged(name = "Climber")
+  //   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();

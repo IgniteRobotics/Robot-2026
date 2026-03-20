@@ -5,9 +5,7 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.ProximityParamsConfigs;
-import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -35,7 +33,7 @@ import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
   private DriveState driveState = DriveState.getInstance();
 
-  private final CANrange drive_canrange;
+  //   private final CANrange drive_canrange;
 
   public DrivetrainSubsystem() {
     super(
@@ -45,7 +43,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         TunerConstants.BackLeft,
         TunerConstants.BackRight);
 
-    drive_canrange = new CANrange(9, new CANBus("rio"));
+    // drive_canrange = new CANrange(9, new CANBus("rio"));
 
     applySteerGains();
     applyDriveGains();
@@ -77,8 +75,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
     driveState.adjustCurrentDriveStats(this.getStateCopy());
 
-    SmartDashboard.putNumber(
-        "Drive Canrange Distance", drive_canrange.getDistance(true).getValueAsDouble());
+    // SmartDashboard.putNumber(
+    //     "Drive Canrange Distance", drive_canrange.getDistance(true).getValueAsDouble());
 
     SmartDashboard.putNumber("kP Preference Current", DrivePreferences.translation_kP.getValue());
   }
@@ -216,7 +214,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
   public void configureCANrange() {
     ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
-    drive_canrange.getConfigurator().refresh(proximityParamsConfigs);
+    // drive_canrange.getConfigurator().refresh(proximityParamsConfigs);
   }
 
   private void configureAutoBuilder() {

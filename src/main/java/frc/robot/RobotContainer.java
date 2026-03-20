@@ -94,9 +94,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutonShootHardCoded", autonShootCommandHard_Coded);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand(
-        "Collect Intake", intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT));
+        "Collect Intake",
+        intake
+            .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+            .andThen(intake.startRollerNoPID()));
     NamedCommands.registerCommand(
-        "Stow Intake", intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT));
+        "Stow Intake",
+        intake
+            .setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
+            .andThen(intake.stopRollerNoPID()));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
@@ -221,7 +227,11 @@ public class RobotContainer {
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     // Reset the field-centric heading on start button press.
-    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverJoystick
+        .start()
+        .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)
+            .alongWith(vision.resetPose()))
+        .onFalse(vision.stopResetPose());
 
     operatorJoystick
         .a()

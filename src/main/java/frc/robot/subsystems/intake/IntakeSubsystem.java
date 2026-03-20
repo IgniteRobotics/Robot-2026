@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,6 +18,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -34,6 +36,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private Angle extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT); // Rotations
 
   private PositionTorqueCurrentFOC extensionControl;
+
+  private MotionMagicExpoTorqueCurrentFOC mmExtenstionControl;
 
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
@@ -66,9 +70,12 @@ public class IntakeSubsystem extends SubsystemBase {
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.creatrExtenstionMotionMagicConfigs());
+
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
+    mmExtenstionControl = new MotionMagicExpoTorqueCurrentFOC(0);
   }
 
   @Override
@@ -77,7 +84,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
 
     extensionMotor.setControl(
-        extensionControl
+        mmExtenstionControl
             .withPosition(extensionTarget.in(Rotations))
             .withOverrideCoastDurNeutral(true));
   }
@@ -178,13 +185,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command dislodgeCommand() {
-    return spinRollerCommand()
-        .andThen(
-            setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue())
-                .andThen(
-                    setIntakeExtensionCommand(IntakePreferences.intakeCollectPosition.getValue())))
-        .repeatedly()
-        .withName("Dislodge Intake");
+    return setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .withName("Agitate Intake");
   }
 
   public Command homeIntakeCommand() {

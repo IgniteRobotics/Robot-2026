@@ -94,8 +94,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("AutonShootHardCoded", autonShootCommandHard_Coded);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
-    NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
-    NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
+    NamedCommands.registerCommand(
+        "Collect Intake", intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT));
+    NamedCommands.registerCommand(
+        "Stow Intake", intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
@@ -206,7 +208,7 @@ public class RobotContainer {
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(drivetrain.setXCommand().andThen(indexer.pulsingIndexCommand()))
+        .whileTrue(drivetrain.setXCommand().alongWith(indexer.pulsingIndexCommand()))
         .onFalse(indexer.stopFullIndexingNoPID());
 
     operatorJoystick

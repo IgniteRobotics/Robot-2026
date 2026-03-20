@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -74,6 +75,14 @@ public class IntakeConstants {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     // newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
+    return newConfigs;
+  }
+
+  public static MotionMagicConfigs creatrExtenstionMotionMagicConfigs() {
+    MotionMagicConfigs newConfigs = new MotionMagicConfigs();
+    newConfigs.MotionMagicCruiseVelocity = 20;
+    newConfigs.MotionMagicAcceleration = 40;
+    newConfigs.MotionMagicJerk = 400;
     return newConfigs;
   }
 

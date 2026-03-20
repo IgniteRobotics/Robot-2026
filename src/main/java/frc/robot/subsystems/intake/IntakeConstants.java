@@ -80,8 +80,8 @@ public class IntakeConstants {
 
   public static MotionMagicConfigs creatrExtenstionMotionMagicConfigs() {
     MotionMagicConfigs newConfigs = new MotionMagicConfigs();
-    newConfigs.MotionMagicCruiseVelocity = 20;
-    newConfigs.MotionMagicAcceleration = 40;
+    newConfigs.MotionMagicCruiseVelocity = 40;
+    newConfigs.MotionMagicAcceleration = 60;
     newConfigs.MotionMagicJerk = 400;
     return newConfigs;
   }

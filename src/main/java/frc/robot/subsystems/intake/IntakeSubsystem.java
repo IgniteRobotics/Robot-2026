@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -37,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private PositionTorqueCurrentFOC extensionControl;
 
-  private MotionMagicExpoTorqueCurrentFOC mmExtenstionControl;
+  private MotionMagicTorqueCurrentFOC mmExtenstionControl;
 
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
@@ -75,7 +76,7 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
-    mmExtenstionControl = new MotionMagicExpoTorqueCurrentFOC(0);
+    mmExtenstionControl = new MotionMagicTorqueCurrentFOC(0);
   }
 
   @Override
@@ -84,7 +85,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
 
     extensionMotor.setControl(
-        mmExtenstionControl
+        extensionControl
             .withPosition(extensionTarget.in(Rotations))
             .withOverrideCoastDurNeutral(true));
   }

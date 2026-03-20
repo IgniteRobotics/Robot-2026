@@ -5,46 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Points"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Start To HP - HP SHOOT"
+                  "pathName": "Bump to Depot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Collect Intake"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.33
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "HP to Right Tower (through tower) - HP AUTO"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right Tower through Depot (through tower) - HP AUTO"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot to shoot - DEPOT"
+            "pathName": "Depot to Shoot"
           }
         },
         {

@@ -197,13 +197,12 @@ public class RobotContainer {
         .onTrue(
             intake
                 .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-                .andThen(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID())));
+                .andThen(intake.startRollerNoPID()));
 
     driverJoystick
         .leftBumper()
         .onTrue(
-            intake
-                .stopRollerNoPID()
+            intake.stopRollerNoPID()
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
 
     driverJoystick
@@ -229,8 +228,7 @@ public class RobotContainer {
     // Reset the field-centric heading on start button press.
     driverJoystick
         .start()
-        .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)
-            .alongWith(vision.resetPose()))
+        .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric).alongWith(vision.resetPose()))
         .onFalse(vision.stopResetPose());
 
     operatorJoystick

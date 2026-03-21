@@ -110,11 +110,16 @@ public class RobotContainer {
         .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
 
     // Rumble driver controller when teleop starts
-    //Add a trigger to auto set the target to the hub on teleop start.
-    RobotModeTriggers.teleop().onTrue(
-        uiFeedback.timedRumbleCommand(driverJoystick.getHID(), 5.0)
-        .alongWith(Commands.runOnce(() -> LaunchState.getInstance().setTargetPose3d(Constants.FieldConstants.getHubTarget())))
-    );
+    // Add a trigger to auto set the target to the hub on teleop start.
+    RobotModeTriggers.teleop()
+        .onTrue(
+            uiFeedback
+                .timedRumbleCommand(driverJoystick.getHID(), 5.0)
+                .alongWith(
+                    Commands.runOnce(
+                        () ->
+                            LaunchState.getInstance()
+                                .setTargetPose3d(Constants.FieldConstants.getHubTarget()))));
 
     configureSubsystemDefaultCommands();
     configureTeleopBindings();

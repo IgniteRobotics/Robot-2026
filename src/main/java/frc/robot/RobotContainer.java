@@ -75,11 +75,7 @@ public class RobotContainer {
           .alongWith(shooter.spinFlywheelRanged())
           .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
 
-  private final Command autonShootCommandHard_Coded =
-      shooter
-          .spinFlywheelHardCoded()
-          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
-
+  
   private final Command stopShotCommand =
       indexer
           .stopFullIndexingNoPID()
@@ -91,7 +87,6 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
-    NamedCommands.registerCommand("AutonShootHardCoded", autonShootCommandHard_Coded);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand(
         "Collect Intake",
@@ -202,20 +197,22 @@ public class RobotContainer {
     driverJoystick
         .leftBumper()
         .onTrue(
-            intake.stopRollerNoPID()
+            intake
+                .stopRollerNoPID()
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
 
-    //outtake fuel.  don't retract when done.
+    // outtake fuel.  don't retract when done.
     driverJoystick
         .b()
-        .onTrue(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-            .andThen(intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID())))
+        .onTrue(
+            intake
+                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+                .andThen(
+                    intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID())))
         .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
-    //stop the roller without retracting.
-    driverJoystick
-        .x()
-        .onTrue(intake.stopRollerNoPID());
+    // stop the roller without retracting.
+    driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
     operatorJoystick
         .rightTrigger()

@@ -87,6 +87,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
+    NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
     NamedCommands.registerCommand(
         "Collect Intake",
         intake

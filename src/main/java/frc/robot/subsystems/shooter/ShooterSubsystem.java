@@ -140,7 +140,6 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Set Hood Angle");
   }
 
-
   public Command spinFlywheelRanged() {
     return run(
         () -> {

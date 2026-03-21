@@ -205,14 +205,16 @@ public class RobotContainer {
             intake.stopRollerNoPID()
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
 
+    //outtake fuel.  don't retract when done.
     driverJoystick
         .b()
-        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+        .onTrue(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+            .andThen(intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID())))
         .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
     //stop the roller without retracting.
     driverJoystick
-        .a()
+        .x()
         .onTrue(intake.stopRollerNoPID());
 
     operatorJoystick

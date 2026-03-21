@@ -3,33 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.737832059679766,
-        "y": 3.556
+        "x": 6.874332754629631,
+        "y": 1.1193335503472224
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.406802173446725,
-        "y": 2.6348708696758485
+        "x": 7.723700762374613,
+        "y": 1.9140960477330435
       },
       "isLocked": false,
-      "linkedName": "HPSweepEnd"
+      "linkedName": "HP Middle Sweep"
     },
     {
       "anchor": {
-        "x": 6.817857703329694,
-        "y": 0.9137492608260549
+        "x": 7.737832059679766,
+        "y": 3.556
       },
       "prevControl": {
-        "x": 6.848672875477921,
-        "y": 1.2416829989069054
+        "x": 7.742228877314815,
+        "y": 2.898166304976852
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HPSweepEnd"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.2,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -42,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "HP AUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }

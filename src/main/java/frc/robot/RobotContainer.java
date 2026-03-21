@@ -75,7 +75,6 @@ public class RobotContainer {
           .alongWith(shooter.spinFlywheelRanged())
           .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
 
-  
   private final Command stopShotCommand =
       indexer
           .stopFullIndexingNoPID()
@@ -226,7 +225,7 @@ public class RobotContainer {
 
     operatorJoystick
         .leftBumper()
-        .whileTrue(shooter.spinFlywheelRanged())
+        .whileTrue(shooter.spinFlywheelCommand())
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     // Reset the field-centric heading on start button press.

@@ -140,11 +140,6 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Set Hood Angle");
   }
 
-  public Command launchLemonsCommand() {
-    return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
-        .andThen(spinFlywheelCommand())
-        .withName("Start Launching Lemons");
-  }
 
   public Command spinFlywheelRanged() {
     return run(

@@ -101,6 +101,15 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Start Spinning Flywheel");
   }
 
+  public Command spinFlywheelPostCommand() {
+    return runOnce(
+            () -> {
+              velocityTarget = RotationsPerSecond.of(74.5);
+              hoodTarget = Rotations.of(4);
+            })
+        .withName("Start Spinning Flywheel");
+  }
+
   public Command spinFlywheelCommand(AngularVelocity v) {
     return runOnce(() -> velocityTarget = v).withName("Spinning To AV");
   }

@@ -238,6 +238,11 @@ public class RobotContainer {
         .whileTrue(shooter.spinFlywheelCommand())
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
+    operatorJoystick
+        .rightBumper()
+        .whileTrue(shooter.spinFlywheelPostCommand())
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+
     // Reset the field-centric heading on start button press.
     driverJoystick
         .start()

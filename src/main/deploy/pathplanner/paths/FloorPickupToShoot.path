@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5789125434027786,
-        "y": 0.62
+        "x": 0.55,
+        "y": 5.935186612991267
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5898803578450218,
-        "y": 0.5681836245528966
+        "x": 1.6047088051882081,
+        "y": 5.781164159152519
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Floor Pickup"
     },
     {
       "anchor": {
-        "x": 0.55,
-        "y": 0.62
+        "x": 2.5218681768558953,
+        "y": 5.935186612991267
       },
       "prevControl": {
-        "x": 2.2344211701357732,
-        "y": 0.6380678900122655
+        "x": 1.5780301176296287,
+        "y": 5.617182667952735
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -50.84770917758403
   },
   "reversed": false,
   "folder": "HP AUTO",

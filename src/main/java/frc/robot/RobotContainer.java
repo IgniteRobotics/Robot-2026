@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
-import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
@@ -50,8 +49,8 @@ public class RobotContainer {
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  @Logged(name = "Climber")
-  public final ClimberSubsystem climber = new ClimberSubsystem();
+  //   @Logged(name = "Climber")
+  //   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
@@ -76,11 +75,6 @@ public class RobotContainer {
           .alongWith(shooter.spinFlywheelRanged())
           .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
 
-  private final Command autonShootCommandHard_Coded =
-      shooter
-          .spinFlywheelHardCoded()
-          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
-
   private final Command stopShotCommand =
       indexer
           .stopFullIndexingNoPID()
@@ -92,10 +86,18 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
-    NamedCommands.registerCommand("AutonShootHardCoded", autonShootCommandHard_Coded);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
-    NamedCommands.registerCommand("Collect Intake", intake.collectNoPIDCommand());
-    NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
+    NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
+    NamedCommands.registerCommand(
+        "Collect Intake",
+        intake
+            .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+            .andThen(intake.startRollerNoPID()));
+    NamedCommands.registerCommand(
+        "Stow Intake",
+        intake
+            .setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
+            .andThen(intake.stopRollerNoPID()));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
@@ -108,7 +110,16 @@ public class RobotContainer {
         .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
 
     // Rumble driver controller when teleop starts
-    RobotModeTriggers.teleop().onTrue(uiFeedback.timedRumbleCommand(driverJoystick.getHID(), 5.0));
+    // Add a trigger to auto set the target to the hub on teleop start.
+    RobotModeTriggers.teleop()
+        .onTrue(
+            uiFeedback
+                .timedRumbleCommand(driverJoystick.getHID(), 5.0)
+                .alongWith(
+                    Commands.runOnce(
+                        () ->
+                            LaunchState.getInstance()
+                                .setTargetPose3d(Constants.FieldConstants.getHubTarget()))));
 
     configureSubsystemDefaultCommands();
     configureTeleopBindings();
@@ -190,7 +201,7 @@ public class RobotContainer {
         .onTrue(
             intake
                 .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-                .andThen(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID())));
+                .andThen(intake.startRollerNoPID()));
 
     driverJoystick
         .leftBumper()
@@ -199,14 +210,22 @@ public class RobotContainer {
                 .stopRollerNoPID()
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
 
+    // outtake fuel.  don't retract when done.
     driverJoystick
         .b()
-        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+        .onTrue(
+            intake
+                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+                .andThen(
+                    intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID())))
         .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
+
+    // stop the roller without retracting.
+    driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(drivetrain.setXCommand().andThen(indexer.pulsingIndexCommand()))
+        .whileTrue(drivetrain.setXCommand().alongWith(indexer.pulsingIndexCommand()))
         .onFalse(indexer.stopFullIndexingNoPID());
 
     operatorJoystick
@@ -216,11 +235,19 @@ public class RobotContainer {
 
     operatorJoystick
         .leftBumper()
-        .whileTrue(shooter.spinFlywheelRanged())
+        .whileTrue(shooter.spinFlywheelCommand())
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+
+    operatorJoystick
+        .rightBumper()
+        .whileTrue(shooter.spinFlywheelPostCommand())
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     // Reset the field-centric heading on start button press.
-    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverJoystick
+        .start()
+        .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric).alongWith(vision.resetPose()))
+        .onFalse(vision.stopResetPose());
 
     operatorJoystick
         .a()

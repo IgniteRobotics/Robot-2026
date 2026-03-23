@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5789125434027786,
-        "y": 0.62
+        "x": 3.631,
+        "y": 5.966
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5898803578450218,
-        "y": 0.5681836245528966
+        "x": 2.6539345187910874,
+        "y": 5.954759432095006
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.55,
-        "y": 0.62
+        "x": 0.8651953125000005,
+        "y": 5.966
       },
       "prevControl": {
-        "x": 2.2344211701357732,
-        "y": 0.6380678900122655
+        "x": 1.9148823166666709,
+        "y": 5.974250218481697
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DepotHeadOn"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "HP AUTO",
+  "folder": "Depot AUTO",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

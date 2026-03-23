@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,6 +18,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -34,6 +36,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private Angle extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT); // Rotations
 
   private PositionTorqueCurrentFOC extensionControl;
+
+  private MotionMagicTorqueCurrentFOC mmExtenstionControl;
 
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
@@ -54,6 +58,8 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerFollower.getConfigurator().apply(IntakeConstants.createRotorFollowerMotorOutputConfigs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
 
     rollerFollower.setControl(
         new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -66,9 +72,12 @@ public class IntakeSubsystem extends SubsystemBase {
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.creatrExtenstionMotionMagicConfigs());
+
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
+    mmExtenstionControl = new MotionMagicTorqueCurrentFOC(0);
   }
 
   @Override
@@ -178,13 +187,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command dislodgeCommand() {
-    return spinRollerCommand()
-        .andThen(
-            setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue())
-                .andThen(
-                    setIntakeExtensionCommand(IntakePreferences.intakeCollectPosition.getValue())))
+    return setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
         .repeatedly()
-        .withName("Dislodge Intake");
+        .withName("Agitate Intake");
   }
 
   public Command homeIntakeCommand() {

@@ -101,6 +101,15 @@ public class ShooterSubsystem extends SubsystemBase {
         .withName("Start Spinning Flywheel");
   }
 
+  public Command spinFlywheelPostCommand() {
+    return runOnce(
+            () -> {
+              velocityTarget = RotationsPerSecond.of(74.5);
+              hoodTarget = Rotations.of(4);
+            })
+        .withName("Start Spinning Flywheel");
+  }
+
   public Command spinFlywheelCommand(AngularVelocity v) {
     return runOnce(() -> velocityTarget = v).withName("Spinning To AV");
   }
@@ -138,12 +147,6 @@ public class ShooterSubsystem extends SubsystemBase {
     return runOnce(() -> hoodTarget = position)
         .andThen(Commands.waitUntil(() -> atHoodSetpoint()))
         .withName("Set Hood Angle");
-  }
-
-  public Command launchLemonsCommand() {
-    return setHoodCommand(Rotations.of(ShooterPreferences.hoodLaunchAngle.getValue()))
-        .andThen(spinFlywheelCommand())
-        .withName("Start Launching Lemons");
   }
 
   public Command spinFlywheelRanged() {

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -45,6 +47,13 @@ public class IntakeConstants {
     return slot;
   }
 
+  public static CurrentLimitsConfigs createRollerMotorCurrentLimitsConfigs() {
+    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+    config.StatorCurrentLimitEnable = true;
+    config.StatorCurrentLimit = 40.0;
+    return config;
+  }
+
   // Extension Motor
   public static final double ALLOWABLE_EXTENSION_ERROR = 0.1;
   public static final double INTAKE_FORWARD_LIMIT = 14.55;
@@ -74,6 +83,14 @@ public class IntakeConstants {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     // newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
+    return newConfigs;
+  }
+
+  public static MotionMagicConfigs creatrExtenstionMotionMagicConfigs() {
+    MotionMagicConfigs newConfigs = new MotionMagicConfigs();
+    newConfigs.MotionMagicCruiseVelocity = 40;
+    newConfigs.MotionMagicAcceleration = 60;
+    newConfigs.MotionMagicJerk = 400;
     return newConfigs;
   }
 

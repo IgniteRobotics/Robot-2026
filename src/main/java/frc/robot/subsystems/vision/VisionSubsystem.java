@@ -8,6 +8,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
@@ -57,6 +58,9 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Logged(name = "Right Camera/Results Rejected/Jumping", importance = Importance.CRITICAL)
   private long rightCameraResultsRejectedDueToJumping = 0;
+
+  @Logged(name = "Resetting", importance = Importance.CRITICAL)
+  private boolean resettingPose = false;
 
   public class VisionMeasurement {
     private Pose2d estimatedPose;
@@ -169,6 +173,7 @@ public class VisionSubsystem extends SubsystemBase {
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
     if (!RobotModeTriggers.disabled().getAsBoolean()
+        && !resettingPose
         && estimateDistance > VisionPreferences.jumpLimit.getValue()) {
       logBadResult(cameraName, "JUMPING");
       return;
@@ -195,6 +200,12 @@ public class VisionSubsystem extends SubsystemBase {
             * Math.pow(averageRobotToTagDistance, 1.2)
             / targetsUsed.size();
 
+    // if we're resetting the pose, trust the vision measurements
+    if (resettingPose) {
+      xyStdDev = 0;
+      thetaStdDev = 0;
+    }
+
     driveState.addVisionEstimate(
         new VisionMeasurement(
             pose.toPose2d(), captureTime, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)),
@@ -213,6 +224,7 @@ public class VisionSubsystem extends SubsystemBase {
     double estimateDistance =
         driveStats.Pose.getTranslation().getDistance(pose.getTranslation().toTranslation2d());
     if (!RobotModeTriggers.disabled().getAsBoolean()
+        && !resettingPose
         && estimateDistance > VisionPreferences.jumpLimit.getValue()) return;
 
     double robotToTagDistance =
@@ -228,6 +240,11 @@ public class VisionSubsystem extends SubsystemBase {
                 + driveStats.Speeds.omegaRadiansPerSecond
                     * VisionPreferences.omegaPenalty.getValue())
             * Math.pow(robotToTagDistance, 1.2);
+
+    if (resettingPose) {
+      xyStdDev = 0;
+      thetaStdDev = 0;
+    }
 
     driveState.addVisionEstimate(
         new VisionMeasurement(
@@ -257,5 +274,13 @@ public class VisionSubsystem extends SubsystemBase {
       if (type.equals("AMBIGUITY")) rightCameraResultsRejectedDueToAmbiguity++;
       else if (type.equals("JUMPING")) rightCameraResultsRejectedDueToJumping++;
     }
+  }
+
+  public Command resetPose() {
+    return runOnce(() -> this.resettingPose = true);
+  }
+
+  public Command stopResetPose() {
+    return runOnce(() -> this.resettingPose = false);
   }
 }

@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5789125434027786,
-        "y": 0.62
+        "x": 7.737832059679766,
+        "y": 3.556
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5898803578450218,
-        "y": 0.5681836245528966
+        "x": 6.7632870282802955,
+        "y": 3.0853129483642876
+      },
+      "isLocked": false,
+      "linkedName": "HPSweepEnd"
+    },
+    {
+      "anchor": {
+        "x": 5.8578411003457065,
+        "y": 2.638408217339884
+      },
+      "prevControl": {
+        "x": 6.978400260267941,
+        "y": 3.1406126184004863
+      },
+      "nextControl": {
+        "x": 5.544684812288324,
+        "y": 2.4980600128835184
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.55,
-        "y": 0.62
+        "x": 3.1184578269675933,
+        "y": 2.638408217339884
       },
       "prevControl": {
-        "x": 2.2344211701357732,
-        "y": 0.6380678900122655
+        "x": 3.6349668456371322,
+        "y": 2.6687311996855776
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 49.251079235914915
   },
   "reversed": false,
   "folder": "HP AUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5789125434027786,
-        "y": 0.62
+        "x": 7.737832059679766,
+        "y": 3.556
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5898803578450218,
-        "y": 0.5681836245528966
+        "x": 7.406802173446725,
+        "y": 2.6348708696758485
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HPSweepEnd"
     },
     {
       "anchor": {
-        "x": 0.55,
-        "y": 0.62
+        "x": 6.817857703329694,
+        "y": 0.9137492608260549
       },
       "prevControl": {
-        "x": 2.2344211701357732,
-        "y": 0.6380678900122655
+        "x": 6.848672875477921,
+        "y": 1.2416829989069054
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "HP AUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

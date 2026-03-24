@@ -96,4 +96,9 @@ public class IntakeConstants {
 
   public static final double SAFE_HOMING_EFFORT = -0.2;
   public static final double SAFE_STATOR_LIMIT = 0.8;
+
+  //PID shifting 
+  drop1 = TalonFX.getConfiguration().apply(Slot0Configs, 0.005); // the double represent the total timeout the motor should have(curently set to 5ms) https://v6.docs.ctr-electronics.com/en/latest/docs/migration/migration-guide/configuration-guide.html
+  drop2 = TalonFR.getConfiguration().apply(Slot0Configs, false);// from another sourse using a boolean false gets rid of the timeout
+
 }

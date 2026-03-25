@@ -66,7 +66,8 @@ public class RobotContainer {
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
-          .alongWith(shooter.spinFlywheelRanged());
+          .alongWith(shooter.spinFlywheelRanged())
+          .withName("Drive and Launch");
 
   private final Command autonShootCommand =
       drivetrain
@@ -128,28 +129,35 @@ public class RobotContainer {
   public void configureSubsystemDefaultCommands() {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(
-            () ->
-                DriveConstants.DEFAULT_DRIVE_REQUEST
-                    .withVelocityX(
-                        -1
-                            * Math.copySign(
-                                Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
-                            * DriveConstants
-                                .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
-                    .withVelocityY(
-                        -1
-                            * Math.copySign(
-                                Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
-                            * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        -1
-                            * Math.copySign(
-                                Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
-                            * DriveConstants
-                                .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
-                    .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
-                    .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
+        drivetrain
+            .applyRequest(
+                () ->
+                    DriveConstants.DEFAULT_DRIVE_REQUEST
+                        .withVelocityX(
+                            -1
+                                * Math.copySign(
+                                    Math.pow(driverJoystick.getLeftY(), 2),
+                                    driverJoystick.getLeftY())
+                                * DriveConstants
+                                    .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
+                        .withVelocityY(
+                            -1
+                                * Math.copySign(
+                                    Math.pow(driverJoystick.getLeftX(), 2),
+                                    driverJoystick.getLeftX())
+                                * DriveConstants
+                                    .MAX_DRIVE_SPEED) // Drive left with negative X (left)
+                        .withRotationalRate(
+                            -1
+                                * Math.copySign(
+                                    Math.pow(driverJoystick.getRightX(), 2),
+                                    driverJoystick.getRightX())
+                                * DriveConstants
+                                    .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X
+                        // (left)
+                        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
+                        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1))
+            .withName("Teleop Drive"));
   }
 
   public void removeSubsystemDefaultCommands() {
@@ -201,14 +209,16 @@ public class RobotContainer {
         .onTrue(
             intake
                 .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-                .andThen(intake.startRollerNoPID()));
+                .andThen(intake.startRollerNoPID())
+                .withName("Extend Intake"));
 
     driverJoystick
         .leftBumper()
         .onTrue(
             intake
                 .stopRollerNoPID()
-                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
+                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
+                .withName("Stow Intake"));
 
     // outtake fuel.  don't retract when done.
     driverJoystick
@@ -217,15 +227,21 @@ public class RobotContainer {
             intake
                 .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
                 .andThen(
-                    intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID())))
-        .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
+                    intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+                .withName("Outtake"))
+        .onFalse(
+            intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()).withName("Stop Roller"));
 
     // stop the roller without retracting.
     driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(drivetrain.setXCommand().alongWith(indexer.pulsingIndexCommand()))
+        .whileTrue(
+            drivetrain
+                .setXCommand()
+                .alongWith(indexer.pulsingIndexCommand())
+                .withName("Lock Wheels and Index"))
         .onFalse(indexer.stopFullIndexingNoPID());
 
     operatorJoystick
@@ -246,34 +262,46 @@ public class RobotContainer {
     // Reset the field-centric heading on start button press.
     driverJoystick
         .start()
-        .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric).alongWith(vision.resetPose()))
+        .onTrue(
+            drivetrain
+                .runOnce(drivetrain::seedFieldCentric)
+                .alongWith(vision.resetPose())
+                .withName("Seed & Reset Pose"))
         .onFalse(vision.stopResetPose());
 
     operatorJoystick
         .a()
         .onTrue(
             Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
+                    () ->
+                        LaunchState.getInstance()
+                            .setTargetPose3d(Constants.FieldConstants.getHubTarget()))
+                .withName("Set Target To Hub"));
 
     operatorJoystick
         .x()
         .onTrue(
             Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
+                    () ->
+                        LaunchState.getInstance()
+                            .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget()))
+                .withName("Set Target To Left Pass"));
 
     operatorJoystick
         .b()
         .onTrue(
             Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
+                    () ->
+                        LaunchState.getInstance()
+                            .setTargetPose3d(Constants.FieldConstants.getRightPassTarget()))
+                .withName("Set Target To Right Pass"));
 
-    operatorJoystick.y().whileTrue(uiFeedback.manualRumbleCommand(driverJoystick.getHID()));
+    operatorJoystick
+        .y()
+        .whileTrue(
+            uiFeedback
+                .manualRumbleCommand(driverJoystick.getHID())
+                .withName("Rumble Driver Controller"));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

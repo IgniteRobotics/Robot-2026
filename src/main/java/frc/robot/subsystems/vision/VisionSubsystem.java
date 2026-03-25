@@ -126,6 +126,9 @@ public class VisionSubsystem extends SubsystemBase {
   @Logged(name = "Front Camera/Valid This Frame", importance = Importance.CRITICAL)
   private boolean frontCameraValidThisFrame = false;
 
+  @Logged(name = "Front Camera/Results This Cycle", importance = Importance.CRITICAL)
+  private int frontCameraResultsThisCycle = 0;
+
   // Left Camera logging
   @Logged(name = "Left Camera/Pose", importance = Importance.CRITICAL)
   private Pose2d leftCameraPose = new Pose2d();
@@ -150,6 +153,9 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Logged(name = "Left Camera/Valid This Frame", importance = Importance.CRITICAL)
   private boolean leftCameraValidThisFrame = false;
+
+  @Logged(name = "Left Camera/Results This Cycle", importance = Importance.CRITICAL)
+  private int leftCameraResultsThisCycle = 0;
 
   // Right Camera logging
   @Logged(name = "Right Camera/Pose", importance = Importance.CRITICAL)
@@ -176,6 +182,9 @@ public class VisionSubsystem extends SubsystemBase {
   @Logged(name = "Right Camera/Valid This Frame", importance = Importance.CRITICAL)
   private boolean rightCameraValidThisFrame = false;
 
+  @Logged(name = "Right Camera/Results This Cycle", importance = Importance.CRITICAL)
+  private int rightCameraResultsThisCycle = 0;
+
   // Fused result logging
   @Logged(name = "Fused/Pose", importance = Importance.CRITICAL)
   private Pose2d fusedPose = new Pose2d();
@@ -200,6 +209,14 @@ public class VisionSubsystem extends SubsystemBase {
 
   // Pending estimates for clustering
   private List<PendingEstimate> pendingEstimates = new ArrayList<>();
+
+  // Temporary storage for best estimates this cycle (for logging)
+  private PendingEstimate bestFrontEstimate = null;
+  private PendingEstimate bestLeftEstimate = null;
+  private PendingEstimate bestRightEstimate = null;
+
+  // Temporary storage for best fused cluster this cycle (for logging)
+  private VisionCluster bestFusedCluster = null;
 
   // Drift detection state
   private DriftDetectionState driftState = new DriftDetectionState();
@@ -298,14 +315,22 @@ public class VisionSubsystem extends SubsystemBase {
   /**
    * Periodic method that processes vision measurements from all cameras.
    *
-   * <p>Algorithm: 1. Captures current drive stats as a snapshot for consistent processing 2.
-   * Retrieves all unread results from each camera in FIFO order (oldest first) 3. Processes each
-   * result through evaluation pipeline to generate pose estimates 4. Performs clustering on pending
-   * estimates to detect multi-camera consensus 5. Submits fused or individual estimates to pose
-   * estimator
+   * <p>Algorithm:
+   *
+   * <ol>
+   *   <li>Captures current drive stats as a snapshot for consistent processing
+   *   <li>Retrieves all unread results from each camera in FIFO order (oldest first)
+   *   <li>Processes each result through evaluation pipeline to generate pose estimates
+   *   <li>Tracks best estimate per camera (lowest ambiguity) and counts results per cycle
+   *   <li>Performs clustering on pending estimates to detect multi-camera consensus
+   *   <li>Submits fused or individual estimates to pose estimator
+   *   <li>Finalizes logging with best per-camera and fused estimates
+   * </ol>
    *
    * <p>This runs every robot loop cycle (~20ms) and processes multiple frames per camera if
-   * available, ensuring no vision data is lost.
+   * available, ensuring no vision data is lost. When multiple results are processed per camera, the
+   * best quality estimate (lowest ambiguity) is logged while all estimates contribute to
+   * clustering.
    */
   @Override
   public void periodic() {
@@ -323,6 +348,17 @@ public class VisionSubsystem extends SubsystemBase {
       rightCameraValidThisFrame = false;
       wasFusedThisFrame = false;
       activeCamerasThisFrame = 0;
+
+      // Reset result counters
+      frontCameraResultsThisCycle = 0;
+      leftCameraResultsThisCycle = 0;
+      rightCameraResultsThisCycle = 0;
+
+      // Reset best estimate tracking
+      bestFrontEstimate = null;
+      bestLeftEstimate = null;
+      bestRightEstimate = null;
+      bestFusedCluster = null;
 
       // this makes sure that the different parts of the periodic use different stats
       driveStats = driveState.getCurrentDriveStats();
@@ -345,6 +381,10 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Perform clustering and submit estimates
       performClustering();
+
+      // Finalize per-camera and fused logging with best estimates
+      finalizePerCameraLogging();
+      finalizeFusedLogging();
     }
   }
 
@@ -901,11 +941,15 @@ public class VisionSubsystem extends SubsystemBase {
    *   <li>Multiple estimates, multi-camera clusters (consensus):
    *       <ul>
    *         <li>Fuse poses via inverse variance weighting
+   *         <li>Track best cluster (largest size, or lowest uncertainty if tied)
    *         <li>Check for drift detection
    *         <li>Apply jump detection (may be bypassed if drift detected)
    *         <li>Submit fused estimate with scaled uncertainty
    *       </ul>
    * </ol>
+   *
+   * <p>Note: When multiple multi-camera clusters are processed, all are submitted to the pose
+   * estimator, but only the best cluster is logged (updated in finalizeFusedLogging()).
    */
   private void performClustering() {
     estimatesProcessedThisCycle = pendingEstimates.size();
@@ -971,14 +1015,13 @@ public class VisionSubsystem extends SubsystemBase {
         driftDetectionActive = driftState.driftDetected;
         driftConsecutiveCycles = driftState.consecutiveAgreementCycles;
 
-        // Update fused logging fields
-        fusedPose = cluster.fusedPose;
-        fusedTimestamp = cluster.fusedTimestamp;
-        fusedClusterSize = cluster.size();
-        fusedXyStdDev = cluster.fusedXyStdDev;
-        fusedThetaStdDev = cluster.fusedThetaStdDev;
-        wasFusedThisFrame = true;
-        fusedDriftDetected = driftDetected;
+        // Track best multi-camera cluster (largest, or lowest uncertainty if tied)
+        if (bestFusedCluster == null
+            || cluster.size() > bestFusedCluster.size()
+            || (cluster.size() == bestFusedCluster.size()
+                && cluster.fusedXyStdDev < bestFusedCluster.fusedXyStdDev)) {
+          bestFusedCluster = cluster;
+        }
 
         // Apply jump detection unless drift is detected
         if (!driftDetected && shouldRejectForJumping(cluster.fusedPose, "FUSED")) {
@@ -1000,40 +1043,99 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Updates per-camera logged fields for AdvantageScope visualization.
+   * Tracks the best estimate for each camera (lowest ambiguity) for logging.
    *
-   * @param estimate The pending estimate to log
+   * <p>Instead of immediately updating logged fields, this method tracks the best estimate per
+   * camera. The actual logged fields are updated at the end of periodic() via
+   * finalizePerCameraLogging().
+   *
+   * <p>This prevents data loss when multiple results are processed per camera in a single cycle.
+   *
+   * @param estimate The pending estimate to track
    */
   private void updateCameraLogging(PendingEstimate estimate) {
     activeCamerasThisFrame++;
 
     if (estimate.cameraName.equals(VisionConstants.photonCameraName_Front)) {
-      frontCameraPose = estimate.pose;
-      frontCameraTimestamp = estimate.timestamp;
-      frontCameraTagCount = estimate.tagCount;
-      frontCameraAmbiguity = estimate.ambiguity;
-      frontCameraXyStdDev = estimate.xyStdDev;
-      frontCameraThetaStdDev = estimate.thetaStdDev;
-      frontCameraAvgDistance = estimate.averageTagDistance;
-      frontCameraValidThisFrame = true;
+      frontCameraResultsThisCycle++;
+      // Keep estimate with lowest ambiguity
+      if (bestFrontEstimate == null || estimate.ambiguity < bestFrontEstimate.ambiguity) {
+        bestFrontEstimate = estimate;
+      }
     } else if (estimate.cameraName.equals(VisionConstants.photonCameraName_Left)) {
-      leftCameraPose = estimate.pose;
-      leftCameraTimestamp = estimate.timestamp;
-      leftCameraTagCount = estimate.tagCount;
-      leftCameraAmbiguity = estimate.ambiguity;
-      leftCameraXyStdDev = estimate.xyStdDev;
-      leftCameraThetaStdDev = estimate.thetaStdDev;
-      leftCameraAvgDistance = estimate.averageTagDistance;
-      leftCameraValidThisFrame = true;
+      leftCameraResultsThisCycle++;
+      if (bestLeftEstimate == null || estimate.ambiguity < bestLeftEstimate.ambiguity) {
+        bestLeftEstimate = estimate;
+      }
     } else if (estimate.cameraName.equals(VisionConstants.photonCameraName_Right)) {
-      rightCameraPose = estimate.pose;
-      rightCameraTimestamp = estimate.timestamp;
-      rightCameraTagCount = estimate.tagCount;
-      rightCameraAmbiguity = estimate.ambiguity;
-      rightCameraXyStdDev = estimate.xyStdDev;
-      rightCameraThetaStdDev = estimate.thetaStdDev;
-      rightCameraAvgDistance = estimate.averageTagDistance;
+      rightCameraResultsThisCycle++;
+      if (bestRightEstimate == null || estimate.ambiguity < bestRightEstimate.ambiguity) {
+        bestRightEstimate = estimate;
+      }
+    }
+  }
+
+  /**
+   * Finalizes per-camera logging by updating logged fields with the best estimate from this cycle.
+   *
+   * <p>Called at end of periodic() after all camera results have been processed. Updates logged
+   * fields with the estimate that had the lowest ambiguity (highest quality) for each camera.
+   */
+  private void finalizePerCameraLogging() {
+    // Front camera
+    if (bestFrontEstimate != null) {
+      frontCameraPose = bestFrontEstimate.pose;
+      frontCameraTimestamp = bestFrontEstimate.timestamp;
+      frontCameraTagCount = bestFrontEstimate.tagCount;
+      frontCameraAmbiguity = bestFrontEstimate.ambiguity;
+      frontCameraXyStdDev = bestFrontEstimate.xyStdDev;
+      frontCameraThetaStdDev = bestFrontEstimate.thetaStdDev;
+      frontCameraAvgDistance = bestFrontEstimate.averageTagDistance;
+      frontCameraValidThisFrame = true;
+    }
+
+    // Left camera
+    if (bestLeftEstimate != null) {
+      leftCameraPose = bestLeftEstimate.pose;
+      leftCameraTimestamp = bestLeftEstimate.timestamp;
+      leftCameraTagCount = bestLeftEstimate.tagCount;
+      leftCameraAmbiguity = bestLeftEstimate.ambiguity;
+      leftCameraXyStdDev = bestLeftEstimate.xyStdDev;
+      leftCameraThetaStdDev = bestLeftEstimate.thetaStdDev;
+      leftCameraAvgDistance = bestLeftEstimate.averageTagDistance;
+      leftCameraValidThisFrame = true;
+    }
+
+    // Right camera
+    if (bestRightEstimate != null) {
+      rightCameraPose = bestRightEstimate.pose;
+      rightCameraTimestamp = bestRightEstimate.timestamp;
+      rightCameraTagCount = bestRightEstimate.tagCount;
+      rightCameraAmbiguity = bestRightEstimate.ambiguity;
+      rightCameraXyStdDev = bestRightEstimate.xyStdDev;
+      rightCameraThetaStdDev = bestRightEstimate.thetaStdDev;
+      rightCameraAvgDistance = bestRightEstimate.averageTagDistance;
       rightCameraValidThisFrame = true;
+    }
+  }
+
+  /**
+   * Finalizes fused logging by updating logged fields with the best cluster from this cycle.
+   *
+   * <p>Called at end of periodic() after clustering. Updates logged fields with the largest
+   * multi-camera cluster (or lowest uncertainty if tied).
+   */
+  private void finalizeFusedLogging() {
+    if (bestFusedCluster != null) {
+      fusedPose = bestFusedCluster.fusedPose;
+      fusedTimestamp = bestFusedCluster.fusedTimestamp;
+      fusedClusterSize = bestFusedCluster.size();
+      fusedXyStdDev = bestFusedCluster.fusedXyStdDev;
+      fusedThetaStdDev = bestFusedCluster.fusedThetaStdDev;
+      wasFusedThisFrame = true;
+
+      // Check drift for best cluster
+      fusedDriftDetected = checkForDrift(bestFusedCluster);
     }
   }
 

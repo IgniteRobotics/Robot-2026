@@ -9,6 +9,7 @@ import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot {
     // Start DataLogManager to capture NetworkTables data to disk (.wpilog files)
     // This provides post-match analysis capability for ALL telemetry
     DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
 
     // Start Phoenix 6 SignalLogger for high-fidelity CTRE device logging (.hoot
     // files)

@@ -52,14 +52,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
-    flywheelMotorFollower
-        .getConfigurator()
-        .apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-    flywheelMotorFollower
-        .getConfigurator()
-        .apply(ShooterConstants.createFollowerMotorOutputConfigs());
-    // flywheelMotorFollower.setControl(
-    //    new Follower(flywheelMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
+    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+    
+    flywheelMotorFollower.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorFollower.getConfigurator().apply(ShooterConstants.createFollowerMotorOutputConfigs());
+    flywheelMotorFollower.getConfigurator().apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
 
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);
@@ -67,6 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
+    hoodMotor.getConfigurator().apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionVoltage(0);
   }

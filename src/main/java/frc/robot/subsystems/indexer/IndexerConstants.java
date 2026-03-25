@@ -1,5 +1,6 @@
 package frc.robot.subsystems.indexer;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -58,10 +59,26 @@ final class IndexerConstants {
     return newConfigs;
   }
 
+  public static final double INDEXER_CURRENT_LIMIT = 40;
+  public static CurrentLimitsConfigs createIndexerCurrentLimitsConfigs(){
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = INDEXER_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
+  }
+
   public static MotorOutputConfigs createAcceleratorMotorOutputsConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
+  }
+
+  public static final double ACCELERATOR_CURRENT_LIMIT = 40;
+  public static CurrentLimitsConfigs createAcceleratorCurrentLimitsConfigs(){
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = ACCELERATOR_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
   }
 }

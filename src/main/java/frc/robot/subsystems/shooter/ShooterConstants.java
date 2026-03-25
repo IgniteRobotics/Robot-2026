@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -51,6 +52,14 @@ public class ShooterConstants {
     return slot;
   }
 
+  public static final double FLYWHEEL_CURRENT_LIMIT = 40;
+  public static CurrentLimitsConfigs createFlywheelCurrentLimitsConfigs(){
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = FLYWHEEL_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
+  }
+
   public static final double ALLOWABLE_HOOD_ERROR = 0.1;
   public static final double HOOD_FORWARD_LIMIT = 6.2;
   public static final double HOOD_REVERSE_LIMIT = 0;
@@ -80,6 +89,14 @@ public class ShooterConstants {
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
+  }
+
+  public static final double HOOD_CURRENT_LIMIT = 40;
+  public static CurrentLimitsConfigs createHoodCurrentLimitsConfigs(){
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = HOOD_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
   }
 
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);

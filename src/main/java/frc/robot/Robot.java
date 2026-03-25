@@ -7,11 +7,11 @@ package frc.robot;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.statemachines.LaunchState;
@@ -28,6 +28,9 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   ShiftState shiftState = ShiftState.getInstance();
+
+  @Logged(name = "Scheduler", importance = Importance.CRITICAL)
+  CommandScheduler scheduler = CommandScheduler.getInstance();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -90,7 +93,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     shiftState.periodic(); // Update shift state and FMS connection status
   }
 

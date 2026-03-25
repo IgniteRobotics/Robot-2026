@@ -120,7 +120,8 @@ public class RobotContainer {
                     Commands.runOnce(
                         () ->
                             LaunchState.getInstance()
-                                .setTargetPose3d(Constants.FieldConstants.getHubTarget()))));
+                                .setTargetPose3d(Constants.FieldConstants.getHubTarget())))
+                .withName("Rumble & Set Pose"));
 
     configureSubsystemDefaultCommands();
     configureTeleopBindings();

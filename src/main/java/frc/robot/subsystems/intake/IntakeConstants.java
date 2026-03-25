@@ -24,14 +24,14 @@ public class IntakeConstants {
   public static final double ROLLER_KP = 0;
   public static final double ROLLER_KD = 0;
 
-  public static MotorOutputConfigs createRotorLeaderMotorOutputConfigs() {
+  public static MotorOutputConfigs createRollerLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
 
-  public static MotorOutputConfigs createRotorFollowerMotorOutputConfigs() {
+  public static MotorOutputConfigs createRollerFollowerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
@@ -47,21 +47,21 @@ public class IntakeConstants {
     return slot;
   }
 
+  
+  public static final double ROLLER_CURRENT_LIMIT = 40;
   public static CurrentLimitsConfigs createRollerMotorCurrentLimitsConfigs() {
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
     config.StatorCurrentLimitEnable = true;
-    config.StatorCurrentLimit = 40.0;
+    config.StatorCurrentLimit = ROLLER_CURRENT_LIMIT;
     return config;
   }
 
   // Extension Motor
   public static final double ALLOWABLE_EXTENSION_ERROR = 0.1;
-  public static final double INTAKE_FORWARD_LIMIT = 14.55;
-  public static final double INTAKE_REVERSE_LIMIT = 0.1;
+
   public static final double EXTENSION_KS = 0;
   public static final double EXTENSION_KP = 6.0;
   public static final double EXTENSION_KD = 0.2;
-
   public static Slot0Configs createExtensionMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
     slot.kS = EXTENSION_KS;
@@ -70,6 +70,8 @@ public class IntakeConstants {
     return slot;
   }
 
+  public static final double INTAKE_FORWARD_LIMIT = 14.55;
+  public static final double INTAKE_REVERSE_LIMIT = 0.1;
   public static SoftwareLimitSwitchConfigs createExtensionSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
     configs.ForwardSoftLimitEnable = true;
@@ -86,12 +88,23 @@ public class IntakeConstants {
     return newConfigs;
   }
 
-  public static MotionMagicConfigs creatrExtenstionMotionMagicConfigs() {
+  public static final double EXTENSION_MM_CRUISE_VELOCITY = 40;
+  public static final double EXTENSION_MM_ACCELERATION = 60;
+  public static final double EXTENSION_MM_JERK = 400;
+  public static MotionMagicConfigs createExtenstionMotionMagicConfigs() {
     MotionMagicConfigs newConfigs = new MotionMagicConfigs();
     newConfigs.MotionMagicCruiseVelocity = 40;
     newConfigs.MotionMagicAcceleration = 60;
     newConfigs.MotionMagicJerk = 400;
     return newConfigs;
+  }
+
+  public static final double EXTENSION_CURRENT_LIMIT = 40;
+  public static CurrentLimitsConfigs createExtenstionMotorCurrentLimitsConfigs() {
+    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+    config.StatorCurrentLimitEnable = true;
+    config.StatorCurrentLimit = EXTENSION_CURRENT_LIMIT;
+    return config;
   }
 
   public static final double SAFE_HOMING_EFFORT = -0.2;

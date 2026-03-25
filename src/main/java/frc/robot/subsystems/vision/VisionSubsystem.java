@@ -283,9 +283,18 @@ public class VisionSubsystem extends SubsystemBase {
     double fusedTimestamp;
     double fusedXyStdDev;
     double fusedThetaStdDev;
+    boolean usesFront, usesLeft, usesRight;
 
     VisionCluster(PendingEstimate initialEstimate) {
       estimates.add(initialEstimate);
+      if (initialEstimate.cameraName.equals(VisionConstants.photonCameraName_Front))
+        usesFront = true;
+      else usesFront = false;
+      if (initialEstimate.cameraName.equals(VisionConstants.photonCameraName_Left)) usesLeft = true;
+      else usesLeft = false;
+      if (initialEstimate.cameraName.equals(VisionConstants.photonCameraName_Right))
+        usesRight = true;
+      else usesRight = false;
     }
 
     void addEstimate(PendingEstimate estimate) {
@@ -294,6 +303,14 @@ public class VisionSubsystem extends SubsystemBase {
 
     int size() {
       return estimates.size();
+    }
+
+    int camerasUsed() {
+      int count = 0;
+      if (usesFront) count++;
+      if (usesLeft) count++;
+      if (usesRight) count++;
+      return count;
     }
   }
 
@@ -767,6 +784,12 @@ public class VisionSubsystem extends SubsystemBase {
         if (!clustered[j] && areEstimatesClose(estimates.get(i), estimates.get(j))) {
           cluster.addEstimate(estimates.get(j));
           clustered[j] = true;
+          if (estimates.get(j).cameraName.equals(VisionConstants.photonCameraName_Front))
+            cluster.usesFront = true;
+          if (estimates.get(j).cameraName.equals(VisionConstants.photonCameraName_Left))
+            cluster.usesLeft = true;
+          if (estimates.get(j).cameraName.equals(VisionConstants.photonCameraName_Right))
+            cluster.usesRight = true;
         }
       }
 
@@ -971,7 +994,7 @@ public class VisionSubsystem extends SubsystemBase {
               estimate.pose,
               estimate.timestamp,
               VecBuilder.fill(estimate.xyStdDev, estimate.xyStdDev, estimate.thetaStdDev)),
-          estimate.cameraName);
+          1);
 
       singleCameraClusters++;
       totalClustersFormed++;
@@ -1004,7 +1027,7 @@ public class VisionSubsystem extends SubsystemBase {
                 estimate.pose,
                 estimate.timestamp,
                 VecBuilder.fill(estimate.xyStdDev, estimate.xyStdDev, estimate.thetaStdDev)),
-            estimate.cameraName);
+            1);
 
         singleCameraClusters++;
       } else {
@@ -1035,7 +1058,7 @@ public class VisionSubsystem extends SubsystemBase {
                 cluster.fusedTimestamp,
                 VecBuilder.fill(
                     cluster.fusedXyStdDev, cluster.fusedXyStdDev, cluster.fusedThetaStdDev)),
-            "FUSED-" + cluster.size() + "CAM");
+            cluster.camerasUsed());
 
         multiCameraClusters++;
       }

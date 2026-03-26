@@ -17,7 +17,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -40,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private PositionTorqueCurrentFOC extensionControl;
 
   private MotionMagicTorqueCurrentFOC mmExtenstionControl;
-  
+
   @Logged(name = "Extension Is Compliant", importance = Importance.CRITICAL)
   private boolean isCompliantMode;
 
@@ -60,11 +59,15 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor = new TalonFX(IntakeConstants.EXTENSION_MOTOR_ID);
 
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerLeaderMotorOutputConfigs());
-    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerFollowerMotorOutputConfigs());
+    rollerFollower
+        .getConfigurator()
+        .apply(IntakeConstants.createRollerFollowerMotorOutputConfigs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorRampConfigs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorRampConfigs());
 
     rollerFollower.setControl(
         new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -79,7 +82,9 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot1Configs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtenstionMotionMagicConfigs());
-    extensionMotor.getConfigurator().apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
+    extensionMotor
+        .getConfigurator()
+        .apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
 
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
@@ -217,5 +222,7 @@ public class IntakeSubsystem extends SubsystemBase {
             });
   }
 
-  public void setCompiantMode(boolean mode){isCompliantMode = mode;}
+  public void setCompiantMode(boolean mode) {
+    isCompliantMode = mode;
+  }
 }

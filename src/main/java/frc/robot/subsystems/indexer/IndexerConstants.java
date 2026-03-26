@@ -60,7 +60,8 @@ final class IndexerConstants {
   }
 
   public static final double INDEXER_CURRENT_LIMIT = 40;
-  public static CurrentLimitsConfigs createIndexerCurrentLimitsConfigs(){
+
+  public static CurrentLimitsConfigs createIndexerCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
     configs.StatorCurrentLimit = INDEXER_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;
@@ -75,7 +76,8 @@ final class IndexerConstants {
   }
 
   public static final double ACCELERATOR_CURRENT_LIMIT = 40;
-  public static CurrentLimitsConfigs createAcceleratorCurrentLimitsConfigs(){
+
+  public static CurrentLimitsConfigs createAcceleratorCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
     configs.StatorCurrentLimit = ACCELERATOR_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;

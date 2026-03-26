@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -48,13 +49,20 @@ public class IntakeConstants {
     return slot;
   }
 
-  
   public static final double ROLLER_CURRENT_LIMIT = 40;
+
   public static CurrentLimitsConfigs createRollerMotorCurrentLimitsConfigs() {
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
     config.StatorCurrentLimitEnable = true;
     config.StatorCurrentLimit = ROLLER_CURRENT_LIMIT;
     return config;
+  }
+
+  public static OpenLoopRampsConfigs createRollerMotorRampConfigs() {
+    OpenLoopRampsConfigs configs = new OpenLoopRampsConfigs();
+    configs.VoltageOpenLoopRampPeriod = 1.5; // 1.5 secs to get from 0V to 12V
+    configs.DutyCycleOpenLoopRampPeriod = 1.5;
+    return configs;
   }
 
   // Extension Motor
@@ -63,6 +71,7 @@ public class IntakeConstants {
   public static final double EXTENSION_KS = 0;
   public static final double EXTENSION_KP = 6.0;
   public static final double EXTENSION_KD = 0.2;
+
   public static Slot0Configs createExtensionMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
     slot.kS = EXTENSION_KS;
@@ -74,6 +83,7 @@ public class IntakeConstants {
   public static final double EXTENSION_SPRINGY_KS = 0; // Fix PID values for springiness
   public static final double EXTENSION_SPRINGY_KP = 1;
   public static final double EXTENSION_SPRINGY_KD = 0.5;
+
   public static Slot1Configs createExtensionMotorSlot1Configs() {
     Slot1Configs slot = new Slot1Configs();
     slot.kS = EXTENSION_SPRINGY_KS;
@@ -84,6 +94,7 @@ public class IntakeConstants {
 
   public static final double INTAKE_FORWARD_LIMIT = 14.55;
   public static final double INTAKE_REVERSE_LIMIT = 0.1;
+
   public static SoftwareLimitSwitchConfigs createExtensionSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
     configs.ForwardSoftLimitEnable = true;
@@ -103,6 +114,7 @@ public class IntakeConstants {
   public static final double EXTENSION_MM_CRUISE_VELOCITY = 40;
   public static final double EXTENSION_MM_ACCELERATION = 60;
   public static final double EXTENSION_MM_JERK = 400;
+
   public static MotionMagicConfigs createExtenstionMotionMagicConfigs() {
     MotionMagicConfigs newConfigs = new MotionMagicConfigs();
     newConfigs.MotionMagicCruiseVelocity = 40;
@@ -112,6 +124,7 @@ public class IntakeConstants {
   }
 
   public static final double EXTENSION_CURRENT_LIMIT = 40;
+
   public static CurrentLimitsConfigs createExtenstionMotorCurrentLimitsConfigs() {
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
     config.StatorCurrentLimitEnable = true;

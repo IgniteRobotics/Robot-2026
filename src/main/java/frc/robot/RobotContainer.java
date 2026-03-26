@@ -207,9 +207,7 @@ public class RobotContainer {
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
-        .onTrue(
-            intake
-                .collectCommand());
+        .onTrue(intake.collectCommand());
 
     driverJoystick
         .leftBumper()

@@ -64,7 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
-    hoodMotor.getConfigurator().apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodCurrentLimitsConfigs());
     hoodTarget = Rotations.of(0);
     hoodControl = new PositionVoltage(0);
   }

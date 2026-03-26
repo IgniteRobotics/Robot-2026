@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -67,6 +68,17 @@ public class IntakeConstants {
     slot.kS = EXTENSION_KS;
     slot.kP = EXTENSION_KP;
     slot.kD = EXTENSION_KD;
+    return slot;
+  }
+
+  public static final double EXTENSION_SPRINGY_KS = 0; // Fix PID values for springiness
+  public static final double EXTENSION_SPRINGY_KP = 1;
+  public static final double EXTENSION_SPRINGY_KD = 0.5;
+  public static Slot1Configs createExtensionMotorSlot1Configs() {
+    Slot1Configs slot = new Slot1Configs();
+    slot.kS = EXTENSION_SPRINGY_KS;
+    slot.kP = EXTENSION_SPRINGY_KP;
+    slot.kD = EXTENSION_SPRINGY_KD;
     return slot;
   }
 

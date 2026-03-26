@@ -209,9 +209,7 @@ public class RobotContainer {
         // .whileTrue(intake.setExtendNoPID())
         .onTrue(
             intake
-                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-                .andThen(intake.startRollerNoPID())
-                .withName("Extend Intake"));
+                .collectCommand());
 
     driverJoystick
         .leftBumper()

@@ -156,7 +156,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return runOnce(() -> isCompliantMode = false)
         .andThen(runOnce(() -> extensionTarget = Rotations.of(rotations)))
         .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
-        .andThen(runOnce(() -> isCompliantMode = true));
+        .finallyDo(() -> isCompliantMode = true);
   }
 
   public Command setExtendNoPID() {
@@ -220,9 +220,5 @@ public class IntakeSubsystem extends SubsystemBase {
               return extensionMotor.getStatorCurrent().getValueAsDouble()
                   > IntakeConstants.SAFE_STATOR_LIMIT;
             });
-  }
-
-  public void setCompiantMode(boolean mode) {
-    isCompliantMode = mode;
   }
 }

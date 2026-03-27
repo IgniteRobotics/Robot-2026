@@ -91,15 +91,15 @@ public class VisionSubsystem extends SubsystemBase {
   @Logged(name = "Clustering/Estimates Processed This Cycle", importance = Importance.CRITICAL)
   private int estimatesProcessedThisCycle = 0;
 
-  // Frame correlation
-  @Logged(name = "Frame Info/Cycle Counter", importance = Importance.CRITICAL)
-  private long frameCycleCounter = 0;
+  // Cycle correlation
+  @Logged(name = "Cycle Info/Cycle Counter", importance = Importance.CRITICAL)
+  private long cycleCounter = 0;
 
-  @Logged(name = "Frame Info/Timestamp", importance = Importance.CRITICAL)
-  private double frameTimestamp = 0;
+  @Logged(name = "Cycle Info/Timestamp", importance = Importance.CRITICAL)
+  private double cycleTimestamp = 0;
 
-  @Logged(name = "Frame Info/Active Cameras", importance = Importance.CRITICAL)
-  private int activeCamerasThisFrame = 0;
+  @Logged(name = "Cycle Info/Active Poses", importance = Importance.CRITICAL)
+  private int activePosesThisCycle = 0;
 
   // Front Camera logging
   @Logged(name = "Front Camera/Pose", importance = Importance.CRITICAL)
@@ -123,8 +123,8 @@ public class VisionSubsystem extends SubsystemBase {
   @Logged(name = "Front Camera/Average Distance", importance = Importance.CRITICAL)
   private double frontCameraAvgDistance = 0;
 
-  @Logged(name = "Front Camera/Valid This Frame", importance = Importance.CRITICAL)
-  private boolean frontCameraValidThisFrame = false;
+  @Logged(name = "Front Camera/Valid This Cycle", importance = Importance.CRITICAL)
+  private boolean frontCameraValidThisCycle = false;
 
   @Logged(name = "Front Camera/Results This Cycle", importance = Importance.CRITICAL)
   private int frontCameraResultsThisCycle = 0;
@@ -151,8 +151,8 @@ public class VisionSubsystem extends SubsystemBase {
   @Logged(name = "Left Camera/Average Distance", importance = Importance.CRITICAL)
   private double leftCameraAvgDistance = 0;
 
-  @Logged(name = "Left Camera/Valid This Frame", importance = Importance.CRITICAL)
-  private boolean leftCameraValidThisFrame = false;
+  @Logged(name = "Left Camera/Valid This Cycle", importance = Importance.CRITICAL)
+  private boolean leftCameraValidThisCycle = false;
 
   @Logged(name = "Left Camera/Results This Cycle", importance = Importance.CRITICAL)
   private int leftCameraResultsThisCycle = 0;
@@ -179,8 +179,8 @@ public class VisionSubsystem extends SubsystemBase {
   @Logged(name = "Right Camera/Average Distance", importance = Importance.CRITICAL)
   private double rightCameraAvgDistance = 0;
 
-  @Logged(name = "Right Camera/Valid This Frame", importance = Importance.CRITICAL)
-  private boolean rightCameraValidThisFrame = false;
+  @Logged(name = "Right Camera/Valid This Cycle", importance = Importance.CRITICAL)
+  private boolean rightCameraValidThisCycle = false;
 
   @Logged(name = "Right Camera/Results This Cycle", importance = Importance.CRITICAL)
   private int rightCameraResultsThisCycle = 0;
@@ -201,8 +201,8 @@ public class VisionSubsystem extends SubsystemBase {
   @Logged(name = "Fused/Theta StdDev", importance = Importance.CRITICAL)
   private double fusedThetaStdDev = 0;
 
-  @Logged(name = "Fused/Was Fused This Frame", importance = Importance.CRITICAL)
-  private boolean wasFusedThisFrame = false;
+  @Logged(name = "Fused/Was Fused This Cycle", importance = Importance.CRITICAL)
+  private boolean wasFusedThisCycle = false;
 
   @Logged(name = "Fused/Drift Detected", importance = Importance.CRITICAL)
   private boolean fusedDriftDetected = false;
@@ -355,16 +355,16 @@ public class VisionSubsystem extends SubsystemBase {
       // Clear pending estimates from previous cycle
       pendingEstimates.clear();
 
-      // Increment frame counter and update timestamp
-      frameCycleCounter++;
-      frameTimestamp = Timer.getFPGATimestamp();
+      // Increment cycle counter and update timestamp
+      cycleCounter++;
+      cycleTimestamp = Timer.getFPGATimestamp();
 
-      // Reset per-frame flags
-      frontCameraValidThisFrame = false;
-      leftCameraValidThisFrame = false;
-      rightCameraValidThisFrame = false;
-      wasFusedThisFrame = false;
-      activeCamerasThisFrame = 0;
+      // Reset per-Cycle flags
+      frontCameraValidThisCycle = false;
+      leftCameraValidThisCycle = false;
+      rightCameraValidThisCycle = false;
+      wasFusedThisCycle = false;
+      activePosesThisCycle = 0;
 
       // Reset result counters
       frontCameraResultsThisCycle = 0;
@@ -1077,7 +1077,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @param estimate The pending estimate to track
    */
   private void updateCameraLogging(PendingEstimate estimate) {
-    activeCamerasThisFrame++;
+    activePosesThisCycle++;
 
     if (estimate.cameraName.equals(VisionConstants.photonCameraName_Front)) {
       frontCameraResultsThisCycle++;
@@ -1114,7 +1114,7 @@ public class VisionSubsystem extends SubsystemBase {
       frontCameraXyStdDev = bestFrontEstimate.xyStdDev;
       frontCameraThetaStdDev = bestFrontEstimate.thetaStdDev;
       frontCameraAvgDistance = bestFrontEstimate.averageTagDistance;
-      frontCameraValidThisFrame = true;
+      frontCameraValidThisCycle = true;
     }
 
     // Left camera
@@ -1126,7 +1126,7 @@ public class VisionSubsystem extends SubsystemBase {
       leftCameraXyStdDev = bestLeftEstimate.xyStdDev;
       leftCameraThetaStdDev = bestLeftEstimate.thetaStdDev;
       leftCameraAvgDistance = bestLeftEstimate.averageTagDistance;
-      leftCameraValidThisFrame = true;
+      leftCameraValidThisCycle = true;
     }
 
     // Right camera
@@ -1138,7 +1138,7 @@ public class VisionSubsystem extends SubsystemBase {
       rightCameraXyStdDev = bestRightEstimate.xyStdDev;
       rightCameraThetaStdDev = bestRightEstimate.thetaStdDev;
       rightCameraAvgDistance = bestRightEstimate.averageTagDistance;
-      rightCameraValidThisFrame = true;
+      rightCameraValidThisCycle = true;
     }
   }
 
@@ -1155,7 +1155,7 @@ public class VisionSubsystem extends SubsystemBase {
       fusedClusterSize = bestFusedCluster.size();
       fusedXyStdDev = bestFusedCluster.fusedXyStdDev;
       fusedThetaStdDev = bestFusedCluster.fusedThetaStdDev;
-      wasFusedThisFrame = true;
+      wasFusedThisCycle = true;
 
       // Check drift for best cluster
       fusedDriftDetected = checkForDrift(bestFusedCluster);

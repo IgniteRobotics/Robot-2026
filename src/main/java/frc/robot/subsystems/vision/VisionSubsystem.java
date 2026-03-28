@@ -556,7 +556,7 @@ public class VisionSubsystem extends SubsystemBase {
     double thetaStdDev =
         VisionPreferences.thetaStdDevCoef.getValue()
             * (1
-                + driveStats.Speeds.omegaRadiansPerSecond
+                + Math.abs(driveStats.Speeds.omegaRadiansPerSecond)
                     * VisionPreferences.omegaPenalty.getValue())
             * Math.pow(averageRobotToTagDistance, 1.2)
             / targetsUsed.size();
@@ -641,7 +641,7 @@ public class VisionSubsystem extends SubsystemBase {
     double thetaStdDev =
         VisionPreferences.thetaStdDevCoef.getValue()
             * (1
-                + driveStats.Speeds.omegaRadiansPerSecond
+                + Math.abs(driveStats.Speeds.omegaRadiansPerSecond)
                     * VisionPreferences.omegaPenalty.getValue())
             * Math.pow(robotToTagDistance, 1.2);
 

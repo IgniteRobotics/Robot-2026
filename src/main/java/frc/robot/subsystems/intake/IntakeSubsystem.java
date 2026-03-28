@@ -16,6 +16,7 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -97,6 +98,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
 
     // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
+    if (extensionMotor.getStatorCurrent().getValueAsDouble()
+            > IntakePreferences.resistanceCurrentLimit.getValue()
+        && isCompliantMode) CommandScheduler.getInstance().schedule(setIntakeExtensionCommand(0));
 
     extensionMotor.setControl(
         extensionControl

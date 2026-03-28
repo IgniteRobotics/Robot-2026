@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.units.*;
 import frc.robot.preferences.DoublePreference;
 
 public class IntakePreferences {
@@ -32,4 +33,9 @@ public class IntakePreferences {
 
   public static DoublePreference outpostReloadWait =
       new DoublePreference("Intake/Outpost Reload Waittime", 2.5); // in seconds
+
+  public static DoublePreference resistanceCurrentLimit =
+      new DoublePreference(
+          "Intake/Compliant Resistance Current Limit",
+          IntakeConstants.COMPLIANT_RESISTANCE_CURRENT_LIMIT.in(Units.Amps));
 }

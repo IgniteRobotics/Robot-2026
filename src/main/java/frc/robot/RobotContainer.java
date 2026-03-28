@@ -38,6 +38,7 @@ public class RobotContainer {
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
+  @Logged(name = "Drivetrain")
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
   @Logged(name = "Intake")

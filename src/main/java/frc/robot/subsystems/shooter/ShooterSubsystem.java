@@ -52,11 +52,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
-    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
-    
-    flywheelMotorFollower.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-    flywheelMotorFollower.getConfigurator().apply(ShooterConstants.createFollowerMotorOutputConfigs());
-    flywheelMotorFollower.getConfigurator().apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+    flywheelMotorLeader
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+
+    flywheelMotorFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelMotorFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFollowerMotorOutputConfigs());
+    flywheelMotorFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
 
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);

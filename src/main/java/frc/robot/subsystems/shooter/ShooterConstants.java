@@ -53,7 +53,8 @@ public class ShooterConstants {
   }
 
   public static final double FLYWHEEL_CURRENT_LIMIT = 40;
-  public static CurrentLimitsConfigs createFlywheelCurrentLimitsConfigs(){
+
+  public static CurrentLimitsConfigs createFlywheelCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
     configs.StatorCurrentLimit = FLYWHEEL_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;
@@ -92,7 +93,8 @@ public class ShooterConstants {
   }
 
   public static final double HOOD_CURRENT_LIMIT = 40;
-  public static CurrentLimitsConfigs createHoodCurrentLimitsConfigs(){
+
+  public static CurrentLimitsConfigs createHoodCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
     configs.StatorCurrentLimit = HOOD_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;

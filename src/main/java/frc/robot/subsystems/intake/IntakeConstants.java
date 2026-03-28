@@ -68,10 +68,10 @@ public class IntakeConstants {
   }
 
   // Extension Motor
-  public static final double ALLOWABLE_EXTENSION_ERROR = 0.1;
+  public static final double ALLOWABLE_EXTENSION_ERROR = 1;
 
   public static final double EXTENSION_KS = 0.456;
-  public static final double EXTENSION_KP = 6.0;
+  public static final double EXTENSION_KP = 6.8;
   public static final double EXTENSION_KD = 0.2;
 
   public static Slot0Configs createExtensionMotorSlot0Configs() {

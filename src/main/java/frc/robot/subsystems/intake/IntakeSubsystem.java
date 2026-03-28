@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -100,7 +101,10 @@ public class IntakeSubsystem extends SubsystemBase {
     // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
     if (extensionMotor.getStatorCurrent().getValueAsDouble()
             > IntakePreferences.resistanceCurrentLimit.getValue()
-        && isCompliantMode) CommandScheduler.getInstance().schedule(setIntakeExtensionCommand(0));
+        && isCompliantMode
+        && RobotModeTriggers.teleop().getAsBoolean())
+      CommandScheduler.getInstance()
+          .schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(0)));
 
     extensionMotor.setControl(
         extensionControl

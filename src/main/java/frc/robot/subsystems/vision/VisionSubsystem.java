@@ -1158,7 +1158,7 @@ public class VisionSubsystem extends SubsystemBase {
       wasFusedThisCycle = true;
 
       // Check drift for best cluster
-      fusedDriftDetected = checkForDrift(bestFusedCluster);
+      fusedDriftDetected = driftState.driftDetected;
     }
   }
 

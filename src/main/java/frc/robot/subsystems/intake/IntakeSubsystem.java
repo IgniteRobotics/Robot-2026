@@ -55,7 +55,9 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor = new TalonFX(IntakeConstants.EXTENSION_MOTOR_ID);
 
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerLeaderMotorOutputConfigs());
-    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerFollowerMotorOutputConfigs());
+    rollerFollower
+        .getConfigurator()
+        .apply(IntakeConstants.createRollerFollowerMotorOutputConfigs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
@@ -73,7 +75,9 @@ public class IntakeSubsystem extends SubsystemBase {
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtenstionMotionMagicConfigs());
-    extensionMotor.getConfigurator().apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
+    extensionMotor
+        .getConfigurator()
+        .apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
 
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);

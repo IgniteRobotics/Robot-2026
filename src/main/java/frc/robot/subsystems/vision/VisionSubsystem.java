@@ -480,7 +480,9 @@ public class VisionSubsystem extends SubsystemBase {
 
       int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
 
-      Pose3d targetPosition = VisionConstants.FIELD_LAYOUT.getTagPose(targetFiducialId).get();
+      var targetPoseOptional = VisionConstants.FIELD_LAYOUT.getTagPose(targetFiducialId);
+      if (targetPoseOptional.isEmpty()) return;
+      Pose3d targetPosition = targetPoseOptional.get();
 
       evaluateEstimation(
           targetPosition

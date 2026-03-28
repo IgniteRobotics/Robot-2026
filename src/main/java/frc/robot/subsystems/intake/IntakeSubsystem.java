@@ -16,6 +16,8 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -38,6 +40,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private PositionTorqueCurrentFOC extensionControl;
 
   private MotionMagicTorqueCurrentFOC mmExtenstionControl;
+
+  @Logged(name = "Extension Is Compliant", importance = Importance.CRITICAL)
+  private boolean isCompliantMode;
 
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
@@ -62,6 +67,8 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorRampConfigs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorRampConfigs());
 
     rollerFollower.setControl(
         new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -74,6 +81,7 @@ public class IntakeSubsystem extends SubsystemBase {
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot1Configs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtenstionMotionMagicConfigs());
     extensionMotor
         .getConfigurator()
@@ -83,15 +91,20 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionTorqueCurrentFOC(0);
     mmExtenstionControl = new MotionMagicTorqueCurrentFOC(0);
+    isCompliantMode = false;
   }
 
   @Override
   public void periodic() {
 
     // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
+    if (extensionMotor.getStatorCurrent().getValueAsDouble()
+            > IntakePreferences.resistanceCurrentLimit.getValue()
+        && isCompliantMode) CommandScheduler.getInstance().schedule(setIntakeExtensionCommand(0));
 
     extensionMotor.setControl(
         extensionControl
+            .withSlot(isCompliantMode ? 1 : 0)
             .withPosition(extensionTarget.in(Rotations))
             .withOverrideCoastDurNeutral(true));
   }
@@ -144,8 +157,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setIntakeExtensionCommand(double rotations) {
-    return runOnce(() -> extensionTarget = Rotations.of(rotations));
-    // .andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
+    return runOnce(() -> isCompliantMode = false)
+        .andThen(runOnce(() -> extensionTarget = Rotations.of(rotations)))
+        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
+        .finallyDo(() -> isCompliantMode = true);
   }
 
   public Command setExtendNoPID() {
@@ -163,7 +178,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command collectCommand() {
-    return setIntakeExtensionCommand(IntakePreferences.intakeCollectPosition.getValue())
+    return setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
         .andThen(startRollerNoPID()) // Set to  spinRollerCommand() after PID tuning
         .withName("Activate Intake Collection");
   }

@@ -15,6 +15,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,7 +31,9 @@ import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 import java.util.ArrayList;
 
+@Logged
 public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
+
   private DriveState driveState = DriveState.getInstance();
 
   //   private final CANrange drive_canrange;

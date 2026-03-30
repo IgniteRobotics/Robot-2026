@@ -3,37 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6,
-        "y": 3.0
+        "x": 3.443880171184022,
+        "y": 5.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9370214328880317,
-        "y": 3.0058081435684487
+        "x": 3.650898716119829,
+        "y": 5.594108416547789
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5,
-        "y": 2.4
+        "x": 6.5,
+        "y": 5.6
       },
       "prevControl": {
-        "x": 2.2511707277397344,
-        "y": 2.375834047371835
+        "x": 5.4697790849278345,
+        "y": 5.6
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.23647932131495378,
+      "rotationDegrees": -40.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -41,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 40.0
+    "velocity": 2.0,
+    "rotation": -40.0
   },
   "reversed": false,
-  "folder": "Basic Comp Paths - RIGHT",
+  "folder": "Basic Comp Paths - LEFT",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

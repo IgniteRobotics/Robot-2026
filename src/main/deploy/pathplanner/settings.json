@@ -3,16 +3,13 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Around the World",
     "Basic Comp Paths - LEFT",
     "Basic Comp Paths - RIGHT",
-    "Center AUTO",
     "Depot AUTO",
     "HP AUTO",
     "Mid-field",
     "Plus - Test",
     "Rotation + Translation Test",
-    "Shoot Then Depot Paths",
     "Square Test",
     "Test Paths"
   ],

@@ -23,6 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
 
+  /*
   @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // *rads* Per Second is the base unit.
 
@@ -44,6 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
               // Log state with SignalLogger class
               state -> SignalLogger.writeString("SysIdFlywheel_State", state.toString())),
           new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
+  */
 
   public ShooterSubsystem() {
     flywheelMotorLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEADER_MOTOR_ID);
@@ -51,7 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
 
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
+    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createIndexerMotorOutputConfigs());
     flywheelMotorLeader
         .getConfigurator()
         .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());

@@ -10,12 +10,10 @@ final class IndexerConstants {
 
   private IndexerConstants() {}
 
-  // TODO Replace with real id
-  protected static final int INDEXER_MOTOR_LEADER_ID = 3;
-  protected static final int INDEXER_MOTOR_FOLLOWER_ID = 9;
-  protected static final int ACCELERATOR_MOTOR_ID = 8;
+  protected static final int INDEXER_MOTOR_LEADER_ID = 4;
+  protected static final int ACCELERATOR_MOTOR_ID = 3;
 
-  // TODO: Tune motor
+  // TODO: PID tune motor
 
   protected static final double INDEXER_KS = 0;
   protected static final double INDEXER_KV = 0;
@@ -45,16 +43,9 @@ final class IndexerConstants {
     return slot;
   }
 
-  public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
+  public static MotorOutputConfigs createIndexerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
-    newConfigs.NeutralMode = NeutralModeValue.Brake;
-    return newConfigs;
-  }
-
-  public static MotorOutputConfigs createFollowerMotorOutputConfigs() {
-    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }

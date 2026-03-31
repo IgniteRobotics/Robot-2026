@@ -17,24 +17,34 @@ public class ShooterConstants {
 
   private ShooterConstants() {}
 
-  public static final int FLYWHEEL_LEADER_MOTOR_ID = 5;
-  public static final int FLYWHEEL_FOLLOWER_MOTOR_ID = 6;
-  public static final int HOOD_MOTOR_ID = 4;
-
-  public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
-    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
-    newConfigs.NeutralMode = NeutralModeValue.Coast;
-    return newConfigs;
-  }
-
-  public static MotorOutputConfigs createFollowerMotorOutputConfigs() {
+  public static final int FLYWHEEL_LEFT_LEADER_MOTOR_ID = 5;
+  public static final int FLYWHEEL_RIGHT_MOTOR_ID = 6;
+  public static final int FLYWHEEL_LEFT_FOLLOWER_MOTOR_ID = 7;
+  public static final int HOOD_MOTOR_ID = 8;
+   
+  public static MotorOutputConfigs createRightFlywheelMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
+  public static MotorOutputConfigs createLeftFlywheelMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode  = NeutralModeValue.Coast;
+    return newConfigs;
+  }
 
+  public static MotorOutputConfigs createHoodMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
+  }
+
+
+
+  /* 
   // TODO: Tune Flywheel and Hood Motor
 
   // Flywheel motor
@@ -104,6 +114,7 @@ public class ShooterConstants {
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);
   public static final Current SAFE_STATOR_LIMIT = Amp.of(0.8);
 
+  */
   // Conversion Constants
   public static final Angle ROTATIONS_PER_LAUNCH_DEGREE = Rotations.of(0.2);
   public static final Distance FLYWHEEL_RADIUS = Inch.of(2);

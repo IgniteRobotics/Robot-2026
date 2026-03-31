@@ -4,45 +4,47 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
+/* 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
-import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.ui.UISubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+*/
 
 @Logged
 public class RobotContainer {
-  private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
+  //private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
-  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
+  //private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
-  @Logged(name = "Drivetrain")
-  public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  //@Logged(name = "Drivetrain")
+  //public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
-  @Logged(name = "Intake")
-  public final IntakeSubsystem intake = new IntakeSubsystem();
+  //@Logged(name = "Intake")
+  //public final IntakeSubsystem intake = new IntakeSubsystem();
 
   @Logged(name = "Indexer")
   public final IndexerSubsystem indexer = new IndexerSubsystem();
@@ -50,18 +52,20 @@ public class RobotContainer {
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  //   @Logged(name = "Climber")
-  //   public final ClimberSubsystem climber = new ClimberSubsystem();
+  /* 
+  @Logged(name = "Climber")
+  public final ClimberSubsystem climber = new ClimberSubsystem();
 
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
   @Logged(name = "UI Feedback")
   public final UISubsystem uiFeedback =
-      new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
+    new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
+  
 
   private final Command driveAndLaunchCommand =
       drivetrain
@@ -84,8 +88,11 @@ public class RobotContainer {
           .andThen(shooter.stowHood());
 
   private final SendableChooser<Command> autoChooser;
+  */
 
+  
   public RobotContainer() {
+    /* 
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
@@ -125,9 +132,11 @@ public class RobotContainer {
                 .withName("Rumble & Set Pose"));
 
     configureSubsystemDefaultCommands();
+    */
     configureTeleopBindings();
   }
 
+  /*
   public void configureSubsystemDefaultCommands() {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -165,6 +174,7 @@ public class RobotContainer {
   public void removeSubsystemDefaultCommands() {
     drivetrain.removeDefaultCommand();
   }
+  
 
   public void configureTestBindings() {
     // Idle while the robot is disabled. This ensures the configured
@@ -202,9 +212,10 @@ public class RobotContainer {
 
     driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
   }
+  */
 
   public void configureTeleopBindings() {
-
+    /* 
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
@@ -302,12 +313,15 @@ public class RobotContainer {
                 .withName("Rumble Driver Controller"));
 
     drivetrain.registerTelemetry(logger::telemeterize);
+    */
   }
 
+  /* 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
 
+  
   private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
     LaunchRequest launchRequest = launchState.getLaunchRequest();
     double rotationalRate =
@@ -333,4 +347,5 @@ public class RobotContainer {
         .withRotationalRate(rotationalRate)
         .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
   }
+  */
 }

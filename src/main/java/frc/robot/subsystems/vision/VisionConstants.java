@@ -16,6 +16,11 @@ public class VisionConstants {
   // Front Camera
   public static final String photonCameraName_Front = "FRONT-CAMERA";
   public static final PhotonCamera photonCamera_Front = new PhotonCamera(photonCameraName_Front);
+  //AI Model Camera 
+  public static final  String photonCameraname_AI = "lemon_hunter";
+  public static final PhotonCamera photonCamera_AI = new PhotonCamera(photonCameraname_AI);
+  
+
 
   // Left camera
   public static final String photonCameraName_Left = "LEFT-CAMERA";

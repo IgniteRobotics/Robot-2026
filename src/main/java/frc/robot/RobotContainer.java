@@ -24,13 +24,12 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.ui.UISubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.ui.UISubsystem;
 
 @Logged
 public class RobotContainer {
@@ -55,10 +54,6 @@ public class RobotContainer {
 
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
-
-  @Logged(name = "UI Feedback")
-  public final UISubsystem uiFeedback =
-      new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
@@ -98,6 +93,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stow Intake", intake.stowNoPIDCommand());
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
+    NamedCommands.registerCommand("Mowing", intake.collectNoPIDCommand())//make a parameter that runs this action for a set amount of time when at mid-field
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
@@ -106,9 +102,6 @@ public class RobotContainer {
     // neutral mode is applied to the drive motors while disabled.
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.Idle()).ignoringDisable(true));
-
-    // Rumble driver controller when teleop starts
-    RobotModeTriggers.teleop().onTrue(uiFeedback.timedRumbleCommand(driverJoystick.getHID(), 5.0));
 
     configureSubsystemDefaultCommands();
     configureTeleopBindings();
@@ -170,43 +163,37 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.decreaseFlywheelCommand());
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
-    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
 
     driverJoystick
         .a()
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
-
-    driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
-
-    driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
   }
 
   public void configureTeleopBindings() {
 
     driverJoystick
         .rightBumper()
-        // .whileTrue(intake.setExtendNoPID())
-        .onTrue(
-            intake
-                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-                .andThen(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID())));
+        .whileTrue(intake.setExtendNoPID())
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.startRollerNoPID()));
 
     driverJoystick
         .leftBumper()
-        .onTrue(
-            intake
-                .stopRollerNoPID()
-                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
+        .whileTrue(intake.setRetractNoPID())
+        .onFalse(intake.stopExtensionNoPID().andThen(intake.stopRollerNoPID()));
+        /*
+         * .a()
+         * .whileTrue(motor.getConfiguration.apply(config chosen, PersistMode.NoPersist))
+         */
 
     driverJoystick
         .b()
-        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+        .whileTrue(intake.outtakeRollerNoPID().alongWith(indexer.startIndexerReverseNoPID()))/* .alongWith(shooter.spinFlywheelCommand))*/ 
         .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(drivetrain.setXCommand().andThen(indexer.pulsingIndexCommand()))
+        .whileTrue(indexer.pulsingIndexCommand())
         .onFalse(indexer.stopFullIndexingNoPID());
 
     operatorJoystick
@@ -245,8 +232,6 @@ public class RobotContainer {
                 () ->
                     LaunchState.getInstance()
                         .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
-
-    operatorJoystick.y().whileTrue(uiFeedback.manualRumbleCommand(driverJoystick.getHID()));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

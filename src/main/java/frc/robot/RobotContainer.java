@@ -5,11 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-/* 
+/*
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -35,16 +36,17 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 @Logged
 public class RobotContainer {
-  //private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
+  // private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
-  //private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
-  //@Logged(name = "Drivetrain")
-  //public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  // private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
-  //@Logged(name = "Intake")
-  //public final IntakeSubsystem intake = new IntakeSubsystem();
+  // @Logged(name = "Drivetrain")
+  // public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+
+  // @Logged(name = "Intake")
+  // public final IntakeSubsystem intake = new IntakeSubsystem();
 
   @Logged(name = "Indexer")
   public final IndexerSubsystem indexer = new IndexerSubsystem();
@@ -52,7 +54,7 @@ public class RobotContainer {
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  /* 
+  /*
   @Logged(name = "Climber")
   public final ClimberSubsystem climber = new ClimberSubsystem();
 
@@ -65,7 +67,7 @@ public class RobotContainer {
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
-  
+
 
   private final Command driveAndLaunchCommand =
       drivetrain
@@ -90,9 +92,8 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   */
 
-  
   public RobotContainer() {
-    /* 
+    /*
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
@@ -133,7 +134,12 @@ public class RobotContainer {
 
     configureSubsystemDefaultCommands();
     */
-    configureTeleopBindings();
+    SmartDashboard.putData(shooter.setFlywheelOutputCommand());
+    SmartDashboard.putData(shooter.setHoodTargetCommand());
+    SmartDashboard.putData(indexer.startIndexerNoPID());
+    SmartDashboard.putData(indexer.startAcceleratorNoPID());
+    SmartDashboard.putData(indexer.stopFullIndexingNoPID());
+    // configureTeleopBindings();
   }
 
   /*
@@ -174,7 +180,7 @@ public class RobotContainer {
   public void removeSubsystemDefaultCommands() {
     drivetrain.removeDefaultCommand();
   }
-  
+
 
   public void configureTestBindings() {
     // Idle while the robot is disabled. This ensures the configured
@@ -215,7 +221,7 @@ public class RobotContainer {
   */
 
   public void configureTeleopBindings() {
-    /* 
+    /*
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
@@ -316,12 +322,12 @@ public class RobotContainer {
     */
   }
 
-  /* 
+  /*
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
 
-  
+
   private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
     LaunchRequest launchRequest = launchState.getLaunchRequest();
     double rotationalRate =

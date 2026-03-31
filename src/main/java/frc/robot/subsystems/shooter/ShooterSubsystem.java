@@ -23,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorFollower;
   private final TalonFX hoodMotor;
 
-  /*
+  
   @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // *rads* Per Second is the base unit.
 
@@ -45,11 +45,12 @@ public class ShooterSubsystem extends SubsystemBase {
               // Log state with SignalLogger class
               state -> SignalLogger.writeString("SysIdFlywheel_State", state.toString())),
           new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
-  */
+  
 
   public ShooterSubsystem() {
     flywheelMotorLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEADER_MOTOR_ID);
-    flywheelMotorFollower = new TalonFX(ShooterConstants.FLYWHEEL_FOLLOWER_MOTOR_ID);
+    flywheelLeftMotorFollower = new TalonFX(ShooterConstants.FLYWHEEL_LEFT_MOTOR_ID);
+    flywheelRightFollower = new TalonFX(ShooterConstants.FLYWHEEL_RIGHT_MOTOR_ID)
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
 
     flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
@@ -58,15 +59,25 @@ public class ShooterSubsystem extends SubsystemBase {
         .getConfigurator()
         .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
 
-    flywheelMotorFollower
+    flywheelLeftMotorFollower
         .getConfigurator()
         .apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-    flywheelMotorFollower
+    flywheelLeftMotorFollower
         .getConfigurator()
         .apply(ShooterConstants.createFollowerMotorOutputConfigs());
-    flywheelMotorFollower
+    flywheelLeftMotorFollower
         .getConfigurator()
         .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+    flywheelRightFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelMotorSlot0Configs());
+    flywheelRightFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFollowerMotorOutputConfigs());
+    flywheelRightFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+
 
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(0);
@@ -84,7 +95,10 @@ public class ShooterSubsystem extends SubsystemBase {
     launchState.refreshRequest();
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    flywheelMotorFollower.setControl(
+    flywheelRightFollower.setControl(
+        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
+    flywheelLeftFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
   }

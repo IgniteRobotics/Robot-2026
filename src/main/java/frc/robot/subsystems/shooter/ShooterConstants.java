@@ -2,15 +2,10 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 
 public class ShooterConstants {
@@ -21,17 +16,18 @@ public class ShooterConstants {
   public static final int FLYWHEEL_RIGHT_MOTOR_ID = 6;
   public static final int FLYWHEEL_LEFT_FOLLOWER_MOTOR_ID = 7;
   public static final int HOOD_MOTOR_ID = 8;
-   
+
   public static MotorOutputConfigs createRightFlywheelMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
+
   public static MotorOutputConfigs createLeftFlywheelMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
-    newConfigs.NeutralMode  = NeutralModeValue.Coast;
+    newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
 
@@ -42,9 +38,7 @@ public class ShooterConstants {
     return newConfigs;
   }
 
-
-
-  /* 
+  /*
   // TODO: Tune Flywheel and Hood Motor
 
   // Flywheel motor

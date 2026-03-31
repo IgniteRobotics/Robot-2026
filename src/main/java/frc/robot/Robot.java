@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.statemachines.LaunchState;
 import frc.robot.statemachines.ShiftState;
 
 /**
@@ -106,7 +105,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    /* 
+    /*
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     LaunchState.getInstance().setTargetPose3d(Constants.FieldConstants.getHubTarget());
 
@@ -142,8 +141,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
 
     SignalLogger.stop();
-    //m_robotContainer.removeSubsystemDefaultCommands();
-    //m_robotContainer.configureTestBindings();
+    // m_robotContainer.removeSubsystemDefaultCommands();
+    // m_robotContainer.configureTestBindings();
   }
 
   /** This function is called periodically during test mode. */

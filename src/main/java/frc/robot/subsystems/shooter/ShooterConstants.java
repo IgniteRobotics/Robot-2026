@@ -2,7 +2,10 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
@@ -38,6 +41,48 @@ public class ShooterConstants {
     return newConfigs;
   }
 
+  public static final double HOOD_FORWARD_LIMIT = 6.2;
+  public static final double HOOD_REVERSE_LIMIT = 0;
+
+  public static SoftwareLimitSwitchConfigs createHoodSoftwareLimitSwitchConfigs() {
+    SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
+    configs.ForwardSoftLimitEnable = true;
+    configs.ReverseSoftLimitEnable = true;
+    configs.ForwardSoftLimitThreshold = HOOD_FORWARD_LIMIT;
+    configs.ReverseSoftLimitThreshold = HOOD_REVERSE_LIMIT;
+    return configs;
+  }
+
+  public static final double FLYWHEEL_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createFlywheelCurrentLimitsConfigs() {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = FLYWHEEL_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
+  }
+
+  public static final double HOOD_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createHoodCurrentLimitsConfigs() {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = HOOD_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
+  }
+
+  public static final double HOOD_KS = 0;
+  public static final double HOOD_KP = 2.0;
+  public static final double HOOD_KD = 0;
+
+  public static Slot0Configs createHoodMotorSlot0Configs() {
+    Slot0Configs slot = new Slot0Configs();
+    slot.kS = HOOD_KS;
+    slot.kP = HOOD_KP;
+    slot.kD = HOOD_KD;
+    return slot;
+  }
+
   /*
   // TODO: Tune Flywheel and Hood Motor
 
@@ -56,29 +101,10 @@ public class ShooterConstants {
     return slot;
   }
 
-  public static final double FLYWHEEL_CURRENT_LIMIT = 40;
-
-  public static CurrentLimitsConfigs createFlywheelCurrentLimitsConfigs() {
-    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-    configs.StatorCurrentLimit = FLYWHEEL_CURRENT_LIMIT;
-    configs.StatorCurrentLimitEnable = true;
-    return configs;
-  }
 
   public static final double ALLOWABLE_HOOD_ERROR = 0.1;
   public static final double HOOD_FORWARD_LIMIT = 6.2;
   public static final double HOOD_REVERSE_LIMIT = 0;
-  public static final double HOOD_KS = 0;
-  public static final double HOOD_KP = 2.0;
-  public static final double HOOD_KD = 0;
-
-  public static Slot0Configs createHoodMotorSlot0Configs() {
-    Slot0Configs slot = new Slot0Configs();
-    slot.kS = HOOD_KS;
-    slot.kP = HOOD_KP;
-    slot.kD = HOOD_KD;
-    return slot;
-  }
 
   public static SoftwareLimitSwitchConfigs createHoodSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
@@ -94,15 +120,6 @@ public class ShooterConstants {
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
-  }
-
-  public static final double HOOD_CURRENT_LIMIT = 40;
-
-  public static CurrentLimitsConfigs createHoodCurrentLimitsConfigs() {
-    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-    configs.StatorCurrentLimit = HOOD_CURRENT_LIMIT;
-    configs.StatorCurrentLimitEnable = true;
-    return configs;
   }
 
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -133,7 +134,12 @@ public class RobotContainer {
 
     configureSubsystemDefaultCommands();
     */
-    configureTeleopBindings();
+    SmartDashboard.putData(shooter.setFlywheelOutputCommand());
+    SmartDashboard.putData(shooter.setHoodTargetCommand());
+    SmartDashboard.putData(indexer.startIndexerNoPID());
+    SmartDashboard.putData(indexer.startAcceleratorNoPID());
+    SmartDashboard.putData(indexer.stopFullIndexingNoPID());
+    // configureTeleopBindings();
   }
 
   /*

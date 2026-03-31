@@ -1,6 +1,5 @@
 package frc.robot.subsystems.indexer;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -9,7 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -54,18 +52,22 @@ public class IndexerSubsystem extends SubsystemBase {
     acceleratorMotor = new TalonFX(IndexerConstants.ACCELERATOR_MOTOR_ID);
 
     indexerMotor.getConfigurator().apply(IndexerConstants.createIndexerMotorOutputConfigs());
-    indexerMotor.getConfigurator().apply(IndexerConstants.createIndexerMotorSlot0Configs());
-
-    acceleratorMotor.getConfigurator().apply(IndexerConstants.createAcceleratorMotorSlot0Configs());
     acceleratorMotor
         .getConfigurator()
         .apply(IndexerConstants.createAcceleratorMotorOutputsConfigs());
 
+    indexerMotor.getConfigurator().apply(IndexerConstants.createIndexerCurrentLimitsConfigs());
+    acceleratorMotor
+        .getConfigurator()
+        .apply(IndexerConstants.createAcceleratorCurrentLimitsConfigs());
+
+    /*
     indexerVelocityTarget = RotationsPerSecond.of(0);
     acceleratorVelocityTarget = RotationsPerSecond.of(0);
 
     indexerControl = new VelocityVoltage(0);
     acceleratorControl = new VelocityVoltage(0);
+    */
   }
 
   @Override
@@ -90,26 +92,12 @@ public class IndexerSubsystem extends SubsystemBase {
         .withName("Set Indexer Percent");
   }
 
-  public Command startIndexerReverseNoPID() {
-    return run(() -> indexerMotor.set(IndexerPreferences.indexerReversePercent.getValue()))
-        .withName("Set Indexer Reverse Percent");
-  }
-
-  public Command stopIndexerNoPID() {
-    return runOnce(() -> indexerMotor.set(0)).withName("Stop Indexer Percent");
-  }
-
   // Accelerator Commands
   public Command startAcceleratorNoPID() {
     return run(() -> acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue()))
         .withName("Set Acceleration Percent");
   }
 
-  public Command stopAcceleratorNoPID() {
-    return runOnce(() -> acceleratorMotor.set(0)).withName("Stop Accelerator Percent");
-  }
-
-  // Mainly Used Commands
   public Command stopFullIndexingNoPID() {
     return runOnce(
             () -> {
@@ -119,17 +107,33 @@ public class IndexerSubsystem extends SubsystemBase {
         .withName("Stop Full Indexing No PID");
   }
 
+  /*
+  public Command startIndexerReverseNoPID() {
+    return run(() -> indexerMotor.set(IndexerPreferences.indexerReversePercent.getValue()))
+        .withName("Set Indexer Reverse Percent");
+  }
+
+  public Command stopIndexerNoPID() {
+    return runOnce(() -> indexerMotor.set(0)).withName("Stop Indexer Percent");
+  }
+
+  public Command stopAcceleratorNoPID() {
+    return runOnce(() -> acceleratorMotor.set(0)).withName("Stop Accelerator Percent");
+  }
+
+  // Mainly Used Commands
+
   public Command indexCommand() {
-    /*return runOnce(
+    return runOnce(
         () -> {
             indexerVelocityTarget =
                 RotationsPerSecond.of(IndexerPreferences.indexSpeed.getValue());
             acceleratorVelocityTarget =
                 RotationsPerSecond.of(IndexerPreferences.accelerateSpeed.getValue());
         }
-    .withName("Index Lemons");*/
+    .withName("Index Lemons");
     // TODO: Removed for pre-pidtuning
-    return runOnce(
+    return run(
             () -> {
               indexerMotor.set(IndexerPreferences.indexerPercent.getValue());
               acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue());
@@ -138,11 +142,11 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command stopCommand() {
-    /*return runOnce(
+    return runOnce(
     () -> { PUT IT BACK!
       indexerVelocityTarget = RotationsPerSecond.of(0));
       acceleratorVelocityTarget = RotationsPerSecond.of(0);
-    }).withName("Stop Indexing");*/
+    }).withName("Stop Indexing");
     // TODO: Removed for pre-pidtuning
     return runOnce(
             () -> {
@@ -172,4 +176,5 @@ public class IndexerSubsystem extends SubsystemBase {
         .beforeStarting(() -> timer.restart())
         .withName("Pulsing Index");
   }
+  */
 }

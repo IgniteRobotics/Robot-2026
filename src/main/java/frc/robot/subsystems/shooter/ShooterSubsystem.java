@@ -19,7 +19,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX flywheelMotorLeftFollower;
   private final TalonFX hoodMotor;
 
-  /* 
+  /*
   @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // *rads* Per Second is the base unit.
 
@@ -98,7 +98,7 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelLeftFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     */
-    hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
+    // hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
   }
 
   public Command setHoodTargetCommand() {
@@ -108,9 +108,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command setFlywheelOutputCommand() {
-    return runOnce(
-            () -> setFlywheelMotorOutput(ShooterPreferences.flywheelLaunchPercent.getValue()))
-        .withName("Set Flywheel Output");
+    return runOnce(() -> setFlywheelMotorOutput(0.5)).withName("Set Flywheel Output");
+  }
+
+  public Command stopFlywheelOutputCommand() {
+    return runOnce(() -> setFlywheelMotorOutput(0)).withName("Set Flywheel Output");
   }
 
   public void setFlywheelMotorOutput(double output) {

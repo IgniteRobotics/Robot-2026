@@ -36,7 +36,7 @@ public class ShooterConstants {
 
   public static MotorOutputConfigs createHoodMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }

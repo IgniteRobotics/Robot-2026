@@ -139,6 +139,12 @@ public class RobotContainer {
     SmartDashboard.putData(indexer.startIndexerNoPID());
     SmartDashboard.putData(indexer.startAcceleratorNoPID());
     SmartDashboard.putData(indexer.stopFullIndexingNoPID());
+
+    driverJoystick.leftTrigger().whileTrue(indexer.startIndexerNoPID());
+    driverJoystick.rightTrigger().whileTrue(indexer.startAcceleratorNoPID());
+    driverJoystick.a().onTrue(shooter.setHoodTargetCommand());
+    driverJoystick.leftBumper().onTrue(shooter.setFlywheelOutputCommand());
+    driverJoystick.rightBumper().onTrue(shooter.stopFlywheelOutputCommand());
     // configureTeleopBindings();
   }
 

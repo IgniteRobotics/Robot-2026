@@ -88,13 +88,17 @@ public class IndexerSubsystem extends SubsystemBase {
 
   // Indexer Commands
   public Command startIndexerNoPID() {
-    return run(() -> indexerMotor.set(IndexerPreferences.indexerPercent.getValue()))
+    return runEnd(
+            () -> indexerMotor.set(IndexerPreferences.indexerPercent.getValue()),
+            () -> indexerMotor.set(0))
         .withName("Set Indexer Percent");
   }
 
   // Accelerator Commands
   public Command startAcceleratorNoPID() {
-    return run(() -> acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue()))
+    return runEnd(
+            () -> acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue()),
+            () -> acceleratorMotor.set(0))
         .withName("Set Acceleration Percent");
   }
 

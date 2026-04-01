@@ -108,7 +108,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command setFlywheelOutputCommand() {
-    return runOnce(() -> setFlywheelMotorOutput(0.5)).withName("Set Flywheel Output");
+    return runOnce(
+            () -> setFlywheelMotorOutput(ShooterPreferences.flywheelLaunchPercent.getValue()))
+        .withName("Set Flywheel Output");
   }
 
   public Command stopFlywheelOutputCommand() {

@@ -102,6 +102,18 @@ public class IndexerSubsystem extends SubsystemBase {
         .withName("Set Acceleration Percent");
   }
 
+  public Command startFullIndexingNoPID() {
+    return runEnd(
+        () -> {
+          indexerMotor.set(IndexerPreferences.indexerPercent.getValue());
+          acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue());
+        },
+        () -> {
+          indexerMotor.set(0);
+          acceleratorMotor.set(0);
+        });
+  }
+
   public Command stopFullIndexingNoPID() {
     return runOnce(
             () -> {

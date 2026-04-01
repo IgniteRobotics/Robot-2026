@@ -55,13 +55,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.5,
     "rotation": 90.0
   },
   "reversed": false,
   "folder": "HP AUTO",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 45.0
   },
   "useDefaultConstraints": true

@@ -12,7 +12,7 @@
         "y": 2.3982594944428333
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Collect_left"
     },
     {
       "anchor": {
@@ -53,7 +53,7 @@
   "folder": "Basic Comp Paths - LEFT",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": -90.0
+    "rotation": -88.56790381583522
   },
   "useDefaultConstraints": false
 }

@@ -32,16 +32,32 @@
     },
     {
       "anchor": {
-        "x": 6.5,
+        "x": 5.708680173992674,
         "y": 2.4
       },
       "prevControl": {
-        "x": 6.749268637710473,
-        "y": 2.3808911995676025
+        "x": 5.204956486112279,
+        "y": 2.4
+      },
+      "nextControl": {
+        "x": 6.219946136903238,
+        "y": 2.4
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.483677550747863,
+        "y": 1.201836271367522
+      },
+      "prevControl": {
+        "x": 6.515689722603783,
+        "y": 1.7828571905525032
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Overbump_right"
     }
   ],
   "rotationTargets": [],

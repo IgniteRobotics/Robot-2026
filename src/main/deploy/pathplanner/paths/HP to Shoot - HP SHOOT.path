@@ -12,7 +12,7 @@
         "y": 0.6465859125422662
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost_collect"
     },
     {
       "anchor": {
@@ -64,7 +64,7 @@
   "folder": "HP AUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.53156538894675
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

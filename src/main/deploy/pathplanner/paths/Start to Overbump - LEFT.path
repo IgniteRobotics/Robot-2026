@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 6.5,
-        "y": 5.6
+        "x": 6.641575425442613,
+        "y": 6.398147178342491
       },
       "prevControl": {
-        "x": 5.4697790849278345,
-        "y": 5.6
+        "x": 5.873888936584248,
+        "y": 4.934498769459707
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Overbump_left"
     }
   ],
   "rotationTargets": [

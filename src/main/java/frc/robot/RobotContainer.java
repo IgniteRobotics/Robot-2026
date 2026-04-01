@@ -4,49 +4,46 @@
 
 package frc.robot;
 
-import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
-
-/*
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.ui.UISubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
-*/
 
 @Logged
 public class RobotContainer {
-  // private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
+  private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
 
-  // private final CommandXboxController operatorJoystick = new CommandXboxController(1);
+  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
-  // @Logged(name = "Drivetrain")
-  // public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  @Logged(name = "Drivetrain")
+  public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
-  // @Logged(name = "Intake")
-  // public final IntakeSubsystem intake = new IntakeSubsystem();
+  @Logged(name = "Intake")
+  public final IntakeSubsystem intake = new IntakeSubsystem();
 
   @Logged(name = "Indexer")
   public final IndexerSubsystem indexer = new IndexerSubsystem();
@@ -54,21 +51,17 @@ public class RobotContainer {
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  /*
-  @Logged(name = "Climber")
-  public final ClimberSubsystem climber = new ClimberSubsystem();
-
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
   @Logged(name = "UI Feedback")
   public final UISubsystem uiFeedback =
-    new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
+      new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
 
-
+  /*
   private final Command driveAndLaunchCommand =
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
@@ -88,15 +81,14 @@ public class RobotContainer {
           .stopFullIndexingNoPID()
           .andThen(shooter.stopFlywheelCommand())
           .andThen(shooter.stowHood());
+   */
 
   private final SendableChooser<Command> autoChooser;
-  */
 
   public RobotContainer() {
-    /*
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
-    NamedCommands.registerCommand("AutonShoot", autonShootCommand);
-    NamedCommands.registerCommand("StopShot", stopShotCommand);
+    // NamedCommands.registerCommand("AutonShoot", autonShootCommand);
+    // NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
     NamedCommands.registerCommand(
         "Collect Intake",
@@ -111,7 +103,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
-    autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Idle while the robot is disabled. This ensures the configured
@@ -133,21 +124,9 @@ public class RobotContainer {
                 .withName("Rumble & Set Pose"));
 
     configureSubsystemDefaultCommands();
-    */
-    SmartDashboard.putData(shooter.setFlywheelOutputCommand());
-    SmartDashboard.putData(shooter.setHoodTargetCommand());
-    SmartDashboard.putData(indexer.startIndexerNoPID());
-    SmartDashboard.putData(indexer.startAcceleratorNoPID());
-    SmartDashboard.putData(indexer.stopFullIndexingNoPID());
-
-    driverJoystick.rightTrigger().whileTrue(indexer.startFullIndexingNoPID());
-    driverJoystick.a().onTrue(shooter.setHoodTargetCommand());
-    driverJoystick.leftBumper().onTrue(shooter.setFlywheelOutputCommand());
-    driverJoystick.rightBumper().onTrue(shooter.stopFlywheelOutputCommand());
-    // configureTeleopBindings();
+    configureTeleopBindings();
   }
 
-  /*
   public void configureSubsystemDefaultCommands() {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -186,7 +165,7 @@ public class RobotContainer {
     drivetrain.removeDefaultCommand();
   }
 
-
+  /*
   public void configureTestBindings() {
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
@@ -226,7 +205,6 @@ public class RobotContainer {
   */
 
   public void configureTeleopBindings() {
-    /*
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
@@ -240,6 +218,10 @@ public class RobotContainer {
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
                 .withName("Stow Intake"));
 
+    // stop the roller without retracting.
+    driverJoystick.x().onTrue(intake.stopRollerNoPID());
+
+    /*
     // outtake fuel.  don't retract when done.
     driverJoystick
         .b()
@@ -251,9 +233,6 @@ public class RobotContainer {
                 .withName("Outtake"))
         .onFalse(
             intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()).withName("Stop Roller"));
-
-    // stop the roller without retracting.
-    driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
     operatorJoystick
         .rightTrigger()
@@ -278,6 +257,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(shooter.spinFlywheelPostCommand())
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+    */
 
     // Reset the field-centric heading on start button press.
     driverJoystick
@@ -323,15 +303,17 @@ public class RobotContainer {
                 .manualRumbleCommand(driverJoystick.getHID())
                 .withName("Rumble Driver Controller"));
 
+    operatorJoystick.rightTrigger().whileTrue(indexer.startFullIndexingNoPID());
+    operatorJoystick.a().onTrue(shooter.setHoodTargetCommand());
+    operatorJoystick.leftBumper().onTrue(shooter.setFlywheelOutputCommand());
+    operatorJoystick.rightBumper().onTrue(shooter.stopFlywheelOutputCommand());
+
     drivetrain.registerTelemetry(logger::telemeterize);
-    */
   }
 
-  /*
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
-
 
   private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
     LaunchRequest launchRequest = launchState.getLaunchRequest();
@@ -358,5 +340,4 @@ public class RobotContainer {
         .withRotationalRate(rotationalRate)
         .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
   }
-  */
 }

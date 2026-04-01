@@ -19,12 +19,6 @@
                 "data": {
                   "name": "Collect Intake"
                 }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": []
-                }
               }
             ]
           }

@@ -27,7 +27,14 @@ public class ShooterConstants {
     return newConfigs;
   }
 
-  public static MotorOutputConfigs createLeftFlywheelMotorOutputConfigs() {
+  public static MotorOutputConfigs createLeftFlywheelLeaderMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Coast;
+    return newConfigs;
+  }
+
+  public static MotorOutputConfigs createLeftFlywheelFollowerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;

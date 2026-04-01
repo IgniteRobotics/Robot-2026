@@ -51,10 +51,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     flywheelMotorLeftLeader
         .getConfigurator()
-        .apply(ShooterConstants.createLeftFlywheelMotorOutputConfigs());
+        .apply(ShooterConstants.createLeftFlywheelLeaderMotorOutputConfigs());
     flywheelMotorLeftFollower
         .getConfigurator()
-        .apply(ShooterConstants.createLeftFlywheelMotorOutputConfigs());
+        .apply(ShooterConstants.createLeftFlywheelFollowerMotorOutputConfigs());
     flywheelMotorRight
         .getConfigurator()
         .apply(ShooterConstants.createRightFlywheelMotorOutputConfigs());
@@ -112,7 +112,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command stopFlywheelOutputCommand() {
-    return runOnce(() -> setFlywheelMotorOutput(0)).withName("Set Flywheel Output");
+    return runOnce(() -> setFlywheelMotorOutput(0)).withName("Stop Flywheel Output");
   }
 
   public void setFlywheelMotorOutput(double output) {

@@ -4,36 +4,34 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.preferences.DoublePreference;
-import frc.robot.statemachines.LaunchState;
 
 @Logged
 public class ShooterSubsystem extends SubsystemBase {
-  private final TalonFX flywheelMotorLeader;
-  private final TalonFX flywheelMotorFollower;
+  private final TalonFX flywheelMotorLeftLeader;
+  private final TalonFX flywheelMotorRight;
+  private final TalonFX flywheelMotorLeftFollower;
   private final TalonFX hoodMotor;
 
+  /*
   @Logged(name = "Velocity Target rads/s", importance = Importance.CRITICAL)
   private AngularVelocity velocityTarget; // *rads* Per Second is the base unit.
 
   private VelocityVoltage velocityControl;
 
+  private final LaunchState launchState = LaunchState.getInstance();
+  */
+
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // radians is the base unit.
 
   private PositionVoltage hoodControl;
-
-  private final LaunchState launchState = LaunchState.getInstance();
 
   final SysIdRoutine m_sysIdRoutineFlywheel =
       new SysIdRoutine(
@@ -46,47 +44,86 @@ public class ShooterSubsystem extends SubsystemBase {
           new SysIdRoutine.Mechanism(output -> setFlywheelVoltage(output.magnitude()), null, this));
 
   public ShooterSubsystem() {
-    flywheelMotorLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEADER_MOTOR_ID);
-    flywheelMotorFollower = new TalonFX(ShooterConstants.FLYWHEEL_FOLLOWER_MOTOR_ID);
+    flywheelMotorLeftLeader = new TalonFX(ShooterConstants.FLYWHEEL_LEFT_LEADER_MOTOR_ID);
+    flywheelMotorLeftFollower = new TalonFX(ShooterConstants.FLYWHEEL_LEFT_FOLLOWER_MOTOR_ID);
+    flywheelMotorRight = new TalonFX(ShooterConstants.FLYWHEEL_RIGHT_MOTOR_ID);
     hoodMotor = new TalonFX(ShooterConstants.HOOD_MOTOR_ID);
 
-    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-    flywheelMotorLeader.getConfigurator().apply(ShooterConstants.createLeaderMotorOutputConfigs());
-    flywheelMotorLeader
+    flywheelMotorLeftLeader
+        .getConfigurator()
+        .apply(ShooterConstants.createLeftFlywheelLeaderMotorOutputConfigs());
+    flywheelMotorLeftFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createLeftFlywheelFollowerMotorOutputConfigs());
+    flywheelMotorRight
+        .getConfigurator()
+        .apply(ShooterConstants.createRightFlywheelMotorOutputConfigs());
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
+
+    flywheelMotorLeftLeader
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+    flywheelMotorLeftFollower
+        .getConfigurator()
+        .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+    flywheelMotorRight
         .getConfigurator()
         .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
 
-    flywheelMotorFollower
-        .getConfigurator()
-        .apply(ShooterConstants.createFlywheelMotorSlot0Configs());
-    flywheelMotorFollower
-        .getConfigurator()
-        .apply(ShooterConstants.createFollowerMotorOutputConfigs());
-    flywheelMotorFollower
-        .getConfigurator()
-        .apply(ShooterConstants.createFlywheelCurrentLimitsConfigs());
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodCurrentLimitsConfigs());
 
-    velocityTarget = RotationsPerSecond.of(0);
-    velocityControl = new VelocityVoltage(0);
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
 
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
-    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
-    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorOutputConfigs());
-    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodCurrentLimitsConfigs());
+
     hoodTarget = Rotations.of(0);
-    hoodControl = new PositionVoltage(0);
+    hoodControl = new PositionVoltage(hoodTarget);
+  }
+
+  private void setFlywheelVoltage(double magnitude) {
+    flywheelMotorLeftLeader.setVoltage(magnitude);
+    flywheelMotorLeftFollower.setVoltage(magnitude);
+    flywheelMotorRight.setVoltage(magnitude);
   }
 
   @Override
   public void periodic() {
+    /*
     launchState.refreshRequest();
     flywheelMotorLeader.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
-    flywheelMotorFollower.setControl(
+    flywheelRightFollower.setControl(
         velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
     hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
+    flywheelLeftFollower.setControl(
+        velocityControl.withVelocity(velocityTarget.in(RotationsPerSecond)));
+    */
+    // hoodMotor.setControl(hoodControl.withPosition(hoodTarget));
   }
 
+  public Command setHoodTargetCommand() {
+    return runOnce(
+            () -> hoodTarget = Rotations.of(ShooterPreferences.hoodTargetPreference.getValue()))
+        .withName("Set Hood Target");
+  }
+
+  public Command setFlywheelOutputCommand() {
+    return runOnce(
+            () -> setFlywheelMotorOutput(ShooterPreferences.flywheelLaunchPercent.getValue()))
+        .withName("Set Flywheel Output");
+  }
+
+  public Command stopFlywheelOutputCommand() {
+    return runOnce(() -> setFlywheelMotorOutput(0)).withName("Stop Flywheel Output");
+  }
+
+  public void setFlywheelMotorOutput(double output) {
+    flywheelMotorLeftLeader.set(output);
+    flywheelMotorLeftFollower.set(output);
+    flywheelMotorRight.set(output);
+  }
+
+  /*
   @Logged(name = "Velocity Target RPM", importance = Importance.CRITICAL)
   public double getFlywheelTargetRPM() {
     return velocityTarget.in(RotationsPerSecond) * 60;
@@ -136,11 +173,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command setHoodToPreference() {
     return runOnce(
         () -> hoodTarget = Rotations.of(ShooterPreferences.hoodTargetPreference.getValue()));
-  }
-
-  private void setFlywheelVoltage(double magnitude) {
-    flywheelMotorLeader.setVoltage(magnitude);
-    flywheelMotorFollower.setVoltage(magnitude);
   }
 
   @Logged(name = "At Hood Setpoint", importance = Importance.CRITICAL)
@@ -261,6 +293,7 @@ public class ShooterSubsystem extends SubsystemBase {
             setHoodCommand(Rotations.of(ShooterPreferences.tuningDefaultHoodRotations.getValue())))
         .withName("Stop Shooter Tuning");
   }
+  */
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutineFlywheel.quasistatic(direction);

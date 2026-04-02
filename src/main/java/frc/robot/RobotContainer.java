@@ -36,6 +36,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
+
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
   @Logged(name = "Drivetrain")
@@ -50,9 +51,6 @@ public class RobotContainer {
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  //   @Logged(name = "Climber")
-  //   public final ClimberSubsystem climber = new ClimberSubsystem();
-
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
@@ -63,6 +61,7 @@ public class RobotContainer {
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
 
+  /*
   private final Command driveAndLaunchCommand =
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
@@ -82,13 +81,14 @@ public class RobotContainer {
           .stopFullIndexingNoPID()
           .andThen(shooter.stopFlywheelCommand())
           .andThen(shooter.stowHood());
+   */
 
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
-    NamedCommands.registerCommand("AutonShoot", autonShootCommand);
-    NamedCommands.registerCommand("StopShot", stopShotCommand);
+    // NamedCommands.registerCommand("AutonShoot", autonShootCommand);
+    // NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
     NamedCommands.registerCommand(
         "Collect Intake",
@@ -103,7 +103,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
-    autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Idle while the robot is disabled. This ensures the configured
@@ -166,6 +165,7 @@ public class RobotContainer {
     drivetrain.removeDefaultCommand();
   }
 
+  /*
   public void configureTestBindings() {
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
@@ -202,9 +202,9 @@ public class RobotContainer {
 
     driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
   }
+  */
 
   public void configureTeleopBindings() {
-
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
@@ -218,6 +218,10 @@ public class RobotContainer {
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
                 .withName("Stow Intake"));
 
+    // stop the roller without retracting.
+    driverJoystick.x().onTrue(intake.stopRollerNoPID());
+
+    /*
     // outtake fuel.  don't retract when done.
     driverJoystick
         .b()
@@ -229,9 +233,6 @@ public class RobotContainer {
                 .withName("Outtake"))
         .onFalse(
             intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()).withName("Stop Roller"));
-
-    // stop the roller without retracting.
-    driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
     operatorJoystick
         .rightTrigger()
@@ -256,6 +257,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(shooter.spinFlywheelPostCommand())
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+    */
 
     // Reset the field-centric heading on start button press.
     driverJoystick
@@ -300,6 +302,11 @@ public class RobotContainer {
             uiFeedback
                 .manualRumbleCommand(driverJoystick.getHID())
                 .withName("Rumble Driver Controller"));
+
+    operatorJoystick.rightTrigger().whileTrue(indexer.startFullIndexingNoPID());
+    operatorJoystick.a().onTrue(shooter.setHoodTargetCommand());
+    operatorJoystick.leftBumper().onTrue(shooter.setFlywheelOutputCommand());
+    operatorJoystick.rightBumper().onTrue(shooter.stopFlywheelOutputCommand());
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

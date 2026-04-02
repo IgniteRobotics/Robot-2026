@@ -48,7 +48,7 @@ public class ShooterConstants {
     return newConfigs;
   }
 
-  public static final double HOOD_FORWARD_LIMIT = 6.2;
+  public static final double HOOD_FORWARD_LIMIT = 4.9;
   public static final double HOOD_REVERSE_LIMIT = 0;
 
   public static SoftwareLimitSwitchConfigs createHoodSoftwareLimitSwitchConfigs() {
@@ -78,8 +78,8 @@ public class ShooterConstants {
     return configs;
   }
 
-  public static final double HOOD_KS = 0;
-  public static final double HOOD_KP = 2.0;
+  public static final double HOOD_KS = 4.8;
+  public static final double HOOD_KP = 9;
   public static final double HOOD_KD = 0;
 
   public static Slot0Configs createHoodMotorSlot0Configs() {

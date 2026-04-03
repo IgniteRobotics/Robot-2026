@@ -17,4 +17,7 @@ public class LemonHunterConstants {
   public static final Transform3d lemonHunterBaseTransform = new Transform3d(
                   new Translation3d(0.3429, 0, 0.692),
                   new Rotation3d(0, Math.toRadians(30), 0));
+
+  //Adjustment transform (TODO: Get Estimate)
+  public static final Translation3d movementPerIntakeExtenstionRotation = new Translation3d(0, 0, 0);
 }

@@ -122,7 +122,7 @@ public class RobotContainer {
                             LaunchState.getInstance()
                                 .setTargetPose3d(Constants.FieldConstants.getHubTarget())))
                 .withName("Rumble & Set Pose"));
-                
+
     configureSubsystemDefaultCommands();
   }
 

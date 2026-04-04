@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -174,9 +176,6 @@ public class RobotContainer {
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-    // driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    // driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-
     // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
@@ -309,6 +308,15 @@ public class RobotContainer {
     operatorJoystick.rightBumper().onTrue(shooter.stopFlywheelOutputCommand());
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    SmartDashboard.putData(
+        "Shooter/SysIdForwardQuasistatic", shooter.sysIdQuasistatic(Direction.kForward));
+    SmartDashboard.putData(
+        "Shooter/SysIdReverseQuasistatic", shooter.sysIdQuasistatic(Direction.kReverse));
+    SmartDashboard.putData("Shooter/SysIdForwardDynamic", shooter.sysIdDynamic(Direction.kForward));
+    SmartDashboard.putData("Shooter/SysIdReverseDynamic", shooter.sysIdDynamic(Direction.kReverse));
+    SmartDashboard.putData("Start Logger", Commands.runOnce(SignalLogger::start));
+    SmartDashboard.putData("Stop Logger", Commands.runOnce(SignalLogger::stop));
   }
 
   public Command getAutonomousCommand() {

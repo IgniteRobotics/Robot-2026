@@ -106,7 +106,7 @@ public class IntakeConstants {
   }
 
   public static final double INTAKE_FORWARD_LIMIT = 14.55;
-  public static final double INTAKE_REVERSE_LIMIT = 0.1;
+  public static final double INTAKE_REVERSE_LIMIT = 3.25;
 
   public static SoftwareLimitSwitchConfigs createExtensionSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();

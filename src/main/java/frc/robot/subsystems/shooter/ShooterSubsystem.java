@@ -4,7 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -34,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // radians is the base unit.
 
-  private MotionMagicVoltage hoodControl;
+  private PositionVoltage hoodControl;
 
   final SysIdRoutine m_sysIdRoutineFlywheel =
       new SysIdRoutine(
@@ -85,7 +85,7 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMotorRight.setControl(new Follower(5, MotorAlignmentValue.Opposed));
 
     hoodTarget = Rotations.of(0);
-    hoodControl = new MotionMagicVoltage(hoodTarget);
+    hoodControl = new PositionVoltage(hoodTarget);
 
     velocityTarget = RotationsPerSecond.of(0);
     velocityControl = new VelocityVoltage(velocityTarget);
@@ -146,6 +146,60 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command stowHood() {
     return runOnce(() -> hoodTarget = Rotations.of(0));
+  }
+
+  public Command increaseFlywheelCommand() {
+    return runOnce(
+            () ->
+                velocityTarget =
+                    RotationsPerSecond.of(
+                        velocityTarget.in(RotationsPerSecond)
+                            + ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
+        .withName("Increase FlyWheel Speed");
+  }
+
+  public Command decreaseFlywheelCommand() {
+    return runOnce(
+            () ->
+                velocityTarget =
+                    RotationsPerSecond.of(
+                        velocityTarget.in(RotationsPerSecond)
+                            - ShooterPreferences.tuningDefaultFlywheelStepRPS.getValue()))
+        .withName("Decrease FlyWheel Speed");
+  }
+
+  public Command increaseHoodCommand() {
+    return runOnce(
+            () ->
+                hoodTarget =
+                    Rotations.of(
+                        hoodTarget.in(Rotations)
+                            + ShooterPreferences.tuningDefaultHoodStepRotations.getValue()))
+        .withName("Increase Hood Angle");
+  }
+
+  public Command decreaseHoodCommand() {
+    return runOnce(
+            () ->
+                hoodTarget =
+                    Rotations.of(
+                        hoodTarget.in(Rotations)
+                            - ShooterPreferences.tuningDefaultHoodStepRotations.getValue()))
+        .withName("Decrease Hood Angle");
+  }
+
+  public Command startShooterTuningCommand() {
+    return runOnce(
+            () -> {
+              velocityTarget =
+                  RotationsPerSecond.of(ShooterPreferences.tuningDefaultFlywheelRPS.getValue());
+              hoodTarget = Rotations.of(ShooterPreferences.tuningDefaultHoodRotations.getValue());
+            })
+        .withName("Start Shooter Tuning");
+  }
+
+  public Command stopShooterTuningCommand() {
+    return stopFlywheelCommand().andThen(stowHood()).withName("Stop Shooter Tuning");
   }
 
   public Command spinFlywheelPostCommand() {

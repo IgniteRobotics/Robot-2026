@@ -122,9 +122,8 @@ public class RobotContainer {
                             LaunchState.getInstance()
                                 .setTargetPose3d(Constants.FieldConstants.getHubTarget())))
                 .withName("Rumble & Set Pose"));
-
+                
     configureSubsystemDefaultCommands();
-    configureTeleopBindings();
   }
 
   public void configureSubsystemDefaultCommands() {
@@ -161,11 +160,6 @@ public class RobotContainer {
             .withName("Teleop Drive"));
   }
 
-  public void removeSubsystemDefaultCommands() {
-    drivetrain.removeDefaultCommand();
-  }
-
-  /*
   public void configureTestBindings() {
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
@@ -192,14 +186,13 @@ public class RobotContainer {
 
     driverJoystick
         .a()
-        .whileTrue(driveAndLaunchCommand)
+        .whileTrue(driveAndLaunchCommand.alongWith(indexer.startFullIndexingNoPID()))
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
 
     driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
   }
-  */
 
   public void configureTeleopBindings() {
     driverJoystick
@@ -229,6 +222,8 @@ public class RobotContainer {
                 .withName("Outtake"))
         .onFalse(
             intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()).withName("Stop Roller"));
+
+    driverJoystick.rightTrigger().onTrue(shooter.spinFlywheelCommand());
 
     operatorJoystick
         .rightTrigger()

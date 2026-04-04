@@ -29,7 +29,7 @@ public class ShooterConstants {
 
   public static MotorOutputConfigs createLeftFlywheelLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
@@ -90,18 +90,16 @@ public class ShooterConstants {
     return slot;
   }
 
-  /*
+
   // TODO: Tune Flywheel and Hood Motor
 
   // Flywheel motor
-  public static final double FLYWHEEL_KS = 0.11239;
-  public static final double FLYWHEEL_KV = 0.11589;
-  public static final double FLYWHEEL_KA = 0.0034356;
-  public static final double FLYWHEEL_KP = 0.066945 * 2;
+  public static final double FLYWHEEL_KV = 0.12807;
+  public static final double FLYWHEEL_KA = 0.020039;
+  public static final double FLYWHEEL_KP = 0.17969;
 
   public static Slot0Configs createFlywheelMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
-    slot.kS = FLYWHEEL_KS;
     slot.kV = FLYWHEEL_KV;
     slot.kP = FLYWHEEL_KP;
     slot.kA = FLYWHEEL_KA;
@@ -109,6 +107,7 @@ public class ShooterConstants {
   }
 
 
+  /* 
   public static final double ALLOWABLE_HOOD_ERROR = 0.1;
   public static final double HOOD_FORWARD_LIMIT = 6.2;
   public static final double HOOD_REVERSE_LIMIT = 0;
@@ -128,6 +127,7 @@ public class ShooterConstants {
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
+  
 
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);
   public static final Current SAFE_STATOR_LIMIT = Amp.of(0.8);

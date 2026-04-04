@@ -150,6 +150,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public Command pulsingIndexCommand() {
     Timer timer = new Timer();
+    timer.start();
     return runEnd(
             () -> {
               double cycleTime =

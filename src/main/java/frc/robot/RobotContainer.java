@@ -235,9 +235,8 @@ public class RobotContainer {
         .whileTrue(
             drivetrain
                 .setXCommand()
-                .alongWith(indexer.pulsingIndexCommand())
-                .withName("Lock Wheels and Index"))
-        .onFalse(indexer.stopFullIndexingNoPID());
+                .alongWith(indexer.startFullIndexingNoPID())
+                .withName("Lock Wheels and Index"));
 
     operatorJoystick
         .leftTrigger()

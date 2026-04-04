@@ -3,7 +3,6 @@ package frc.robot.subsystems.indexer;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,9 +14,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 public class IndexerSubsystem extends SubsystemBase {
   private final TalonFX indexerMotor;
   private final TalonFX acceleratorMotor;
-
-  private VelocityVoltage indexerControl;
-  private VelocityVoltage acceleratorControl;
 
   final SysIdRoutine m_sysIdRoutineIndexer =
       new SysIdRoutine(

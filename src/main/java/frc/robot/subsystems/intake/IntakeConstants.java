@@ -70,9 +70,10 @@ public class IntakeConstants {
   // Extension Motor
   public static final double ALLOWABLE_EXTENSION_ERROR = 1;
 
-  public static final double EXTENSION_KS = 0.456;
-  public static final double EXTENSION_KP = 6.8;
-  public static final double EXTENSION_KD = 0.2;
+  public static final double EXTENSION_KS = 0.468;
+  public static final double EXTENSION_KP = 7.5;
+  public static final double EXTENSION_KI = 1.75;
+  public static final double EXTENSION_KD = 0.3;
 
   public static Slot0Configs createExtensionMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -105,8 +106,8 @@ public class IntakeConstants {
     return slot;
   }
 
-  public static final double INTAKE_FORWARD_LIMIT = 14.55;
-  public static final double INTAKE_REVERSE_LIMIT = 3.25;
+  public static final double INTAKE_FORWARD_LIMIT = 14.6;
+  public static final double INTAKE_REVERSE_LIMIT = 3.5;
 
   public static SoftwareLimitSwitchConfigs createExtensionSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();

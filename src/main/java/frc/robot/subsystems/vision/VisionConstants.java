@@ -24,6 +24,9 @@ public class VisionConstants {
   // Right camera
   public static final String photonCameraName_Right = "RIGHT-CAMERA";
   public static final PhotonCamera photonCamera_Right = new PhotonCamera(photonCameraName_Right);
+  //AI camera
+  public static final String photonCameraName_AI = "LemonHunter";
+  public static final PhotonCamera photonCamera_AI = new PhotonCamera(photonCamera_AI);
 
   // TODO: TUNE
   public static final double XY_STD_DEV_COEFFICIENT = 0.01;

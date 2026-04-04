@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -57,6 +58,20 @@ public class ShooterConstants {
     configs.ReverseSoftLimitEnable = true;
     configs.ForwardSoftLimitThreshold = HOOD_FORWARD_LIMIT;
     configs.ReverseSoftLimitThreshold = HOOD_REVERSE_LIMIT;
+    return configs;
+  }
+
+  public static final double HOOD_MAX_VELOCITY_RPS = 5;
+  public static final double HOOD_MAX_ACCELERATION_RPS2 = 10;
+  public static final double HOOD_MAX_JERK_RPS2 = 10;
+
+
+  public static MotionMagicConfigs createHoodMotionMagicConfigs() {
+    MotionMagicConfigs configs = new MotionMagicConfigs();
+    configs.MotionMagicCruiseVelocity =  HOOD_MAX_VELOCITY_RPS;
+    configs.MotionMagicAcceleration = HOOD_MAX_ACCELERATION_RPS2;
+    configs.MotionMagicJerk = HOOD_MAX_JERK_RPS2;
+
     return configs;
   }
 

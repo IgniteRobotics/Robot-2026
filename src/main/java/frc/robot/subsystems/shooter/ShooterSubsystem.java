@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
@@ -31,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // radians is the base unit.
 
-  private PositionVoltage hoodControl;
+  private MotionMagicVoltage hoodControl;
 
   final SysIdRoutine m_sysIdRoutineFlywheel =
       new SysIdRoutine(
@@ -74,10 +75,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodSoftwareLimitSwitchConfigs());
 
+    hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotionMagicConfigs());
+
     hoodMotor.getConfigurator().apply(ShooterConstants.createHoodMotorSlot0Configs());
 
     hoodTarget = Rotations.of(0);
-    hoodControl = new PositionVoltage(hoodTarget);
+    hoodControl = new MotionMagicVoltage(hoodTarget);
   }
 
   private void setFlywheelVoltage(double magnitude) {

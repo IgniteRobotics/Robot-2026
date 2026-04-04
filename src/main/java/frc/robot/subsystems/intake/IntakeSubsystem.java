@@ -16,12 +16,10 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -99,12 +97,14 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
 
     // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
+    /*
     if (extensionMotor.getStatorCurrent().getValueAsDouble()
             > IntakePreferences.resistanceCurrentLimit.getValue()
         && isCompliantMode
         && RobotModeTriggers.teleop().getAsBoolean())
       CommandScheduler.getInstance()
           .schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(0)));
+    */
 
     extensionMotor.setControl(
         extensionControl
@@ -161,10 +161,14 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setIntakeExtensionCommand(double rotations) {
+    /*
     return runOnce(() -> isCompliantMode = false)
         .andThen(runOnce(() -> extensionTarget = Rotations.of(rotations)))
         .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
         .finallyDo(() -> isCompliantMode = true);
+    */
+    return runOnce(() -> extensionTarget = Rotations.of(rotations))
+        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
   }
 
   public Command setExtendNoPID() {

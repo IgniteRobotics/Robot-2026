@@ -6,8 +6,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.Logged.Importance;
-import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -16,12 +15,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 public class IndexerSubsystem extends SubsystemBase {
   private final TalonFX indexerMotor;
   private final TalonFX acceleratorMotor;
-
-  @Logged(name = "Indexer Velocity Target", importance = Importance.CRITICAL)
-  private AngularVelocity indexerVelocityTarget; // RotationsPerSecond
-
-  @Logged(name = "Accelerator Velocity Target", importance = Importance.CRITICAL)
-  private AngularVelocity acceleratorVelocityTarget;
 
   private VelocityVoltage indexerControl;
   private VelocityVoltage acceleratorControl;
@@ -86,22 +79,6 @@ public class IndexerSubsystem extends SubsystemBase {
     acceleratorMotor.setVoltage(magnitude);
   }
 
-  // Indexer Commands
-  public Command startIndexerNoPID() {
-    return runEnd(
-            () -> indexerMotor.set(IndexerPreferences.indexerPercent.getValue()),
-            () -> indexerMotor.set(0))
-        .withName("Set Indexer Percent");
-  }
-
-  // Accelerator Commands
-  public Command startAcceleratorNoPID() {
-    return runEnd(
-            () -> acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue()),
-            () -> acceleratorMotor.set(0))
-        .withName("Set Acceleration Percent");
-  }
-
   public Command startFullIndexingNoPID() {
     return runEnd(
         () -> {
@@ -123,15 +100,16 @@ public class IndexerSubsystem extends SubsystemBase {
         .withName("Stop Full Indexing No PID");
   }
 
-  /*
   public Command startIndexerReverseNoPID() {
-    return run(() -> indexerMotor.set(IndexerPreferences.indexerReversePercent.getValue()))
+    return runOnce(() -> indexerMotor.set(IndexerPreferences.indexerReversePercent.getValue()))
         .withName("Set Indexer Reverse Percent");
   }
 
   public Command stopIndexerNoPID() {
     return runOnce(() -> indexerMotor.set(0)).withName("Stop Indexer Percent");
   }
+
+  /*
 
   public Command stopAcceleratorNoPID() {
     return runOnce(() -> acceleratorMotor.set(0)).withName("Stop Accelerator Percent");
@@ -172,6 +150,8 @@ public class IndexerSubsystem extends SubsystemBase {
         .withName("Stop Indexing Lemons");
   }
 
+  */
+
   public Command pulsingIndexCommand() {
     Timer timer = new Timer();
     return runEnd(
@@ -192,5 +172,4 @@ public class IndexerSubsystem extends SubsystemBase {
         .beforeStarting(() -> timer.restart())
         .withName("Pulsing Index");
   }
-  */
 }

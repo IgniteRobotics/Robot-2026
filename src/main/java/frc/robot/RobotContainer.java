@@ -63,7 +63,6 @@ public class RobotContainer {
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
 
-  /*
   private final Command driveAndLaunchCommand =
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
@@ -83,14 +82,13 @@ public class RobotContainer {
           .stopFullIndexingNoPID()
           .andThen(shooter.stopFlywheelCommand())
           .andThen(shooter.stowHood());
-   */
 
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     NamedCommands.registerCommand("Seed", drivetrain.runOnce(drivetrain::seedFieldCentric));
-    // NamedCommands.registerCommand("AutonShoot", autonShootCommand);
-    // NamedCommands.registerCommand("StopShot", stopShotCommand);
+    NamedCommands.registerCommand("AutonShoot", autonShootCommand);
+    NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
     NamedCommands.registerCommand(
         "Collect Intake",
@@ -213,14 +211,13 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(
             intake
-                .stopRollerNoPID()
+                .stopRollerCommand()
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
                 .withName("Stow Intake"));
 
     // stop the roller without retracting.
     driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
-    /*
     // outtake fuel.  don't retract when done.
     driverJoystick
         .b()
@@ -256,7 +253,6 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(shooter.spinFlywheelPostCommand())
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
-    */
 
     // Reset the field-centric heading on start button press.
     driverJoystick
@@ -301,11 +297,6 @@ public class RobotContainer {
             uiFeedback
                 .manualRumbleCommand(driverJoystick.getHID())
                 .withName("Rumble Driver Controller"));
-
-    operatorJoystick.rightTrigger().whileTrue(indexer.startFullIndexingNoPID());
-    operatorJoystick.a().onTrue(shooter.setHoodTargetCommand());
-    operatorJoystick.leftBumper().onTrue(shooter.setFlywheelOutputCommand());
-    operatorJoystick.rightBumper().onTrue(shooter.stopFlywheelOutputCommand());
 
     drivetrain.registerTelemetry(logger::telemeterize);
 

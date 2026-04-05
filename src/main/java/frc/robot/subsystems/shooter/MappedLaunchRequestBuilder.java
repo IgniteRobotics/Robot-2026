@@ -33,14 +33,14 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     hoodAngleMap.put(4.2, 2.6);
     hoodAngleMap.put(5.4, 3.0);
 
-    flywheelSpeedMap.put(1.3, 326.0);
-    flywheelSpeedMap.put(2.0, 342.6);
-    flywheelSpeedMap.put(2.6, 359.0);
-    flywheelSpeedMap.put(3.1, 391.9);
-    flywheelSpeedMap.put(3.21, 391.0);
-    flywheelSpeedMap.put(3.7, 408.4);
-    flywheelSpeedMap.put(4.2, 424.8);
-    flywheelSpeedMap.put(5.4, 490.6);
+    flywheelSpeedMap.put(1.3, 51.9);
+    flywheelSpeedMap.put(2.0, 54.5);
+    flywheelSpeedMap.put(2.6, 57.1);
+    flywheelSpeedMap.put(3.1, 62.4);
+    flywheelSpeedMap.put(3.21, 62.2);
+    flywheelSpeedMap.put(3.7, 65.0);
+    flywheelSpeedMap.put(4.2, 67.6);
+    flywheelSpeedMap.put(5.4, 78.1);
 
     /* Old shooter settings
     hoodAngleMap.put(0.99, 0.0);

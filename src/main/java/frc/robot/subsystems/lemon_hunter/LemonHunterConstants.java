@@ -1,9 +1,14 @@
 package frc.robot.subsystems.lemon_hunter;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
 import org.photonvision.PhotonCamera;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 
 public class LemonHunterConstants {
 
@@ -13,11 +18,7 @@ public class LemonHunterConstants {
   public static final String lemonHunterCameraName = "LEMON-HUNTER";
   public static final PhotonCamera lemonHunterCamera = new PhotonCamera(lemonHunterCameraName);
   
-  //Base Transform (when intake is pulled in), actual transform updating as intake moves
-  public static final Transform3d lemonHunterBaseTransform = new Transform3d(
-                  new Translation3d(0.3429, 0, 0.692),
-                  new Rotation3d(0, Math.toRadians(30), 0));
-
-  //Adjustment transform (TODO: Get Estimate)
-  public static final Translation3d movementPerIntakeExtenstionRotation = new Translation3d(0, 0, 0);
+  public static final Distance HUNTER_OFFSET = Meters.of(0.61);
+  public static final Distance HUNTER_HEIGHT = Meters.of(0.6223);
+  public static final Angle HUNTER_PITCH = Degrees.of(-30);
 }

@@ -63,7 +63,6 @@ public class ShooterConstants {
     return configs;
   }
 
-  
   public static final double FLYWHEEL_STATOR_CURRENT_LIMIT = 100;
   public static final double FLYWHEEL_SUPPLY_CURRENT_LIMIT = 40;
 
@@ -104,9 +103,9 @@ public class ShooterConstants {
 
   public static final double HOOD_VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
 
-  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs(){
+  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs() {
     return new ClosedLoopRampsConfigs()
-      .withVoltageClosedLoopRampPeriod(HOOD_VOLTAGE_CLOSED_LOOP_RAMP_PERIOD);
+        .withVoltageClosedLoopRampPeriod(HOOD_VOLTAGE_CLOSED_LOOP_RAMP_PERIOD);
   }
 
   // TODO: Tune Flywheel and Hood Motor

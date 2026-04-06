@@ -2,7 +2,6 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -140,7 +139,7 @@ public class IntakeConstants {
 
   public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
 
-  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs(){
+  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs() {
     ClosedLoopRampsConfigs config = new ClosedLoopRampsConfigs();
     config.VoltageClosedLoopRampPeriod = VOLTAGE_CLOSED_LOOP_RAMP_PERIOD;
     return config;

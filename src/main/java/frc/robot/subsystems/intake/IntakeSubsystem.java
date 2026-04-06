@@ -6,8 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -36,9 +35,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Logged(name = "Extension Target", importance = Importance.CRITICAL)
   private Angle extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT); // Rotations
 
-  private PositionTorqueCurrentFOC extensionControl;
-
-  private MotionMagicTorqueCurrentFOC mmExtenstionControl;
+  private PositionVoltage extensionControl;
 
   @Logged(name = "Extension Is Compliant", importance = Importance.CRITICAL)
   private boolean isCompliantMode;
@@ -81,15 +78,14 @@ public class IntakeSubsystem extends SubsystemBase {
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot1Configs());
-    extensionMotor.getConfigurator().apply(IntakeConstants.createExtenstionMotionMagicConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.creatClosedLoopRampsConfigs());
     extensionMotor
         .getConfigurator()
         .apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
 
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
-    extensionControl = new PositionTorqueCurrentFOC(0);
-    mmExtenstionControl = new MotionMagicTorqueCurrentFOC(0);
+    extensionControl = new PositionVoltage(0);
     isCompliantMode = false;
   }
 
@@ -109,8 +105,7 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor.setControl(
         extensionControl
             .withSlot(isCompliantMode ? 1 : 0)
-            .withPosition(extensionTarget.in(Rotations))
-            .withOverrideCoastDurNeutral(true));
+            .withPosition(extensionTarget.in(Rotations)));
   }
 
   public Command spinRollerCommand() {

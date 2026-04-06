@@ -186,8 +186,7 @@ public class RobotContainer {
 
     driverJoystick
         .a()
-        .whileTrue(driveAndLaunchCommand.alongWith(indexer.startFullIndexingNoPID()))
-        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+        .whileTrue(indexer.startFullIndexingNoPID());
 
     driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
 

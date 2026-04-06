@@ -2,8 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -63,41 +63,34 @@ public class ShooterConstants {
     return configs;
   }
 
-  public static final double HOOD_MAX_VELOCITY_RPS = 5;
-  public static final double HOOD_MAX_ACCELERATION_RPS2 = 10;
-  public static final double HOOD_MAX_JERK_RPS2 = 10;
-
-  public static MotionMagicConfigs createHoodMotionMagicConfigs() {
-    MotionMagicConfigs configs = new MotionMagicConfigs();
-    configs.MotionMagicCruiseVelocity = HOOD_MAX_VELOCITY_RPS;
-    configs.MotionMagicAcceleration = HOOD_MAX_ACCELERATION_RPS2;
-    configs.MotionMagicJerk = HOOD_MAX_JERK_RPS2;
-
-    return configs;
-  }
-
-  public static final double FLYWHEEL_CURRENT_LIMIT = 40;
+  public static final double FLYWHEEL_STATOR_CURRENT_LIMIT = 100;
+  public static final double FLYWHEEL_SUPPLY_CURRENT_LIMIT = 40;
 
   public static CurrentLimitsConfigs createFlywheelCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-    configs.StatorCurrentLimit = FLYWHEEL_CURRENT_LIMIT;
+    configs.StatorCurrentLimit = FLYWHEEL_STATOR_CURRENT_LIMIT;
+    configs.SupplyCurrentLimit = FLYWHEEL_SUPPLY_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;
+    configs.SupplyCurrentLimitEnable = true;
     return configs;
   }
 
-  public static final double HOOD_CURRENT_LIMIT = 40;
+  public static final double HOOD_STATOR_CURRENT_LIMIT = 50;
+  public static final double HOOD_SUPPLY_CURRENT_LIMIT = 40;
 
   public static CurrentLimitsConfigs createHoodCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-    configs.StatorCurrentLimit = HOOD_CURRENT_LIMIT;
+    configs.StatorCurrentLimit = HOOD_STATOR_CURRENT_LIMIT;
+    configs.SupplyCurrentLimit = HOOD_SUPPLY_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;
+    configs.SupplyCurrentLimitEnable = true;
     return configs;
   }
 
-  public static final double HOOD_KS = 4.8;
-  public static final double HOOD_KP = 9;
-  public static final double HOOD_KD = 0.1;
-  public static final double HOOD_KI = 1;
+  public static final double HOOD_KS = 0.47;
+  public static final double HOOD_KP = 5.5;
+  public static final double HOOD_KD = 0.266;
+  public static final double HOOD_KI = 0.0;
 
   public static Slot0Configs createHoodMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -106,6 +99,13 @@ public class ShooterConstants {
     slot.kI = HOOD_KI;
     slot.kD = HOOD_KD;
     return slot;
+  }
+
+  public static final double HOOD_VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
+
+  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs() {
+    return new ClosedLoopRampsConfigs()
+        .withVoltageClosedLoopRampPeriod(HOOD_VOLTAGE_CLOSED_LOOP_RAMP_PERIOD);
   }
 
   // TODO: Tune Flywheel and Hood Motor

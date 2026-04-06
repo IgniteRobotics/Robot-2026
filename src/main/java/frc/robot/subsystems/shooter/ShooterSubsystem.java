@@ -34,6 +34,10 @@ public class ShooterSubsystem extends SubsystemBase {
   @Logged(name = "Hood Target (radians)", importance = Importance.CRITICAL)
   private Angle hoodTarget; // radians is the base unit.
 
+  // For testing
+  private double lastRPS = 0;
+  private double lastHoodRot = 0;
+
   private PositionVoltage hoodControl;
 
   final SysIdRoutine m_sysIdRoutineFlywheel =
@@ -129,6 +133,11 @@ public class ShooterSubsystem extends SubsystemBase {
     return velocityTarget.in(RotationsPerSecond) * 60;
   }
 
+  @Logged(name = "Velocity Target RPS", importance = Importance.CRITICAL)
+  public double getFlywheelTargetRPMS() {
+    return velocityTarget.in(RotationsPerSecond);
+  }
+
   public Command spinFlywheelCommand() {
     return runOnce(
             () -> {
@@ -140,12 +149,20 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command stopFlywheelCommand() {
-    return runOnce(() -> velocityTarget = RotationsPerSecond.of(0))
+    return runOnce(
+            () -> {
+              lastRPS = velocityTarget.in(RotationsPerSecond);
+              velocityTarget = RotationsPerSecond.of(0);
+            })
         .withName("Stop Spinning Flywheel");
   }
 
   public Command stowHood() {
-    return runOnce(() -> hoodTarget = Rotations.of(0));
+    return runOnce(
+        () -> {
+          lastHoodRot = hoodTarget.in(Rotations);
+          hoodTarget = Rotations.of(0);
+        });
   }
 
   public Command increaseFlywheelCommand() {
@@ -189,11 +206,17 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command startShooterTuningCommand() {
+
     return runOnce(
             () -> {
-              velocityTarget =
-                  RotationsPerSecond.of(ShooterPreferences.tuningDefaultFlywheelRPS.getValue());
-              hoodTarget = Rotations.of(ShooterPreferences.tuningDefaultHoodRotations.getValue());
+              double flywheelRPS =
+                  lastRPS > 0 ? lastRPS : ShooterPreferences.tuningDefaultFlywheelRPS.getValue();
+              double hoodRot =
+                  lastHoodRot > 0
+                      ? lastHoodRot
+                      : ShooterPreferences.tuningDefaultHoodRotations.getValue();
+              velocityTarget = RotationsPerSecond.of(flywheelRPS);
+              hoodTarget = Rotations.of(hoodRot);
             })
         .withName("Start Shooter Tuning");
   }

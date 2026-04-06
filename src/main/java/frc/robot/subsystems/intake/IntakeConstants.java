@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -70,10 +71,10 @@ public class IntakeConstants {
   // Extension Motor
   public static final double ALLOWABLE_EXTENSION_ERROR = 1;
 
-  public static final double EXTENSION_KS = 0.468;
-  public static final double EXTENSION_KP = 7.5;
-  public static final double EXTENSION_KI = 1.75;
-  public static final double EXTENSION_KD = 0.3;
+  public static final double EXTENSION_KS = 0.47;
+  public static final double EXTENSION_KP = 5.0;
+  public static final double EXTENSION_KI = 0.0;
+  public static final double EXTENSION_KD = 0.5;
 
   public static Slot0Configs createExtensionMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -125,24 +126,23 @@ public class IntakeConstants {
     return newConfigs;
   }
 
-  public static final double EXTENSION_MM_CRUISE_VELOCITY = 40;
-  public static final double EXTENSION_MM_ACCELERATION = 60;
-  public static final double EXTENSION_MM_JERK = 400;
-
-  public static MotionMagicConfigs createExtenstionMotionMagicConfigs() {
-    MotionMagicConfigs newConfigs = new MotionMagicConfigs();
-    newConfigs.MotionMagicCruiseVelocity = 40;
-    newConfigs.MotionMagicAcceleration = 60;
-    newConfigs.MotionMagicJerk = 400;
-    return newConfigs;
-  }
-
-  public static final double EXTENSION_CURRENT_LIMIT = 40;
+  public static final double EXTENSION_STATOR_CURRENT_LIMIT = 75;
+  public static final double EXTENSION_SUPPLY_CURRENT_LIMIT = 40;
 
   public static CurrentLimitsConfigs createExtenstionMotorCurrentLimitsConfigs() {
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
     config.StatorCurrentLimitEnable = true;
-    config.StatorCurrentLimit = EXTENSION_CURRENT_LIMIT;
+    config.StatorCurrentLimit = EXTENSION_STATOR_CURRENT_LIMIT;
+    config.SupplyCurrentLimitEnable = true;
+    config.SupplyCurrentLimit = EXTENSION_SUPPLY_CURRENT_LIMIT;
+    return config;
+  }
+
+  public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
+
+  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs(){
+    ClosedLoopRampsConfigs config = new ClosedLoopRampsConfigs();
+    config.VoltageClosedLoopRampPeriod = VOLTAGE_CLOSED_LOOP_RAMP_PERIOD;
     return config;
   }
 

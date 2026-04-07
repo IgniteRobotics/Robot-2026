@@ -92,15 +92,13 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
-    /*
+    rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
     if (extensionMotor.getStatorCurrent().getValueAsDouble()
             > IntakePreferences.resistanceCurrentLimit.getValue()
         && isCompliantMode
         && RobotModeTriggers.teleop().getAsBoolean())
       CommandScheduler.getInstance()
           .schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(0)));
-    */
 
     extensionMotor.setControl(
         extensionControl
@@ -151,8 +149,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)
   public boolean atExtensionSetpoint() {
-    return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
-        < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
+    return (Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations)) < IntakeConstants.ALLOWABLE_EXTENSION_ERROR) && (Math.abs(extentionMotor.getStatorCurrent) < SAFE_STATOR_LIMIT);
   }
 
   public Command setIntakeExtensionCommand(double rotations) {

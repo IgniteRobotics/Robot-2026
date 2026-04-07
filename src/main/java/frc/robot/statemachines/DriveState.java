@@ -4,7 +4,6 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,19 +13,16 @@ public class DriveState {
 
   private static DriveState single_instance = null;
 
-  private HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>> concurrentQueueMap;
+  private HashMap<Integer, ConcurrentLinkedQueue<VisionMeasurement>> concurrentQueueMap;
 
   private SwerveDriveState previousDriveStats = new SwerveDriveState();
   private SwerveDriveState currentDriveStats = new SwerveDriveState();
 
   private DriveState() {
-    concurrentQueueMap = new HashMap<String, ConcurrentLinkedQueue<VisionMeasurement>>();
-    concurrentQueueMap.put(
-        VisionConstants.photonCameraName_Front, new ConcurrentLinkedQueue<VisionMeasurement>());
-    concurrentQueueMap.put(
-        VisionConstants.photonCameraName_Left, new ConcurrentLinkedQueue<VisionMeasurement>());
-    concurrentQueueMap.put(
-        VisionConstants.photonCameraName_Right, new ConcurrentLinkedQueue<VisionMeasurement>());
+    concurrentQueueMap = new HashMap<Integer, ConcurrentLinkedQueue<VisionMeasurement>>();
+    concurrentQueueMap.put(1, new ConcurrentLinkedQueue<VisionMeasurement>());
+    concurrentQueueMap.put(2, new ConcurrentLinkedQueue<VisionMeasurement>());
+    concurrentQueueMap.put(3, new ConcurrentLinkedQueue<VisionMeasurement>());
   }
 
   public static synchronized DriveState getInstance() {
@@ -39,13 +35,13 @@ public class DriveState {
     return DriverStation.isDSAttached() ? DriverStation.getAlliance().get() : Alliance.Blue;
   }
 
-  public void addVisionEstimate(VisionMeasurement estimate, String cameraName) {
-    ConcurrentLinkedQueue<VisionMeasurement> tempPointer = concurrentQueueMap.get(cameraName);
+  public void addVisionEstimate(VisionMeasurement estimate, int camerasUsed) {
+    ConcurrentLinkedQueue<VisionMeasurement> tempPointer = concurrentQueueMap.get(camerasUsed);
     tempPointer.add(estimate);
   }
 
-  public ArrayList<VisionMeasurement> grabVisionEstimateList(String cameraName) {
-    ConcurrentLinkedQueue<VisionMeasurement> tempPointer = concurrentQueueMap.get(cameraName);
+  public ArrayList<VisionMeasurement> grabVisionEstimateList(int camerasUsed) {
+    ConcurrentLinkedQueue<VisionMeasurement> tempPointer = concurrentQueueMap.get(camerasUsed);
     ArrayList<VisionMeasurement> dataToExport = new ArrayList<VisionMeasurement>();
     int exportSize = tempPointer.size();
     try {

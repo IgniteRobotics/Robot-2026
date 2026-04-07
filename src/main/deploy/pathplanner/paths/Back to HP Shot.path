@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.55,
-        "y": 0.62
+        "x": 7.737832059679766,
+        "y": 3.556
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3190632640309543,
-        "y": 0.6465859125422662
+        "x": 6.7632870282802955,
+        "y": 3.0853129483642876
       },
       "isLocked": false,
-      "linkedName": "Outpost_collect"
+      "linkedName": "HPSweepEnd"
     },
     {
       "anchor": {
-        "x": 2.0696849981804952,
-        "y": 1.6340110421215424
+        "x": 5.8578411003457065,
+        "y": 2.638408217339884
       },
       "prevControl": {
-        "x": 1.4562306118334007,
-        "y": 1.2890681843587357
+        "x": 6.978400260267941,
+        "y": 3.1406126184004863
       },
       "nextControl": {
-        "x": 2.2875978887601542,
-        "y": 1.7565425569216848
+        "x": 5.544684812288324,
+        "y": 2.4980600128835184
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6538131140829693,
-        "y": 3.145543520287482
+        "x": 3.1184578269675933,
+        "y": 2.638408217339884
       },
       "prevControl": {
-        "x": 2.723327106670737,
-        "y": 2.72862262842228
+        "x": 3.6349668456371322,
+        "y": 2.6687311996855776
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HPShot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -58,13 +58,17 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 25.459293397367578
+    "rotation": 49.251079235914915
   },
   "reversed": false,
   "folder": "HP AUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Hub to pouch.path
+    "rotation": 90.70975035955198
+=======
+    "rotation": 90.0
+>>>>>>> development:src/main/deploy/pathplanner/paths/Back to HP Shot.path
   },
   "useDefaultConstraints": true
 }

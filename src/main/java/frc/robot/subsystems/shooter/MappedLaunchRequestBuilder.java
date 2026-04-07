@@ -42,7 +42,6 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     flywheelSpeedMap.put(0.99, 57.7);
     flywheelSpeedMap.put(1.62, 64.3);
     flywheelSpeedMap.put(1.94, 64.7);
-    flywheelSpeedMap.put(2.53, 70.8);
     flywheelSpeedMap.put(3.00, 74.5);
     flywheelSpeedMap.put(3.51, 80.0);
     flywheelSpeedMap.put(6.00, 108.0); // put in a value to max out the hood

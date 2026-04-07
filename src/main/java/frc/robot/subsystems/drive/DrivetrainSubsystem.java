@@ -5,9 +5,7 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.ProximityParamsConfigs;
-import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -17,6 +15,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,13 +28,15 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.DriveState;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
+import java.util.ArrayList;
 
+@Logged
 public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
+
   private DriveState driveState = DriveState.getInstance();
 
-  private final CANrange drive_canrange;
+  //   private final CANrange drive_canrange;
 
   public DrivetrainSubsystem() {
     super(
@@ -45,7 +46,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         TunerConstants.BackLeft,
         TunerConstants.BackRight);
 
-    drive_canrange = new CANrange(9, new CANBus("rio"));
+    // drive_canrange = new CANrange(9, new CANBus("rio"));
 
     applySteerGains();
     applyDriveGains();
@@ -57,28 +58,28 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
   public void periodic() {
     super.periodic();
 
-    for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(VisionConstants.photonCameraName_Front)) {
-      addVisionMeasurement(
-          estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
-    }
+    ArrayList<VisionMeasurement> certainEstimates = driveState.grabVisionEstimateList(3);
+    ArrayList<VisionMeasurement> probableEstimates = driveState.grabVisionEstimateList(2);
+    ArrayList<VisionMeasurement> outlierEstimates = driveState.grabVisionEstimateList(1);
 
-    for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(VisionConstants.photonCameraName_Left)) {
-      addVisionMeasurement(
-          estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
-    }
-
-    for (VisionMeasurement estimate :
-        driveState.grabVisionEstimateList(VisionConstants.photonCameraName_Right)) {
-      addVisionMeasurement(
-          estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
+    if (!certainEstimates.isEmpty()) {
+      for (VisionMeasurement estimate : certainEstimates)
+        this.addVisionMeasurement(
+            estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
+    } else if (!probableEstimates.isEmpty()) {
+      for (VisionMeasurement estimate : probableEstimates)
+        this.addVisionMeasurement(
+            estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
+    } else {
+      for (VisionMeasurement estimate : outlierEstimates)
+        this.addVisionMeasurement(
+            estimate.getEstimatedPose(), estimate.getTimestamp(), estimate.getTrust());
     }
 
     driveState.adjustCurrentDriveStats(this.getStateCopy());
 
-    SmartDashboard.putNumber(
-        "Drive Canrange Distance", drive_canrange.getDistance(true).getValueAsDouble());
+    // SmartDashboard.putNumber(
+    //     "Drive Canrange Distance", drive_canrange.getDistance(true).getValueAsDouble());
 
     SmartDashboard.putNumber("kP Preference Current", DrivePreferences.translation_kP.getValue());
   }
@@ -216,7 +217,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
   public void configureCANrange() {
     ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
-    drive_canrange.getConfigurator().refresh(proximityParamsConfigs);
+    // drive_canrange.getConfigurator().refresh(proximityParamsConfigs);
   }
 
   private void configureAutoBuilder() {

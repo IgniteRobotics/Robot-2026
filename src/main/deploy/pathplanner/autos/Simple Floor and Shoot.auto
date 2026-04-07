@@ -5,27 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Start to Overbump - LEFT"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Bump to Depot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Collect Intake"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Collect Intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Collect - LEFT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Overbump to Shoot - LEFT"
+            "pathName": "Depot to Shoot"
           }
         },
         {

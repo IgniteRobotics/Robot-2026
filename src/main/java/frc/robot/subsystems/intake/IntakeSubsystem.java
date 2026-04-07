@@ -153,12 +153,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setIntakeExtensionCommand(double rotations) {
-    /*
     return runOnce(() -> isCompliantMode = false)
         .andThen(runOnce(() -> extensionTarget = Rotations.of(rotations)))
         .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
         .finallyDo(() -> isCompliantMode = true);
-    */
     return runOnce(() -> extensionTarget = Rotations.of(rotations))
         .andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
   }

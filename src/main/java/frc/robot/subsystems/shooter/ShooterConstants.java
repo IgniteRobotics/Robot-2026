@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -16,55 +18,41 @@ public class ShooterConstants {
 
   private ShooterConstants() {}
 
-  public static final int FLYWHEEL_LEADER_MOTOR_ID = 5;
-  public static final int FLYWHEEL_FOLLOWER_MOTOR_ID = 6;
-  public static final int HOOD_MOTOR_ID = 4;
+  public static final int FLYWHEEL_LEFT_LEADER_MOTOR_ID = 5;
+  public static final int FLYWHEEL_RIGHT_MOTOR_ID = 6;
+  public static final int FLYWHEEL_LEFT_FOLLOWER_MOTOR_ID = 7;
+  public static final int HOOD_MOTOR_ID = 8;
 
-  public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
-    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
-    newConfigs.NeutralMode = NeutralModeValue.Coast;
-    return newConfigs;
-  }
-
-  public static MotorOutputConfigs createFollowerMotorOutputConfigs() {
+  public static MotorOutputConfigs createRightFlywheelMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
 
-  // TODO: Tune Flywheel and Hood Motor
-
-  // Flywheel motor
-  public static final double FLYWHEEL_KS = 0.11239;
-  public static final double FLYWHEEL_KV = 0.11589;
-  public static final double FLYWHEEL_KA = 0.0034356;
-  public static final double FLYWHEEL_KP = 0.066945 * 2;
-
-  public static Slot0Configs createFlywheelMotorSlot0Configs() {
-    Slot0Configs slot = new Slot0Configs();
-    slot.kS = FLYWHEEL_KS;
-    slot.kV = FLYWHEEL_KV;
-    slot.kP = FLYWHEEL_KP;
-    slot.kA = FLYWHEEL_KA;
-    return slot;
+  public static MotorOutputConfigs createLeftFlywheelLeaderMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Coast;
+    return newConfigs;
   }
 
-  public static final double ALLOWABLE_HOOD_ERROR = 0.1;
-  public static final double HOOD_FORWARD_LIMIT = 6.2;
+  public static MotorOutputConfigs createLeftFlywheelFollowerMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Coast;
+    return newConfigs;
+  }
+
+  public static MotorOutputConfigs createHoodMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
+  }
+
+  public static final double HOOD_FORWARD_LIMIT = 4.9;
   public static final double HOOD_REVERSE_LIMIT = 0;
-  public static final double HOOD_KS = 0;
-  public static final double HOOD_KP = 2.0;
-  public static final double HOOD_KD = 0;
-
-  public static Slot0Configs createHoodMotorSlot0Configs() {
-    Slot0Configs slot = new Slot0Configs();
-    slot.kS = HOOD_KS;
-    slot.kP = HOOD_KP;
-    slot.kD = HOOD_KD;
-    return slot;
-  }
 
   public static SoftwareLimitSwitchConfigs createHoodSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
@@ -75,12 +63,67 @@ public class ShooterConstants {
     return configs;
   }
 
-  public static MotorOutputConfigs createHoodMotorOutputConfigs() {
-    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
-    newConfigs.NeutralMode = NeutralModeValue.Brake;
-    return newConfigs;
+  public static final double FLYWHEEL_STATOR_CURRENT_LIMIT = 100;
+  public static final double FLYWHEEL_SUPPLY_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createFlywheelCurrentLimitsConfigs() {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = FLYWHEEL_STATOR_CURRENT_LIMIT;
+    configs.SupplyCurrentLimit = FLYWHEEL_SUPPLY_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    configs.SupplyCurrentLimitEnable = true;
+    return configs;
   }
+
+  public static final double HOOD_STATOR_CURRENT_LIMIT = 50;
+  public static final double HOOD_SUPPLY_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createHoodCurrentLimitsConfigs() {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = HOOD_STATOR_CURRENT_LIMIT;
+    configs.SupplyCurrentLimit = HOOD_SUPPLY_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    configs.SupplyCurrentLimitEnable = true;
+    return configs;
+  }
+
+  public static final double HOOD_KS = 0.47;
+  public static final double HOOD_KP = 5.5;
+  public static final double HOOD_KD = 0.266;
+  public static final double HOOD_KI = 0.0;
+
+  public static Slot0Configs createHoodMotorSlot0Configs() {
+    Slot0Configs slot = new Slot0Configs();
+    slot.kS = HOOD_KS;
+    slot.kP = HOOD_KP;
+    slot.kI = HOOD_KI;
+    slot.kD = HOOD_KD;
+    return slot;
+  }
+
+  public static final double HOOD_VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
+
+  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs() {
+    return new ClosedLoopRampsConfigs()
+        .withVoltageClosedLoopRampPeriod(HOOD_VOLTAGE_CLOSED_LOOP_RAMP_PERIOD);
+  }
+
+  // TODO: Tune Flywheel and Hood Motor
+
+  // Flywheel motor
+  public static final double FLYWHEEL_KV = 0.12807;
+  public static final double FLYWHEEL_KA = 0.020039;
+  public static final double FLYWHEEL_KP = 0.17969;
+
+  public static Slot0Configs createFlywheelMotorSlot0Configs() {
+    Slot0Configs slot = new Slot0Configs();
+    slot.kV = FLYWHEEL_KV;
+    slot.kP = FLYWHEEL_KP;
+    slot.kA = FLYWHEEL_KA;
+    return slot;
+  }
+
+  public static final double ALLOWABLE_HOOD_ERROR = 0.1;
 
   public static final DutyCycleOut SAFE_HOMING_EFFORT = new DutyCycleOut(-0.2);
   public static final Current SAFE_STATOR_LIMIT = Amp.of(0.8);

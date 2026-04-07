@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Shoot - RIGHT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Overbump - RIGHT"
+            "pathName": "Start to Overbump - RIGHT"
           }
         },
         {
@@ -26,12 +20,6 @@
           "type": "path",
           "data": {
             "pathName": "Overbump to Shoot - RIGHT"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot to Climb - RIGHT"
           }
         }
       ]

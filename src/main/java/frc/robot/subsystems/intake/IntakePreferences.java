@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.units.*;
 import frc.robot.preferences.DoublePreference;
 
 public class IntakePreferences {
@@ -25,11 +26,16 @@ public class IntakePreferences {
       new DoublePreference("Intake/Roller Test Percent (for without PID)", 0.05); // in percent
 
   public static DoublePreference dislodgePosition =
-      new DoublePreference("Intake/Extension Dislodge Position", 1.5);
+      new DoublePreference("Intake/Extension Dislodge Position", 10.0);
 
   public static DoublePreference noPIDWait =
       new DoublePreference("Intake/Extension Deadline (No PID)", 1.0); // in seconds
 
   public static DoublePreference outpostReloadWait =
       new DoublePreference("Intake/Outpost Reload Waittime", 2.5); // in seconds
+
+  public static DoublePreference resistanceCurrentLimit =
+      new DoublePreference(
+          "Intake/Compliant Resistance Current Limit",
+          IntakeConstants.COMPLIANT_RESISTANCE_CURRENT_LIMIT.in(Units.Amps));
 }

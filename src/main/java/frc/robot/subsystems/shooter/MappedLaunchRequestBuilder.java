@@ -16,9 +16,6 @@ import edu.wpi.first.units.measure.Distance;
 /** Add your docs here. */
 public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
 
-  private static final double minDistance;
-  private static final double maxDistance;
-
   // Launching Maps
   //   private static final InterpolatingTreeMap<Double, Rotation2d> hoodAngleMap =
   //   new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
@@ -26,26 +23,41 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
   private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
       new InterpolatingDoubleTreeMap();
 
-  // TODO: All of this is made up.  Need real numbers.
   static {
-    minDistance = 0.9;
-    maxDistance = 4.0;
+    hoodAngleMap.put(1.3, 0.0);
+    hoodAngleMap.put(2.0, 0.6);
+    hoodAngleMap.put(2.6, 1.4);
+    hoodAngleMap.put(3.1, 1.8);
+    hoodAngleMap.put(3.21, 2.2);
+    hoodAngleMap.put(3.7, 2.6);
+    hoodAngleMap.put(4.2, 2.6);
+    hoodAngleMap.put(5.4, 3.0);
 
+    flywheelSpeedMap.put(1.3, 51.9);
+    flywheelSpeedMap.put(2.0, 54.5);
+    flywheelSpeedMap.put(2.6, 57.1);
+    flywheelSpeedMap.put(3.1, 62.4);
+    flywheelSpeedMap.put(3.21, 62.2);
+    flywheelSpeedMap.put(3.7, 65.0);
+    flywheelSpeedMap.put(4.2, 67.6);
+    flywheelSpeedMap.put(5.4, 78.1);
+
+    /* Old shooter settings
     hoodAngleMap.put(0.99, 0.0);
     hoodAngleMap.put(1.62, 1.0);
     hoodAngleMap.put(1.94, 2.1);
     hoodAngleMap.put(2.53, 3.3);
     hoodAngleMap.put(3.00, 4.0);
     hoodAngleMap.put(3.51, 4.0);
-    hoodAngleMap.put(6.00, 6.1); // put in a value to max out the hood
+    hoodAngleMap.put(6.00, 6.1);
 
     flywheelSpeedMap.put(0.99, 57.7);
     flywheelSpeedMap.put(1.62, 64.3);
     flywheelSpeedMap.put(1.94, 64.7);
-    flywheelSpeedMap.put(2.53, 70.8);
     flywheelSpeedMap.put(3.00, 74.5);
     flywheelSpeedMap.put(3.51, 80.0);
-    flywheelSpeedMap.put(6.00, 108.0); // put in a value to max out the hood
+    flywheelSpeedMap.put(6.00, 108.0);
+    */
   }
 
   public LaunchRequest createLaunchRequest(

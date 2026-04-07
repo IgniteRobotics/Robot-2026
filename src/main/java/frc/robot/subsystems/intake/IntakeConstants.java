@@ -1,10 +1,16 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.units.*;
 
 public class IntakeConstants {
 
@@ -22,14 +28,14 @@ public class IntakeConstants {
   public static final double ROLLER_KP = 0;
   public static final double ROLLER_KD = 0;
 
-  public static MotorOutputConfigs createRotorLeaderMotorOutputConfigs() {
+  public static MotorOutputConfigs createRollerLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
 
-  public static MotorOutputConfigs createRotorFollowerMotorOutputConfigs() {
+  public static MotorOutputConfigs createRollerFollowerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
@@ -45,13 +51,29 @@ public class IntakeConstants {
     return slot;
   }
 
+  public static final double ROLLER_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createRollerMotorCurrentLimitsConfigs() {
+    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+    config.StatorCurrentLimitEnable = true;
+    config.StatorCurrentLimit = ROLLER_CURRENT_LIMIT;
+    return config;
+  }
+
+  public static OpenLoopRampsConfigs createRollerMotorRampConfigs() {
+    OpenLoopRampsConfigs configs = new OpenLoopRampsConfigs();
+    configs.VoltageOpenLoopRampPeriod = 1.5; // 1.5 secs to get from 0V to 12V
+    configs.DutyCycleOpenLoopRampPeriod = 1.5;
+    return configs;
+  }
+
   // Extension Motor
-  public static final double ALLOWABLE_EXTENSION_ERROR = 0.1;
-  public static final double INTAKE_FORWARD_LIMIT = 14.55;
-  public static final double INTAKE_REVERSE_LIMIT = 0.1;
-  public static final double EXTENSION_KS = 0;
-  public static final double EXTENSION_KP = 6.0;
-  public static final double EXTENSION_KD = 0.2;
+  public static final double ALLOWABLE_EXTENSION_ERROR = 1;
+
+  public static final double EXTENSION_KS = 0.47;
+  public static final double EXTENSION_KP = 5.0;
+  public static final double EXTENSION_KI = 0.0;
+  public static final double EXTENSION_KD = 0.5;
 
   public static Slot0Configs createExtensionMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -60,6 +82,32 @@ public class IntakeConstants {
     slot.kD = EXTENSION_KD;
     return slot;
   }
+
+  // Fix PID values for springiness
+  public static final double EXTENSION_SPRINGY_KP = 1;
+  public static final double EXTENSION_SPRINGY_KD = 0.5;
+
+  public static Slot1Configs createExtensionMotorSlot1Configs() {
+    Slot1Configs slot = new Slot1Configs();
+    slot.kS = EXTENSION_KS;
+    slot.kP = EXTENSION_SPRINGY_KP;
+    slot.kD = EXTENSION_SPRINGY_KD;
+    return slot;
+  }
+
+  public static final double EXTENSION_MM_KP = 1;
+  public static final double EXTENSION_MM_KD = 0.5;
+
+  public static Slot2Configs createExtensionMotorSlot2Configs() {
+    Slot2Configs slot = new Slot2Configs();
+    slot.kS = EXTENSION_KS;
+    slot.kP = EXTENSION_SPRINGY_KP;
+    slot.kD = EXTENSION_SPRINGY_KD;
+    return slot;
+  }
+
+  public static final double INTAKE_FORWARD_LIMIT = 14.6;
+  public static final double INTAKE_REVERSE_LIMIT = 3.5;
 
   public static SoftwareLimitSwitchConfigs createExtensionSoftwareLimitSwitchConfigs() {
     SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
@@ -76,6 +124,28 @@ public class IntakeConstants {
     newConfigs.NeutralMode = NeutralModeValue.Coast;
     return newConfigs;
   }
+
+  public static final double EXTENSION_STATOR_CURRENT_LIMIT = 75;
+  public static final double EXTENSION_SUPPLY_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createExtenstionMotorCurrentLimitsConfigs() {
+    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+    config.StatorCurrentLimitEnable = true;
+    config.StatorCurrentLimit = EXTENSION_STATOR_CURRENT_LIMIT;
+    config.SupplyCurrentLimitEnable = true;
+    config.SupplyCurrentLimit = EXTENSION_SUPPLY_CURRENT_LIMIT;
+    return config;
+  }
+
+  public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
+
+  public static ClosedLoopRampsConfigs creatClosedLoopRampsConfigs() {
+    ClosedLoopRampsConfigs config = new ClosedLoopRampsConfigs();
+    config.VoltageClosedLoopRampPeriod = VOLTAGE_CLOSED_LOOP_RAMP_PERIOD;
+    return config;
+  }
+
+  public static final Measure<CurrentUnit> COMPLIANT_RESISTANCE_CURRENT_LIMIT = Units.Amp.of(4);
 
   public static final double SAFE_HOMING_EFFORT = -0.2;
   public static final double SAFE_STATOR_LIMIT = 0.8;

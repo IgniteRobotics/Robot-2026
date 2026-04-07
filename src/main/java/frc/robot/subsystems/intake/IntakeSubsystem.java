@@ -6,7 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -15,8 +15,10 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -33,7 +35,10 @@ public class IntakeSubsystem extends SubsystemBase {
   @Logged(name = "Extension Target", importance = Importance.CRITICAL)
   private Angle extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT); // Rotations
 
-  private PositionTorqueCurrentFOC extensionControl;
+  private PositionVoltage extensionControl;
+
+  @Logged(name = "Extension Is Compliant", importance = Importance.CRITICAL)
+  private boolean isCompliantMode;
 
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
@@ -50,10 +55,16 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerFollower = new TalonFX(IntakeConstants.ROLLER_FOLLOWER_MOTOR_ID);
     extensionMotor = new TalonFX(IntakeConstants.EXTENSION_MOTOR_ID);
 
-    rollerLeader.getConfigurator().apply(IntakeConstants.createRotorLeaderMotorOutputConfigs());
-    rollerFollower.getConfigurator().apply(IntakeConstants.createRotorFollowerMotorOutputConfigs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerLeaderMotorOutputConfigs());
+    rollerFollower
+        .getConfigurator()
+        .apply(IntakeConstants.createRollerFollowerMotorOutputConfigs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
+    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorRampConfigs());
+    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorRampConfigs());
 
     rollerFollower.setControl(
         new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -66,20 +77,35 @@ public class IntakeSubsystem extends SubsystemBase {
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot1Configs());
+    extensionMotor.getConfigurator().apply(IntakeConstants.creatClosedLoopRampsConfigs());
+    extensionMotor
+        .getConfigurator()
+        .apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
+
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
-    extensionControl = new PositionTorqueCurrentFOC(0);
+    extensionControl = new PositionVoltage(0);
+    isCompliantMode = false;
   }
 
   @Override
   public void periodic() {
 
     // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
+    /*
+    if (extensionMotor.getStatorCurrent().getValueAsDouble()
+            > IntakePreferences.resistanceCurrentLimit.getValue()
+        && isCompliantMode
+        && RobotModeTriggers.teleop().getAsBoolean())
+      CommandScheduler.getInstance()
+          .schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(0)));
+    */
 
     extensionMotor.setControl(
         extensionControl
-            .withPosition(extensionTarget.in(Rotations))
-            .withOverrideCoastDurNeutral(true));
+            .withSlot(isCompliantMode ? 1 : 0)
+            .withPosition(extensionTarget.in(Rotations)));
   }
 
   public Command spinRollerCommand() {
@@ -130,8 +156,14 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command setIntakeExtensionCommand(double rotations) {
-    return runOnce(() -> extensionTarget = Rotations.of(rotations));
-    // .andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
+    /*
+    return runOnce(() -> isCompliantMode = false)
+        .andThen(runOnce(() -> extensionTarget = Rotations.of(rotations)))
+        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
+        .finallyDo(() -> isCompliantMode = true);
+    */
+    return runOnce(() -> extensionTarget = Rotations.of(rotations))
+        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
   }
 
   public Command setExtendNoPID() {
@@ -149,7 +181,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command collectCommand() {
-    return setIntakeExtensionCommand(IntakePreferences.intakeCollectPosition.getValue())
+    return setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
         .andThen(startRollerNoPID()) // Set to  spinRollerCommand() after PID tuning
         .withName("Activate Intake Collection");
   }
@@ -178,13 +210,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command dislodgeCommand() {
-    return spinRollerCommand()
-        .andThen(
-            setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue())
-                .andThen(
-                    setIntakeExtensionCommand(IntakePreferences.intakeCollectPosition.getValue())))
+    return setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
         .repeatedly()
-        .withName("Dislodge Intake");
+        .withName("Agitate Intake");
   }
 
   public Command homeIntakeCommand() {

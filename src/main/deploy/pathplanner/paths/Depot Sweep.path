@@ -3,42 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.483677550747863,
-        "y": 1.201836271367522
+        "x": 6.801308232060186,
+        "y": 7.068371744791666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.852579119927175,
-        "y": -1.012414798535326
+        "x": 7.801308232060186,
+        "y": 7.068371744791666
       },
       "isLocked": false,
-      "linkedName": "Overbump_right"
+      "linkedName": "DepotMiddleSweep"
     },
     {
       "anchor": {
-        "x": 7.804208273894435,
-        "y": 5.0
+        "x": 7.460497251157408,
+        "y": 4.63704224537037
       },
       "prevControl": {
-        "x": 7.795477888736262,
-        "y": 5.383366619115859
+        "x": 7.460497251157408,
+        "y": 6.107408176468519
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Collect_right"
+      "linkedName": "DepotMiddleEnd"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.478873239436614,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 3.0,
@@ -60,14 +55,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 90.0
+    "velocity": 0,
+    "rotation": -87.68518833808571
   },
   "reversed": false,
-  "folder": "Basic Comp Paths - RIGHT",
+  "folder": "Depot AUTO",
   "idealStartingState": {
-    "velocity": 1.5,
-    "rotation": 40.0
+    "velocity": 0,
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }

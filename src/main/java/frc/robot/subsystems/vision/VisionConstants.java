@@ -41,21 +41,30 @@ public class VisionConstants {
           put(
               photonCameraName_Front,
               new Transform3d(
-                  new Translation3d(-0.1638, 0, 0.7192),
-                  new Rotation3d(0, Math.toRadians(-20), 0)));
+                  new Translation3d(0.13, 0, 0.696), new Rotation3d(0, Math.toRadians(-22), 0)));
           put(
               photonCameraName_Left,
               new Transform3d(
-                  new Translation3d(-0.2680, 0.3164, 0.451),
-                  new Rotation3d(0, Math.toRadians(-20), Math.toRadians(120))));
+                  new Translation3d(-0.252, 0.328, 0.715),
+                  new Rotation3d(0, 0, Math.toRadians(160))));
           put(
               photonCameraName_Right,
               new Transform3d(
-                  new Translation3d(-0.2680, -0.3164, 0.451),
-                  new Rotation3d(0, Math.toRadians(-20), Math.toRadians(-120))));
+                  new Translation3d(-0.252, -0.328, 0.715),
+                  new Rotation3d(0, 0, Math.toRadians(-160))));
         }
       };
 
   public static final double MAXIMUM_ALLOWED_AMBIGUITY = 0.25;
   public static final double OMEGA_PENALTY = 0.5;
+
+  // Clustering and Drift Detection Constants
+  public static final double CLUSTER_DISTANCE_THRESHOLD = 0.5; // meters
+  public static final double CLUSTER_ANGLE_THRESHOLD = Math.toRadians(15); // radians (15 degrees)
+  public static final double TRUST_SCALING_FACTOR = 1.0; // linear scaling multiplier
+  public static final int DRIFT_DETECTION_CYCLES = 2; // consecutive cycles to detect drift
+  public static final double DRIFT_DIRECTION_TOLERANCE =
+      0.3; // meters (0 = disable direction check)
+  public static final double DRIFT_MINIMUM_DISTANCE = 0.2; // meters
+  public static final double DRIFT_CONVERGENCE_THRESHOLD = 0.1; // meters
 }

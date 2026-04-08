@@ -24,6 +24,27 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
       new InterpolatingDoubleTreeMap();
 
   static {
+    hoodAngleMap.put(1.66, 0.36);
+    hoodAngleMap.put(2.2, 1.31);
+    hoodAngleMap.put(2.39, 1.91);
+    hoodAngleMap.put(3.08, 1.91);
+    hoodAngleMap.put(3.84, 2.4);
+    hoodAngleMap.put(4.01, 2.6);
+    hoodAngleMap.put(4.49, 3.2);
+    hoodAngleMap.put(5.04, 3.4);
+    hoodAngleMap.put(5.64, 3.4);
+
+    flywheelSpeedMap.put(1.66, 55.24);
+    flywheelSpeedMap.put(2.2, 55.24);
+    flywheelSpeedMap.put(2.39, 55.24);
+    flywheelSpeedMap.put(3.08, 64.7);
+    flywheelSpeedMap.put(3.84, 63.1);
+    flywheelSpeedMap.put(4.01, 68.33);
+    flywheelSpeedMap.put(4.49, 70.94);
+    flywheelSpeedMap.put(5.04, 73.56);
+    flywheelSpeedMap.put(5.64, 76.18);
+
+    /* Previous session
     hoodAngleMap.put(1.3, 0.0);
     hoodAngleMap.put(2.0, 0.6);
     hoodAngleMap.put(2.6, 1.4);
@@ -41,6 +62,7 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     flywheelSpeedMap.put(3.7, 65.0);
     flywheelSpeedMap.put(4.2, 67.6);
     flywheelSpeedMap.put(5.4, 78.1);
+    */
 
     /* Old shooter settings
     hoodAngleMap.put(0.99, 0.0);

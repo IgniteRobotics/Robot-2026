@@ -1,24 +1,24 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
@@ -26,11 +26,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX rollerLeader;
   private final TalonFX rollerFollower;
   private final TalonFX extensionMotor;
-
-  @Logged(name = "Roller Velocity Target", importance = Importance.CRITICAL)
-  private AngularVelocity rollerVelocityTarget; // RotationsPerSecond
-
-  private VelocityVoltage rollerControl;
 
   @Logged(name = "Extension Target", importance = Importance.CRITICAL)
   private Angle extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT); // Rotations
@@ -59,8 +54,6 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerFollower
         .getConfigurator()
         .apply(IntakeConstants.createRollerFollowerMotorOutputConfigs());
-    rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
-    rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorSlot0Configs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
     rollerFollower.getConfigurator().apply(IntakeConstants.createRollerMotorCurrentLimitsConfigs());
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerMotorRampConfigs());
@@ -68,9 +61,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     rollerFollower.setControl(
         new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));
-
-    rollerVelocityTarget = RotationsPerSecond.of(0);
-    rollerControl = new VelocityVoltage(0);
 
     extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot0Configs());
     extensionMotor
@@ -91,34 +81,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    // rollerMotor.setControl(rollerControl.withVelocity(rollerVelocityTarget.in(RotationsPerSecond)));
-    /*
     if (extensionMotor.getStatorCurrent().getValueAsDouble()
             > IntakePreferences.resistanceCurrentLimit.getValue()
         && isCompliantMode
         && RobotModeTriggers.teleop().getAsBoolean())
       CommandScheduler.getInstance()
           .schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(0)));
-    */
 
     extensionMotor.setControl(
         extensionControl
             .withSlot(isCompliantMode ? 1 : 0)
             .withPosition(extensionTarget.in(Rotations)));
-  }
-
-  public Command spinRollerCommand() {
-    return runOnce(
-            () ->
-                rollerVelocityTarget =
-                    RotationsPerSecond.of(IntakePreferences.rollerIntakeSpeed.getValue()))
-        .withName("Spin Intake Roller");
-  }
-
-  public Command stopRollerCommand() {
-    return runOnce(() -> rollerVelocityTarget = RotationsPerSecond.of(0))
-        .withName("Stop Intake Roller");
   }
 
   private void setRollerVoltage(double magnitude) {
@@ -152,18 +125,16 @@ public class IntakeSubsystem extends SubsystemBase {
   @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)
   public boolean atExtensionSetpoint() {
     return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
-        < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
+            < IntakeConstants.ALLOWABLE_EXTENSION_ERROR
+        && extensionMotor.getStatorCurrent().getValueAsDouble()
+            < IntakeConstants.COMPLIANT_RESISTANCE_CURRENT_LIMIT.in(Amps);
   }
 
   public Command setIntakeExtensionCommand(double rotations) {
-    /*
     return runOnce(() -> isCompliantMode = false)
         .andThen(runOnce(() -> extensionTarget = Rotations.of(rotations)))
         .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
         .finallyDo(() -> isCompliantMode = true);
-    */
-    return runOnce(() -> extensionTarget = Rotations.of(rotations))
-        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()));
   }
 
   public Command setExtendNoPID() {
@@ -196,17 +167,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command stowCommand() {
     return setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
-        .andThen(stopRollerCommand())
-        // .andThen(setIntakeExtensionCommand(Rotations.of(0)).repeatedly())
-        .withName("Stow Intake");
-  }
-
-  public Command stowNoPIDCommand() {
-    return setRetractNoPID()
-        .raceWith(new WaitCommand(1))
-        .andThen(stopExtensionNoPID())
         .andThen(stopRollerNoPID())
-        .withName("Activate Intake Stow (NOPID)");
+        .withName("Stow Intake");
   }
 
   public Command dislodgeCommand() {

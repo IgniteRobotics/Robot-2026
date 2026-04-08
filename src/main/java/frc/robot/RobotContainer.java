@@ -188,7 +188,7 @@ public class RobotContainer {
 
     driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
 
-    driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerNoPID());
+    driverJoystick.x().onTrue(intake.startRollerNoPID()).onFalse(intake.stopRollerNoPID());
   }
 
   public void configureTeleopBindings() {

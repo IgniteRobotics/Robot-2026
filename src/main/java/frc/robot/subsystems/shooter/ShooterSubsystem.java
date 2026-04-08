@@ -12,6 +12,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -222,7 +223,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command stopShooterTuningCommand() {
-    return stopFlywheelCommand().andThen(stowHood()).withName("Stop Shooter Tuning");
+    return runOnce(
+            () -> {
+              SmartDashboard.putNumber("Shooter/Final Flywheel Setting", lastRPS);
+              SmartDashboard.putNumber("Shooter/Final Hood Setting", lastHoodRot);
+            })
+        .andThen(stopFlywheelCommand())
+        .andThen(stowHood())
+        .withName("Stop Shooter Tuning");
   }
 
   public Command spinFlywheelPostCommand() {

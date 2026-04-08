@@ -184,13 +184,11 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.decreaseHoodCommand());
     SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
 
-    driverJoystick
-        .a()
-        .whileTrue(indexer.startFullIndexingNoPID());
+    driverJoystick.a().whileTrue(indexer.startFullIndexingNoPID());
 
     driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
 
-    driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
+    driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerNoPID());
   }
 
   public void configureTeleopBindings() {
@@ -203,7 +201,7 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(
             intake
-                .stopRollerCommand()
+                .stopRollerNoPID()
                 .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
                 .withName("Stow Intake"));
 

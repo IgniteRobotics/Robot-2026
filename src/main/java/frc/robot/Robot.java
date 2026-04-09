@@ -7,12 +7,13 @@ package frc.robot;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.statemachines.LaunchState;
 import frc.robot.statemachines.ShiftState;
 
 /**
@@ -26,6 +27,9 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   ShiftState shiftState = ShiftState.getInstance();
+
+  @Logged(name = "Scheduler", importance = Importance.CRITICAL)
+  CommandScheduler scheduler = CommandScheduler.getInstance();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -45,6 +49,7 @@ public class Robot extends TimedRobot {
     // Start DataLogManager to capture NetworkTables data to disk (.wpilog files)
     // This provides post-match analysis capability for ALL telemetry
     DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog()); // Log joysticks and DS data to wpilogs
 
     // Start Phoenix 6 SignalLogger for high-fidelity CTRE device logging (.hoot
     // files)
@@ -100,6 +105,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    /*
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     LaunchState.getInstance().setTargetPose3d(Constants.FieldConstants.getHubTarget());
 
@@ -107,6 +113,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
+    */
   }
 
   /** This function is called periodically during autonomous. */
@@ -122,6 +129,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.configureTeleopBindings();
   }
 
   /** This function is called periodically during operator control. */
@@ -134,7 +142,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
 
     SignalLogger.stop();
-    m_robotContainer.removeSubsystemDefaultCommands();
     m_robotContainer.configureTestBindings();
   }
 

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.indexer;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -9,12 +10,10 @@ final class IndexerConstants {
 
   private IndexerConstants() {}
 
-  // TODO Replace with real id
-  protected static final int INDEXER_MOTOR_LEADER_ID = 3;
-  protected static final int INDEXER_MOTOR_FOLLOWER_ID = 9;
-  protected static final int ACCELERATOR_MOTOR_ID = 8;
+  protected static final int INDEXER_MOTOR_LEADER_ID = 4;
+  protected static final int ACCELERATOR_MOTOR_ID = 3;
 
-  // TODO: Tune motor
+  // TODO: PID tune motor
 
   protected static final double INDEXER_KS = 0;
   protected static final double INDEXER_KV = 0;
@@ -44,24 +43,35 @@ final class IndexerConstants {
     return slot;
   }
 
-  public static MotorOutputConfigs createLeaderMotorOutputConfigs() {
+  public static MotorOutputConfigs createIndexerMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
 
-  public static MotorOutputConfigs createFollowerMotorOutputConfigs() {
-    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    newConfigs.NeutralMode = NeutralModeValue.Brake;
-    return newConfigs;
+  public static final double INDEXER_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createIndexerCurrentLimitsConfigs() {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = INDEXER_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
   }
 
   public static MotorOutputConfigs createAcceleratorMotorOutputsConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
+  }
+
+  public static final double ACCELERATOR_CURRENT_LIMIT = 40;
+
+  public static CurrentLimitsConfigs createAcceleratorCurrentLimitsConfigs() {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+    configs.StatorCurrentLimit = ACCELERATOR_CURRENT_LIMIT;
+    configs.StatorCurrentLimitEnable = true;
+    return configs;
   }
 }

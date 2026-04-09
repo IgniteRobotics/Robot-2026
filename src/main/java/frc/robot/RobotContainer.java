@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -36,8 +38,10 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(DriveConstants.MAX_DRIVE_SPEED);
 
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
+
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
+  @Logged(name = "Drivetrain")
   public final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
 
   @Logged(name = "Intake")
@@ -48,9 +52,6 @@ public class RobotContainer {
 
   @Logged(name = "Shooter")
   public final ShooterSubsystem shooter = new ShooterSubsystem();
-
-  //   @Logged(name = "Climber")
-  //   public final ClimberSubsystem climber = new ClimberSubsystem();
 
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
@@ -66,7 +67,8 @@ public class RobotContainer {
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
-          .alongWith(shooter.spinFlywheelRanged());
+          .alongWith(shooter.spinFlywheelRanged())
+          .withName("Drive and Launch");
 
   private final Command autonShootCommand =
       drivetrain
@@ -101,7 +103,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
-    autoChooser.addOption("Auton Shoot", autonShootCommand);
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Idle while the robot is disabled. This ensures the configured
@@ -119,41 +120,44 @@ public class RobotContainer {
                     Commands.runOnce(
                         () ->
                             LaunchState.getInstance()
-                                .setTargetPose3d(Constants.FieldConstants.getHubTarget()))));
+                                .setTargetPose3d(Constants.FieldConstants.getHubTarget())))
+                .withName("Rumble & Set Pose"));
 
     configureSubsystemDefaultCommands();
-    configureTeleopBindings();
   }
 
   public void configureSubsystemDefaultCommands() {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(
-            () ->
-                DriveConstants.DEFAULT_DRIVE_REQUEST
-                    .withVelocityX(
-                        -1
-                            * Math.copySign(
-                                Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
-                            * DriveConstants
-                                .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
-                    .withVelocityY(
-                        -1
-                            * Math.copySign(
-                                Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
-                            * DriveConstants.MAX_DRIVE_SPEED) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        -1
-                            * Math.copySign(
-                                Math.pow(driverJoystick.getRightX(), 2), driverJoystick.getRightX())
-                            * DriveConstants
-                                .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
-                    .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
-                    .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1)));
-  }
-
-  public void removeSubsystemDefaultCommands() {
-    drivetrain.removeDefaultCommand();
+        drivetrain
+            .applyRequest(
+                () ->
+                    DriveConstants.DEFAULT_DRIVE_REQUEST
+                        .withVelocityX(
+                            -1
+                                * Math.copySign(
+                                    Math.pow(driverJoystick.getLeftY(), 2),
+                                    driverJoystick.getLeftY())
+                                * DriveConstants
+                                    .MAX_DRIVE_SPEED) // Drive forward with negative Y (forward)
+                        .withVelocityY(
+                            -1
+                                * Math.copySign(
+                                    Math.pow(driverJoystick.getLeftX(), 2),
+                                    driverJoystick.getLeftX())
+                                * DriveConstants
+                                    .MAX_DRIVE_SPEED) // Drive left with negative X (left)
+                        .withRotationalRate(
+                            -1
+                                * Math.copySign(
+                                    Math.pow(driverJoystick.getRightX(), 2),
+                                    driverJoystick.getRightX())
+                                * DriveConstants
+                                    .MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X
+                        // (left)
+                        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1)
+                        .withRotationalDeadband(DriveConstants.MAX_ANGULAR_SPEED * 0.1))
+            .withName("Teleop Drive"));
   }
 
   public void configureTestBindings() {
@@ -163,9 +167,6 @@ public class RobotContainer {
     final var idle = new SwerveRequest.Idle();
     RobotModeTriggers.disabled()
         .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
-
-    // driverJoystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    // driverJoystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
     // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
@@ -183,32 +184,29 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.decreaseHoodCommand());
     SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
 
-    driverJoystick
-        .a()
-        .whileTrue(driveAndLaunchCommand)
-        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+    driverJoystick.a().whileTrue(indexer.startFullIndexingNoPID());
 
     driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
 
-    driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
+    driverJoystick.x().onTrue(intake.startRollerNoPID()).onFalse(intake.stopRollerNoPID());
   }
 
   public void configureTeleopBindings() {
-
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
-        .onTrue(
-            intake
-                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-                .andThen(intake.startRollerNoPID()));
+        .onTrue(intake.collectCommand());
 
     driverJoystick
         .leftBumper()
         .onTrue(
             intake
                 .stopRollerNoPID()
-                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
+                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
+                .withName("Stow Intake"));
+
+    // stop the roller without retracting.
+    driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
     // outtake fuel.  don't retract when done.
     driverJoystick
@@ -217,16 +215,20 @@ public class RobotContainer {
             intake
                 .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
                 .andThen(
-                    intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID())))
-        .onFalse(intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()));
+                    intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID()))
+                .withName("Outtake"))
+        .onFalse(
+            intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()).withName("Stop Roller"));
 
-    // stop the roller without retracting.
-    driverJoystick.x().onTrue(intake.stopRollerNoPID());
+    driverJoystick.rightTrigger().onTrue(shooter.spinFlywheelCommand());
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(drivetrain.setXCommand().alongWith(indexer.pulsingIndexCommand()))
-        .onFalse(indexer.stopFullIndexingNoPID());
+        .whileTrue(
+            drivetrain
+                .setXCommand()
+                .alongWith(indexer.startFullIndexingNoPID())
+                .withName("Lock Wheels and Index"));
 
     operatorJoystick
         .leftTrigger()
@@ -246,36 +248,57 @@ public class RobotContainer {
     // Reset the field-centric heading on start button press.
     driverJoystick
         .start()
-        .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric).alongWith(vision.resetPose()))
+        .onTrue(
+            drivetrain
+                .runOnce(drivetrain::seedFieldCentric)
+                .alongWith(vision.resetPose())
+                .withName("Seed & Reset Pose"))
         .onFalse(vision.stopResetPose());
 
     operatorJoystick
         .a()
         .onTrue(
             Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getHubTarget())));
+                    () ->
+                        LaunchState.getInstance()
+                            .setTargetPose3d(Constants.FieldConstants.getHubTarget()))
+                .withName("Set Target To Hub"));
 
     operatorJoystick
         .x()
         .onTrue(
             Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget())));
+                    () ->
+                        LaunchState.getInstance()
+                            .setTargetPose3d(Constants.FieldConstants.getLeftPassTarget()))
+                .withName("Set Target To Left Pass"));
 
     operatorJoystick
         .b()
         .onTrue(
             Commands.runOnce(
-                () ->
-                    LaunchState.getInstance()
-                        .setTargetPose3d(Constants.FieldConstants.getRightPassTarget())));
+                    () ->
+                        LaunchState.getInstance()
+                            .setTargetPose3d(Constants.FieldConstants.getRightPassTarget()))
+                .withName("Set Target To Right Pass"));
 
-    operatorJoystick.y().whileTrue(uiFeedback.manualRumbleCommand(driverJoystick.getHID()));
+    operatorJoystick
+        .y()
+        .whileTrue(
+            uiFeedback
+                .manualRumbleCommand(driverJoystick.getHID())
+                .withName("Rumble Driver Controller"));
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    SmartDashboard.putData(
+        "Shooter/SysIdForwardQuasistatic", shooter.sysIdQuasistatic(Direction.kForward));
+    SmartDashboard.putData(
+        "Shooter/SysIdReverseQuasistatic", shooter.sysIdQuasistatic(Direction.kReverse));
+    SmartDashboard.putData("Shooter/SysIdForwardDynamic", shooter.sysIdDynamic(Direction.kForward));
+    SmartDashboard.putData("Shooter/SysIdReverseDynamic", shooter.sysIdDynamic(Direction.kReverse));
+    SmartDashboard.putData("Start Logger", Commands.runOnce(SignalLogger::start));
+    SmartDashboard.putData("Stop Logger", Commands.runOnce(SignalLogger::stop));
   }
 
   public Command getAutonomousCommand() {

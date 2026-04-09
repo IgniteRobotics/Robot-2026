@@ -20,12 +20,12 @@
         "y": 0.62
       },
       "prevControl": {
-        "x": 2.2344211701357732,
-        "y": 0.6380678900122655
+        "x": 2.234518069671876,
+        "y": 0.6199999999999998
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost_collect"
     }
   ],
   "rotationTargets": [],

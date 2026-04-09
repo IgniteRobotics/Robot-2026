@@ -1,0 +1,9 @@
+Intake
+    Roller 2
+    Extension 1
+Indexer
+    Main: 4
+    Accelerator: 3
+Shooter
+    Flywheel - x3: 5,6,7
+    Hood: 8

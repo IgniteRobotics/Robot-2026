@@ -187,23 +187,40 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command agitateCommand() {
     return new WaitCommand(1)
         .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
         .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKING_SETPOINT))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
         .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
         .andThen(new WaitCommand(0.5))
         .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
         .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
         .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
         .andThen(new WaitCommand(0.5))
+        .andThen(stopRollerNoPID())
         .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
-        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
+        .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKING_SETPOINT))
+        .andThen(
+            new WaitUntilCommand(() -> this.atExtensionSetpoint())
+                .withDeadline(new WaitCommand(0.5)))
         .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT));
   }
 

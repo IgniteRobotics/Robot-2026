@@ -201,6 +201,8 @@ public class RobotContainer {
     // stop the roller without retracting.
     driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
+    driverJoystick.a().onTrue(intake.agitateCommand());
+
     // outtake fuel.  don't retract when done.
     driverJoystick
         .b()

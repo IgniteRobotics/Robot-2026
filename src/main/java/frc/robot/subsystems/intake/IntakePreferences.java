@@ -8,7 +8,7 @@ public class IntakePreferences {
   private IntakePreferences() {}
 
   public static DoublePreference rollerIntakePercent =
-      new DoublePreference("Intake/Roller Intake Percent (for without PID)", 0.1); // in percent
+      new DoublePreference("Intake/Roller Intake Percent (for without PID)", 0.80); // in percent
   public static DoublePreference rollerOuttakePercent =
       new DoublePreference("Intake/Roller Outtake Percent (for without PID)", -0.1); // in percent
   public static DoublePreference testRollerIntakePercent =

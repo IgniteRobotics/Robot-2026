@@ -34,12 +34,15 @@ public class IntakeConstants {
     return newConfigs;
   }
 
-  public static final double ROLLER_CURRENT_LIMIT = 40;
+  public static final double ROLLER_STATOR_CURRENT_LIMIT = 80;
+  public static final double ROLLER_SUPPLY_CURRENT_LIMIT = 40;
 
   public static CurrentLimitsConfigs createRollerMotorCurrentLimitsConfigs() {
     CurrentLimitsConfigs config = new CurrentLimitsConfigs();
     config.StatorCurrentLimitEnable = true;
-    config.StatorCurrentLimit = ROLLER_CURRENT_LIMIT;
+    config.SupplyCurrentLimitEnable = true;
+    config.StatorCurrentLimit = ROLLER_STATOR_CURRENT_LIMIT;
+    config.SupplyCurrentLimit = ROLLER_SUPPLY_CURRENT_LIMIT;
     return config;
   }
 
@@ -104,7 +107,7 @@ public class IntakeConstants {
   public static MotorOutputConfigs createExtensionMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     // newConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    newConfigs.NeutralMode = NeutralModeValue.Coast;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
 
@@ -133,6 +136,6 @@ public class IntakeConstants {
   public static final double SAFE_HOMING_EFFORT = -0.2;
   public static final double SAFE_STATOR_LIMIT = 0.8;
 
-  public static final double INTAKING_SETPOINT = 13.5;
+  public static final double INTAKING_SETPOINT = 14.25;
   public static final double START_ROLLER_SETPOINT = 9.0;
 }

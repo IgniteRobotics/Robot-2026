@@ -28,6 +28,7 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.lemon_hunter.LemonHunterSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.ui.UISubsystem;
@@ -55,6 +56,9 @@ public class RobotContainer {
 
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
+
+  @Logged(name = "Hunter")
+  public final LemonHunterSubsystem hunter = new LemonHunterSubsystem();
 
   @Logged(name = "UI Feedback")
   public final UISubsystem uiFeedback =

@@ -51,7 +51,7 @@ public class IntakeConstants {
   }
 
   // Extension Motor
-  public static final double ALLOWABLE_EXTENSION_ERROR = 0.1;
+  public static final double ALLOWABLE_EXTENSION_ERROR = 0.5;
 
   public static final double EXTENSION_KS = 0.47;
   public static final double EXTENSION_KP = 5.0;
@@ -132,4 +132,7 @@ public class IntakeConstants {
 
   public static final double SAFE_HOMING_EFFORT = -0.2;
   public static final double SAFE_STATOR_LIMIT = 0.8;
+
+  public static final double INTAKING_SETPOINT = 13.5;
+  public static final double START_ROLLER_SETPOINT = 9.0;
 }

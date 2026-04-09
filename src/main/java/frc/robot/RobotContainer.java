@@ -97,15 +97,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Collect Intake",
         intake
-            .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-            .withDeadline(new WaitCommand(1))
+            .extendCommand()
             .andThen(intake.startRollerNoPID()));
     NamedCommands.registerCommand(
         "Stow Intake",
         intake
-            .setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
-            .withDeadline(new WaitCommand(1))
-            .andThen(intake.stopRollerNoPID()));
+            .stopRollerNoPID()
+            .andThen(intake.stowCommand()));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
@@ -210,8 +208,7 @@ public class RobotContainer {
                 .stopRollerNoPID()
                 .andThen(
                     intake
-                        .setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
-                        .withDeadline(new WaitCommand(1)))
+                        .stowCommand())
                 .withName("Stow Intake"));
 
     // stop the roller without retracting.
@@ -222,8 +219,7 @@ public class RobotContainer {
         .b()
         .onTrue(
             intake
-                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-                .withDeadline(new WaitCommand(1))
+                .extendCommand()
                 .andThen(
                     intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID()))
                 .withName("Outtake"))

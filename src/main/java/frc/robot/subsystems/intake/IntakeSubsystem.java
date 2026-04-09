@@ -1,6 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -30,10 +29,10 @@ public class IntakeSubsystem extends SubsystemBase {
   @Logged(name = "Extension Target", importance = Importance.CRITICAL)
   private Angle extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT); // Rotations
 
-  private PositionVoltage extensionControl;
+  @Logged(name = "Compliant Mode Enabled", importance = Importance.CRITICAL)
+  private boolean compliantMode;
 
-  @Logged(name = "Extension Is Compliant", importance = Importance.CRITICAL)
-  private boolean isCompliantMode;
+  private PositionVoltage extensionControl;
 
   final SysIdRoutine m_sysIdRoutineRoller =
       new SysIdRoutine(
@@ -76,21 +75,23 @@ public class IntakeSubsystem extends SubsystemBase {
     extensionMotor.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionVoltage(0);
-    isCompliantMode = false;
+    compliantMode = false;
   }
 
   @Override
   public void periodic() {
-    if (extensionMotor.getStatorCurrent().getValueAsDouble()
-            > IntakePreferences.resistanceCurrentLimit.getValue()
-        && isCompliantMode
-        && RobotModeTriggers.teleop().getAsBoolean())
-      CommandScheduler.getInstance()
-          .schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(0)));
-
+    if(!compliantMode && atExtensionSetpoint() 
+      && belowComplaintCurrentLimit() && aboveRollerSetpoint()
+      && RobotModeTriggers.teleop().getAsBoolean()) compliantMode = true;
+    
+    if(compliantMode && !belowComplaintCurrentLimit()){
+      compliantMode = false;
+      CommandScheduler.getInstance().schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
+    }
+    
     extensionMotor.setControl(
         extensionControl
-            .withSlot(isCompliantMode ? 1 : 0)
+            .withSlot(compliantMode ? 1 : 0)
             .withPosition(extensionTarget.in(Rotations)));
   }
 
@@ -122,57 +123,44 @@ public class IntakeSubsystem extends SubsystemBase {
     return runOnce(() -> rollerLeader.set(0)).withName("Stop Roller No PID");
   }
 
-  @Logged(name = "Extension Setpoint", importance = Importance.CRITICAL)
-  public boolean atExtensionSetpoint() {
+  @Logged(name = "At Extension Setpoint", importance = Importance.CRITICAL)
+  private boolean atExtensionSetpoint() {
     return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
-            < IntakeConstants.ALLOWABLE_EXTENSION_ERROR
-        && extensionMotor.getStatorCurrent().getValueAsDouble()
-            < IntakeConstants.COMPLIANT_RESISTANCE_CURRENT_LIMIT.in(Amps);
+            < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }
 
-  public Command setIntakeExtensionCommand(double rotations) {
-    return runOnce(() -> isCompliantMode = false)
-        .andThen(runOnce(() -> extensionTarget = Rotations.of(rotations)))
-        .andThen(Commands.waitUntil(() -> atExtensionSetpoint()))
-        .finallyDo(() -> isCompliantMode = true);
+  @Logged(name = "Below Complaint Current Limit", importance = Importance.CRITICAL)
+  public boolean belowComplaintCurrentLimit() {
+    return extensionMotor.getStatorCurrent().getValueAsDouble()
+            < IntakePreferences.resistanceCurrentLimit.getValue();
   }
 
-  public Command setExtendNoPID() {
-    return run(() -> extensionMotor.set(IntakePreferences.extendPercent.getValue()))
-        .withName("Extend Intake Percent");
+  @Logged(name = "Beyond Roller Setpoint", importance = Importance.CRITICAL)
+  public boolean aboveRollerSetpoint(){
+    return extensionMotor.getPosition().getValueAsDouble() > IntakeConstants.START_ROLLER_SETPOINT;
   }
 
-  public Command setRetractNoPID() {
-    return run(() -> extensionMotor.set(IntakePreferences.retractPercent.getValue()))
-        .withName("Retract Intake Percent");
-  }
-
-  public Command stopExtensionNoPID() {
-    return runOnce(() -> extensionMotor.set(0)).withName("Stop Intake Percent");
-  }
-
-  public Command collectCommand() {
-    return setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-        .andThen(startRollerNoPID()) // Set to  spinRollerCommand() after PID tuning
-        .withName("Activate Intake Collection");
-  }
-
-  public Command collectNoPIDCommand() {
-    return setExtendNoPID()
-        .raceWith(new WaitCommand(IntakePreferences.noPIDWait.getValue()))
-        .andThen(stopExtensionNoPID())
-        .andThen(startRollerNoPID())
-        .withName("Activate Intake Collection (NOPID)");
+  public Command extendCommand() {
+    return runOnce(() -> extensionTarget = Rotations.of(IntakeConstants.INTAKING_SETPOINT))
+        .andThen(Commands.waitUntil(() -> aboveRollerSetpoint()));
   }
 
   public Command stowCommand() {
-    return setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
-        .andThen(stopRollerNoPID())
-        .withName("Stow Intake");
+    return runOnce(() -> extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT));
+  }
+
+  public Command setIntakeExtensionCommand(double position){
+    return runOnce(() -> extensionTarget = Rotations.of(position));
+  }
+
+  public Command collectCommand() {
+    return extendCommand()
+        .andThen(startRollerNoPID())
+        .withName("Activate Intake Collection");
   }
 
   public Command dislodgeCommand() {
-    return setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+    return extendCommand()
         .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
         .andThen(setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue()))
         .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
@@ -183,7 +171,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command homeIntakeCommand() {
     return runEnd(
             () -> extensionMotor.set(IntakeConstants.SAFE_HOMING_EFFORT),
-            () -> extensionMotor.setPosition(0))
+            () -> extensionMotor.setPosition(IntakeConstants.INTAKE_REVERSE_LIMIT))
         .until(
             () -> {
               return extensionMotor.getStatorCurrent().getValueAsDouble()

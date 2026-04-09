@@ -128,7 +128,7 @@ public class IntakeConstants {
     return config;
   }
 
-  public static final Measure<CurrentUnit> COMPLIANT_RESISTANCE_CURRENT_LIMIT = Units.Amp.of(4);
+  public static final Measure<CurrentUnit> COMPLIANT_RESISTANCE_CURRENT_LIMIT = Units.Amp.of(3.5);
 
   public static final double SAFE_HOMING_EFFORT = -0.2;
   public static final double SAFE_STATOR_LIMIT = 0.8;

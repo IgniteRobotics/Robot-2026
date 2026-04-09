@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.statemachines.DriveState;
 import java.util.ArrayList;
@@ -41,6 +40,9 @@ public class LemonHunterSubsystem extends SubsystemBase {
   public DriveState driveState = DriveState.getInstance();
 
   private List<PhotonTrackedTarget> latestTargets = new ArrayList<>();
+
+  @Logged(name = "Lemon Hunter/Lemon Field", importance = Importance.CRITICAL)
+  private Field2d lemonField;
 
   @Logged(name = "Lemon Hunter/Results This Cycle", importance = Importance.CRITICAL)
   private int resultsThisCycle = 0;
@@ -91,12 +93,12 @@ public class LemonHunterSubsystem extends SubsystemBase {
     overlappingPairs = detectOverlaps(bestCluster, OVERLAP_THRESHOLD_M);
     overlappingPairCount = overlappingPairs.size();
 
-    Field2d field = new Field2d();
-    FieldObject2d lemonsFieldObject = field.getObject("Lemon Positions");
+    lemonField = new Field2d();
+    FieldObject2d lemonsFieldObject = lemonField.getObject("Lemon Positions");
     lemonsFieldObject.setPoses(lemonList.stream().map(Pose3d::toPose2d).toList());
-    FieldObject2d clusterCentroid = field.getObject("Cluster Centroid Position");
+    FieldObject2d clusterCentroid = lemonField.getObject("Cluster Centroid Position");
     clusterCentroid.setPose(getClusterCentroid(robotPose));
-    SmartDashboard.putData("Hunter Field Data", field);
+    // SmartDashboard.putData("Hunter Field Data", field);
   }
 
   public Pose3d estimateLemon3dPose(Pose2d robotPose, PhotonTrackedTarget target) {

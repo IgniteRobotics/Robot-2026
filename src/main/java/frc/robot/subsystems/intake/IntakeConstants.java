@@ -20,14 +20,6 @@ public class IntakeConstants {
   public static final int EXTENSION_MOTOR_ID = 1;
   public static final int ROLLER_FOLLOWER_MOTOR_ID = 10;
 
-  // TODO: Tune Roller and Extension Motors
-
-  // Roller Motor
-  public static final double ROLLER_KS = 0;
-  public static final double ROLLER_KV = 0;
-  public static final double ROLLER_KP = 0;
-  public static final double ROLLER_KD = 0;
-
   public static MotorOutputConfigs createRollerLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
     newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -40,15 +32,6 @@ public class IntakeConstants {
     newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
-  }
-
-  public static Slot0Configs createRollerMotorSlot0Configs() {
-    Slot0Configs slot = new Slot0Configs();
-    slot.kS = ROLLER_KS;
-    slot.kV = ROLLER_KV;
-    slot.kP = ROLLER_KP;
-    slot.kD = ROLLER_KD;
-    return slot;
   }
 
   public static final double ROLLER_CURRENT_LIMIT = 40;

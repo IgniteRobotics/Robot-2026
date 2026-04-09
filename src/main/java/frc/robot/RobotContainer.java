@@ -25,7 +25,6 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.lemon_hunter.LemonHunterSubsystem;
@@ -95,15 +94,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
     NamedCommands.registerCommand(
-        "Collect Intake",
-        intake
-            .extendCommand()
-            .andThen(intake.startRollerNoPID()));
+        "Collect Intake", intake.extendCommand().andThen(intake.startRollerNoPID()));
     NamedCommands.registerCommand(
-        "Stow Intake",
-        intake
-            .stopRollerNoPID()
-            .andThen(intake.stowCommand()));
+        "Stow Intake", intake.stopRollerNoPID().andThen(intake.stowCommand()));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
@@ -203,13 +196,7 @@ public class RobotContainer {
 
     driverJoystick
         .leftBumper()
-        .onTrue(
-            intake
-                .stopRollerNoPID()
-                .andThen(
-                    intake
-                        .stowCommand())
-                .withName("Stow Intake"));
+        .onTrue(intake.stopRollerNoPID().andThen(intake.stowCommand()).withName("Stow Intake"));
 
     // stop the roller without retracting.
     driverJoystick.x().onTrue(intake.stopRollerNoPID());

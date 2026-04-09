@@ -12,7 +12,6 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -80,15 +79,22 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(!compliantMode && atExtensionSetpoint() 
-      && belowComplaintCurrentLimit() && aboveRollerSetpoint()
-      && RobotModeTriggers.teleop().getAsBoolean()) compliantMode = true;
-    
-    if(compliantMode && !belowComplaintCurrentLimit()){
+    if (!compliantMode
+        && atExtensionSetpoint()
+        && belowComplaintCurrentLimit()
+        && aboveRollerSetpoint()
+        && RobotModeTriggers.teleop().getAsBoolean()) compliantMode = true;
+
+    /*
+    if (compliantMode && !belowComplaintCurrentLimit()) {
       compliantMode = false;
-      CommandScheduler.getInstance().schedule(stopRollerNoPID().andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
+      CommandScheduler.getInstance()
+          .schedule(
+              stopRollerNoPID()
+                  .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
     }
-    
+    */
+
     extensionMotor.setControl(
         extensionControl
             .withSlot(compliantMode ? 1 : 0)
@@ -124,39 +130,49 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   @Logged(name = "At Extension Setpoint", importance = Importance.CRITICAL)
-  private boolean atExtensionSetpoint() {
+  public boolean atExtensionSetpoint() {
     return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
-            < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
+        < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }
 
   @Logged(name = "Below Complaint Current Limit", importance = Importance.CRITICAL)
   public boolean belowComplaintCurrentLimit() {
     return extensionMotor.getStatorCurrent().getValueAsDouble()
-            < IntakePreferences.resistanceCurrentLimit.getValue();
+        < IntakePreferences.resistanceCurrentLimit.getValue();
   }
 
   @Logged(name = "Beyond Roller Setpoint", importance = Importance.CRITICAL)
-  public boolean aboveRollerSetpoint(){
+  public boolean aboveRollerSetpoint() {
     return extensionMotor.getPosition().getValueAsDouble() > IntakeConstants.START_ROLLER_SETPOINT;
   }
 
   public Command extendCommand() {
-    return runOnce(() -> extensionTarget = Rotations.of(IntakeConstants.INTAKING_SETPOINT))
+    return runOnce(
+            () -> {
+              extensionTarget = Rotations.of(IntakeConstants.INTAKING_SETPOINT);
+              compliantMode = false;
+            })
         .andThen(Commands.waitUntil(() -> aboveRollerSetpoint()));
   }
 
   public Command stowCommand() {
-    return runOnce(() -> extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT));
+    return runOnce(
+        () -> {
+          extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT);
+          compliantMode = false;
+        });
   }
 
-  public Command setIntakeExtensionCommand(double position){
-    return runOnce(() -> extensionTarget = Rotations.of(position));
+  public Command setIntakeExtensionCommand(double position) {
+    return runOnce(
+        () -> {
+          extensionTarget = Rotations.of(position);
+          compliantMode = false;
+        });
   }
 
   public Command collectCommand() {
-    return extendCommand()
-        .andThen(startRollerNoPID())
-        .withName("Activate Intake Collection");
+    return extendCommand().andThen(startRollerNoPID()).withName("Activate Intake Collection");
   }
 
   public Command dislodgeCommand() {
@@ -166,6 +182,29 @@ public class IntakeSubsystem extends SubsystemBase {
         .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
         .repeatedly()
         .withName("Agitate Intake");
+  }
+
+  public Command agitateCommand() {
+    return new WaitCommand(1)
+        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKING_SETPOINT))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(new WaitCommand(0.5))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(new WaitCommand(0.5))
+        .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
+        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
+        .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT));
   }
 
   public Command homeIntakeCommand() {

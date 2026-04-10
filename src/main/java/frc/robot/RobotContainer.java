@@ -78,7 +78,7 @@ public class RobotContainer {
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged())
-          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
+          .alongWith(new WaitCommand(1).andThen(indexer.startFullIndexingNoPID()));
 
   private final Command stopShotCommand =
       indexer
@@ -219,11 +219,7 @@ public class RobotContainer {
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(
-            drivetrain
-                .setXCommand()
-                .alongWith(indexer.startFullIndexingNoPID())
-                .withName("Lock Wheels and Index"));
+        .whileTrue(indexer.startFullIndexingNoPID().withName("Lock Wheels and Index"));
 
     operatorJoystick
         .leftTrigger()

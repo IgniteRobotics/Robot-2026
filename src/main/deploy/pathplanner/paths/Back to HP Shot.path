@@ -8,45 +8,45 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.592341258154418,
-        "y": 3.759303779284872
+        "x": 7.804798500428872,
+        "y": 3.7968640608588102
       },
       "isLocked": false,
       "linkedName": "HPSweepEnd"
     },
     {
       "anchor": {
-        "x": 7.737832059679766,
-        "y": 2.2041797432239663
+        "x": 6.62679029957204,
+        "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 7.730235633049932,
-        "y": 2.905016173984576
+        "x": 7.283619675927091,
+        "y": 2.871699702538806
       },
       "nextControl": {
-        "x": 7.74054167211558,
-        "y": 1.954194427654336
+        "x": 6.355078459343793,
+        "y": 2.3853209700427955
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1184578269675933,
-        "y": 2.638408217339884
+        "x": 2.66756062767475,
+        "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 5.060406960356303,
-        "y": 2.54047576295198
+        "x": 3.301554921540655,
+        "y": 2.3076890156918695
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "First Sweep Shot - RIGHT"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.8006362672322314,
+      "waypointRelativePos": 1.7454931071049853,
       "rotationDegrees": 0.0
     }
   ],

@@ -27,21 +27,19 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     hoodAngleMap.put(1.66, 0.36);
     hoodAngleMap.put(2.2, 1.31);
     hoodAngleMap.put(2.39, 1.91);
-    hoodAngleMap.put(3.08, 1.91);
-    hoodAngleMap.put(3.84, 2.4);
-    hoodAngleMap.put(4.01, 2.6);
-    hoodAngleMap.put(4.49, 3.2);
-    hoodAngleMap.put(5.04, 3.4);
+    hoodAngleMap.put(3.06, 2.4);
+    hoodAngleMap.put(3.81, 2.0);
+    hoodAngleMap.put(4.04, 2.6);
+    hoodAngleMap.put(5.18, 3.4);
     hoodAngleMap.put(5.64, 3.4);
 
     flywheelSpeedMap.put(1.66, 55.24);
     flywheelSpeedMap.put(2.2, 55.24);
     flywheelSpeedMap.put(2.39, 55.24);
-    flywheelSpeedMap.put(3.08, 64.7);
-    flywheelSpeedMap.put(3.84, 63.1);
-    flywheelSpeedMap.put(4.01, 68.33);
-    flywheelSpeedMap.put(4.49, 70.94);
-    flywheelSpeedMap.put(5.04, 73.56);
+    flywheelSpeedMap.put(3.06, 62.1);
+    flywheelSpeedMap.put(3.81, 67.32);
+    flywheelSpeedMap.put(4.04, 67.32);
+    flywheelSpeedMap.put(5.18, 72.6);
     flywheelSpeedMap.put(5.64, 76.18);
 
     /* Previous session

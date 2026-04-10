@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.348055325794847,
-        "y": 2.3482847985738697
+        "x": 6.696449138942679,
+        "y": 3.395297593014463
       },
       "isLocked": false,
       "linkedName": "Second Sweep End - RIGHT"
+    },
+    {
+      "anchor": {
+        "x": 5.451437138310186,
+        "y": 2.740438585069445
+      },
+      "prevControl": {
+        "x": 6.597126309953601,
+        "y": 3.3531561465096473
+      },
+      "nextControl": {
+        "x": 4.911169772492533,
+        "y": 2.4515021866965157
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,22 +36,28 @@
         "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 1.9645672424382667,
-        "y": 2.5219705054071158
+        "x": 2.3447459067479537,
+        "y": 2.5422175119459376
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "First Sweep Shot - RIGHT"
     }
   ],
-  "rotationTargets": [
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [
     {
-      "waypointRelativePos": 0.65641569459173,
-      "rotationDegrees": 180.0
+      "fieldPosition": {
+        "x": 4.6,
+        "y": 4.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.5,
+      "maxWaypointRelativePos": 1.5,
+      "name": "Point Towards Zone"
     }
   ],
-  "constraintZones": [],
-  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,

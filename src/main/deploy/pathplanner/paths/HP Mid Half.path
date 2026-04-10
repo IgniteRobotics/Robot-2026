@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.874332754629631,
-        "y": 1.1193335503472224
+        "x": 6.621535373263889,
+        "y": 1.666984664351852
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.723700762374613,
-        "y": 1.9140960477330435
+        "x": 7.501565010458945,
+        "y": 1.4519607514941113
       },
       "isLocked": false,
       "linkedName": "HP Middle Sweep"
@@ -17,11 +17,27 @@
     {
       "anchor": {
         "x": 7.737832059679766,
+        "y": 2.368426866319445
+      },
+      "prevControl": {
+        "x": 7.713101673347706,
+        "y": 2.1196530574249652
+      },
+      "nextControl": {
+        "x": 7.782443521327039,
+        "y": 2.817193136499153
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.737832059679766,
         "y": 3.556
       },
       "prevControl": {
-        "x": 7.742228877314815,
-        "y": 2.898166304976852
+        "x": 7.6205427139411075,
+        "y": 2.854842233830432
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,15 +46,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8727465535524935,
+      "waypointRelativePos": 1.75,
       "rotationDegrees": 90.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.2,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.4,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 3.0,

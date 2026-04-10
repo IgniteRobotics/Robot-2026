@@ -78,7 +78,7 @@ public class RobotContainer {
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged())
-          .alongWith(new WaitCommand(1).andThen(indexer.startFullIndexingNoPID()));
+          .alongWith(new WaitCommand(0.5).andThen(indexer.startFullIndexingNoPID()));
 
   private final Command stopShotCommand =
       indexer

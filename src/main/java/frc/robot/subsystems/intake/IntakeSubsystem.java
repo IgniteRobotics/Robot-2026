@@ -12,6 +12,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -85,7 +86,6 @@ public class IntakeSubsystem extends SubsystemBase {
         && aboveRollerSetpoint()
         && RobotModeTriggers.teleop().getAsBoolean()) compliantMode = true;
 
-    /*
     if (compliantMode && !belowComplaintCurrentLimit()) {
       compliantMode = false;
       CommandScheduler.getInstance()
@@ -93,7 +93,6 @@ public class IntakeSubsystem extends SubsystemBase {
               stopRollerNoPID()
                   .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
     }
-    */
 
     extensionMotor.setControl(
         extensionControl
@@ -185,8 +184,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command agitateCommand() {
-    return new WaitCommand(1)
-        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
+    return setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue())
         .andThen(
             new WaitUntilCommand(() -> this.atExtensionSetpoint())
                 .withDeadline(new WaitCommand(0.5)))
@@ -194,24 +192,10 @@ public class IntakeSubsystem extends SubsystemBase {
         .andThen(
             new WaitUntilCommand(() -> this.atExtensionSetpoint())
                 .withDeadline(new WaitCommand(0.5)))
-        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
-        .andThen(
-            new WaitUntilCommand(() -> this.atExtensionSetpoint())
-                .withDeadline(new WaitCommand(0.5)))
-        .andThen(new WaitCommand(0.5))
         .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
         .andThen(
             new WaitUntilCommand(() -> this.atExtensionSetpoint())
                 .withDeadline(new WaitCommand(0.5)))
-        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition1.getValue()))
-        .andThen(
-            new WaitUntilCommand(() -> this.atExtensionSetpoint())
-                .withDeadline(new WaitCommand(0.5)))
-        .andThen(setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue()))
-        .andThen(
-            new WaitUntilCommand(() -> this.atExtensionSetpoint())
-                .withDeadline(new WaitCommand(0.5)))
-        .andThen(new WaitCommand(0.5))
         .andThen(stopRollerNoPID())
         .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
         .andThen(

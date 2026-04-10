@@ -121,7 +121,7 @@ public class RobotContainer {
                 .withName("Rumble & Set Pose"));
 
     configureSubsystemDefaultCommands();
-     drivetrain.registerTelemetry(logger::telemeterize);
+    drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public void configureSubsystemDefaultCommands() {

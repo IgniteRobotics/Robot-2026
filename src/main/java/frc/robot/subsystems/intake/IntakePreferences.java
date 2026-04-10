@@ -30,4 +30,9 @@ public class IntakePreferences {
 
   public static DoublePreference agitatePosition2 =
       new DoublePreference("Intake/Agitate/Position 2", 6.0);
+
+  public static DoublePreference springykP =
+      new DoublePreference("Intake/Springy/kP", IntakeConstants.EXTENSION_SPRINGY_KP);
+  public static DoublePreference springykD =
+      new DoublePreference("Intake/Springy/kD", IntakeConstants.EXTENSION_SPRINGY_KD);
 }

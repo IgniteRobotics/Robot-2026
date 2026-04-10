@@ -50,12 +50,15 @@ final class IndexerConstants {
     return newConfigs;
   }
 
-  public static final double INDEXER_CURRENT_LIMIT = 40;
+  public static final double INDEXER_STATOR_CURRENT_LIMIT = 60;
+  public static final double INDEXER_SUPPLY_CURRENT_LIMIT = 40;
 
   public static CurrentLimitsConfigs createIndexerCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-    configs.StatorCurrentLimit = INDEXER_CURRENT_LIMIT;
+    configs.StatorCurrentLimit = INDEXER_STATOR_CURRENT_LIMIT;
+    configs.SupplyCurrentLimit = INDEXER_SUPPLY_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;
+    configs.SupplyCurrentLimitEnable = true;
     return configs;
   }
 
@@ -66,12 +69,15 @@ final class IndexerConstants {
     return newConfigs;
   }
 
-  public static final double ACCELERATOR_CURRENT_LIMIT = 40;
+  public static final double ACCELERATOR_STATOR_CURRENT_LIMIT = 50;
+  public static final double ACCELERATOR_SUPPLY_CURRENT_LIMIT = 40;
 
   public static CurrentLimitsConfigs createAcceleratorCurrentLimitsConfigs() {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-    configs.StatorCurrentLimit = ACCELERATOR_CURRENT_LIMIT;
+    configs.StatorCurrentLimit = ACCELERATOR_STATOR_CURRENT_LIMIT;
+    configs.SupplyCurrentLimit = ACCELERATOR_SUPPLY_CURRENT_LIMIT;
     configs.StatorCurrentLimitEnable = true;
+    configs.SupplyCurrentLimitEnable = true;
     return configs;
   }
 }

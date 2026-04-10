@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
-import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -76,19 +75,8 @@ public class IntakeConstants {
   public static Slot1Configs createExtensionMotorSlot1Configs() {
     Slot1Configs slot = new Slot1Configs();
     slot.kS = EXTENSION_KS;
-    slot.kP = EXTENSION_SPRINGY_KP;
-    slot.kD = EXTENSION_SPRINGY_KD;
-    return slot;
-  }
-
-  public static final double EXTENSION_MM_KP = 1;
-  public static final double EXTENSION_MM_KD = 0.5;
-
-  public static Slot2Configs createExtensionMotorSlot2Configs() {
-    Slot2Configs slot = new Slot2Configs();
-    slot.kS = EXTENSION_KS;
-    slot.kP = EXTENSION_SPRINGY_KP;
-    slot.kD = EXTENSION_SPRINGY_KD;
+    slot.kP = IntakePreferences.springykP.getValue();
+    slot.kD = IntakePreferences.springykD.getValue();
     return slot;
   }
 

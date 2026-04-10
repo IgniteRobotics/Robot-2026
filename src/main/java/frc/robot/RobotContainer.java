@@ -121,6 +121,7 @@ public class RobotContainer {
                 .withName("Rumble & Set Pose"));
 
     configureSubsystemDefaultCommands();
+     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public void configureSubsystemDefaultCommands() {
@@ -283,8 +284,6 @@ public class RobotContainer {
             uiFeedback
                 .manualRumbleCommand(driverJoystick.getHID())
                 .withName("Rumble Driver Controller"));
-
-    drivetrain.registerTelemetry(logger::telemeterize);
 
     SmartDashboard.putData(
         "Shooter/SysIdForwardQuasistatic", shooter.sysIdQuasistatic(Direction.kForward));

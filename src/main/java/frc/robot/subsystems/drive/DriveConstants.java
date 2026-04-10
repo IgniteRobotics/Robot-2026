@@ -36,10 +36,10 @@ public class DriveConstants {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SteerRequestType.Position);
 
-  public static final double TRANSLATION_ALIGN_TOLERANCE = 0.01; // meters
-  public static final double ROTATION_ALIGN_TOLERANCE = 1; // degrees
+  public static final double TRANSLATION_ALIGN_TOLERANCE = 0; // meters
+  public static final double ROTATION_ALIGN_TOLERANCE = 0.01; // degrees
 
-  public static final double TRANSLATION_ALIGN_KP = 0.0001;
+  public static final double TRANSLATION_ALIGN_KP = 1.25;
   public static final double ROTATION_ALIGN_KP = 6.28;
 
   public static final AngularVelocity WHEEL_RADIUS_TEST_MAX_VELOCITY = RadiansPerSecond.of(Math.PI);

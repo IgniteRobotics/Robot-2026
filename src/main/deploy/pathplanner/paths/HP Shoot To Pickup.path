@@ -3,35 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.804208273894435,
-        "y": 4.7919115549215405
+        "x": 2.6538131140829693,
+        "y": 3.145543520287482
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.8707156942736,
-        "y": 5.652459024205651
+        "x": 3.301554921540655,
+        "y": 2.372382310984309
       },
       "isLocked": false,
-      "linkedName": "Half Sweep - LEFT"
+      "linkedName": "HPShot"
     },
     {
       "anchor": {
-        "x": 2.4993580599144076,
-        "y": 5.5811697574893016
+        "x": 7.674821683309556,
+        "y": 2.372382310984309
       },
       "prevControl": {
-        "x": 1.6820231963019343,
-        "y": 5.620708072096979
+        "x": 6.674821683309556,
+        "y": 2.372382310984309
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "First Sweep Shot"
+      "linkedName": "Mid Pickup"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6670201484623492,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 0.20254506892894947,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.9109225874867435,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -47,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -49.23639479905874
+    "rotation": -47.41950921665629
   },
   "reversed": false,
-  "folder": "Half Sweep Paths - LEFT",
+  "folder": "HP Shoot Mid Pickup Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -153.434948822922
+    "rotation": 25.459293397367578
   },
   "useDefaultConstraints": true
 }

@@ -93,8 +93,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
-    NamedCommands.registerCommand(
-        "Collect Intake", intake.extendCommand().andThen(intake.startRollerNoPID()));
+    NamedCommands.registerCommand("Collect Intake", intake.collectCommand());
     NamedCommands.registerCommand(
         "Stow Intake", intake.stopRollerNoPID().andThen(intake.stowCommand()));
     NamedCommands.registerCommand(

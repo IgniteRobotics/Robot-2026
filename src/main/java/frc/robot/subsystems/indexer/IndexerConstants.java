@@ -80,4 +80,7 @@ final class IndexerConstants {
     configs.SupplyCurrentLimitEnable = true;
     return configs;
   }
+
+  public static final double ACCELERATOR_POWER = 1;
+  public static final double INDEXER_POWER = 1;
 }

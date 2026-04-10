@@ -8,40 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4181930785815962,
-        "y": 0.6465859125422662
+        "x": 1.649129814550642,
+        "y": 0.6200000000000001
       },
       "isLocked": false,
       "linkedName": "Outpost_collect"
     },
     {
       "anchor": {
-        "x": 2.0696849981804952,
-        "y": 1.6340110421215424
+        "x": 6.874332754629631,
+        "y": 1.1193335503472224
       },
       "prevControl": {
-        "x": 1.4562306118334007,
-        "y": 1.2890681843587357
-      },
-      "nextControl": {
-        "x": 2.2875978887601542,
-        "y": 1.7565425569216848
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.6538131140829693,
-        "y": 3.145543520287482
-      },
-      "prevControl": {
-        "x": 2.723327106670737,
-        "y": 2.72862262842228
+        "x": 3.8191012838801695,
+        "y": 4.468445078459343
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HPShot"
+      "linkedName": "HP Middle Sweep"
     }
   ],
   "rotationTargets": [],
@@ -58,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 25.459293397367578
+    "rotation": 45.0
   },
   "reversed": false,
-  "folder": "HP AUTO",
+  "folder": "New Folder",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

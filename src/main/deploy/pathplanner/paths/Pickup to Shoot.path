@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.804208273894435,
-        "y": 4.7919115549215405
+        "x": 7.674821683309556,
+        "y": 2.372382310984309
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.8707156942736,
-        "y": 5.652459024205651
+        "x": 8.674821683309556,
+        "y": 2.3723823109843085
       },
       "isLocked": false,
-      "linkedName": "Half Sweep - LEFT"
+      "linkedName": "Mid Pickup"
     },
     {
       "anchor": {
-        "x": 2.4993580599144076,
-        "y": 5.5811697574893016
+        "x": 2.124136947218259,
+        "y": 2.372382310984309
       },
       "prevControl": {
-        "x": 1.6820231963019343,
-        "y": 5.620708072096979
+        "x": 1.124136947218259,
+        "y": 2.372382310984309
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "First Sweep Shot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6670201484623492,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 0.5291622481442197,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -47,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -49.23639479905874
+    "rotation": 47.2906100426385
   },
   "reversed": false,
-  "folder": "Half Sweep Paths - LEFT",
+  "folder": "HP Shoot Mid Pickup Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -153.434948822922
+    "rotation": -47.41950921665629
   },
   "useDefaultConstraints": true
 }

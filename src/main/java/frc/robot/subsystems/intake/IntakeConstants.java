@@ -18,6 +18,7 @@ public class IntakeConstants {
   public static final int ROLLER_MOTOR_ID = 2;
   public static final int EXTENSION_MOTOR_ID = 1;
   public static final int ROLLER_FOLLOWER_MOTOR_ID = 10;
+  public static final int EXTENSION_FOLLOWER_MOTOR_ID = 14;
 
   public static MotorOutputConfigs createRollerLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
@@ -55,10 +56,10 @@ public class IntakeConstants {
   // Extension Motor
   public static final double ALLOWABLE_EXTENSION_ERROR = 0.5;
 
-  public static final double EXTENSION_KS = 0.47;
-  public static final double EXTENSION_KP = 5.0;
+  public static final double EXTENSION_KS = 0.325;
+  public static final double EXTENSION_KP = 4;
   public static final double EXTENSION_KI = 0.0;
-  public static final double EXTENSION_KD = 0.5;
+  public static final double EXTENSION_KD = 0.33;
 
   public static Slot0Configs createExtensionMotorSlot0Configs() {
     Slot0Configs slot = new Slot0Configs();
@@ -69,8 +70,8 @@ public class IntakeConstants {
   }
 
   // Fix PID values for springiness
-  public static final double EXTENSION_SPRINGY_KP = 1;
-  public static final double EXTENSION_SPRINGY_KD = 0.5;
+  public static final double EXTENSION_SPRINGY_KP = 0;
+  public static final double EXTENSION_SPRINGY_KD = 0;
 
   public static Slot1Configs createExtensionMotorSlot1Configs() {
     Slot1Configs slot = new Slot1Configs();
@@ -92,9 +93,16 @@ public class IntakeConstants {
     return configs;
   }
 
-  public static MotorOutputConfigs createExtensionMotorOutputConfigs() {
+  public static MotorOutputConfigs createExtensionLeaderMotorOutputConfigs() {
     MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-    // newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    newConfigs.NeutralMode = NeutralModeValue.Brake;
+    return newConfigs;
+  }
+
+  public static MotorOutputConfigs createExtensionFollowerMotorOutputConfigs() {
+    MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+    newConfigs.Inverted = InvertedValue.Clockwise_Positive;
     newConfigs.NeutralMode = NeutralModeValue.Brake;
     return newConfigs;
   }
@@ -119,10 +127,10 @@ public class IntakeConstants {
     return config;
   }
 
-  public static final Measure<CurrentUnit> COMPLIANT_RESISTANCE_CURRENT_LIMIT = Units.Amp.of(3.5);
+  public static final Measure<CurrentUnit> COMPLIANT_RESISTANCE_CURRENT_LIMIT = Units.Amp.of(8);
 
   public static final double SAFE_HOMING_EFFORT = -0.2;
-  public static final double SAFE_STATOR_LIMIT = 0.8;
+  public static final double SAFE_STATOR_LIMIT = 100;
 
   public static final double INTAKING_SETPOINT = 14.25;
   public static final double START_ROLLER_SETPOINT = 9.0;

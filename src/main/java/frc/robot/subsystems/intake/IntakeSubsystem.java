@@ -12,7 +12,6 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -24,13 +23,17 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX rollerLeader;
   private final TalonFX rollerFollower;
-  private final TalonFX extensionMotor;
+  private final TalonFX extensionLeader;
+  private final TalonFX extensionFollower;
 
   @Logged(name = "Extension Target", importance = Importance.CRITICAL)
   private Angle extensionTarget = Rotations.of(IntakeConstants.INTAKE_REVERSE_LIMIT); // Rotations
 
   @Logged(name = "Compliant Mode Enabled", importance = Importance.CRITICAL)
   private boolean compliantMode;
+
+  @Logged(name = "Homing", importance = Importance.CRITICAL)
+  private boolean homing;
 
   private PositionVoltage extensionControl;
 
@@ -47,7 +50,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     rollerLeader = new TalonFX(IntakeConstants.ROLLER_MOTOR_ID);
     rollerFollower = new TalonFX(IntakeConstants.ROLLER_FOLLOWER_MOTOR_ID);
-    extensionMotor = new TalonFX(IntakeConstants.EXTENSION_MOTOR_ID);
+    extensionLeader = new TalonFX(IntakeConstants.EXTENSION_MOTOR_ID);
+    extensionFollower = new TalonFX(IntakeConstants.EXTENSION_FOLLOWER_MOTOR_ID, "DriveTrain");
 
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerLeaderMotorOutputConfigs());
     rollerFollower
@@ -61,21 +65,38 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerFollower.setControl(
         new Follower(rollerLeader.getDeviceID(), MotorAlignmentValue.Opposed));
 
-    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot0Configs());
-    extensionMotor
+    extensionLeader.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot0Configs());
+    extensionLeader.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot1Configs());
+    extensionLeader
         .getConfigurator()
         .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
-    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorOutputConfigs());
-    extensionMotor.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot1Configs());
-    extensionMotor.getConfigurator().apply(IntakeConstants.creatClosedLoopRampsConfigs());
-    extensionMotor
+    extensionLeader
+        .getConfigurator()
+        .apply(IntakeConstants.createExtensionLeaderMotorOutputConfigs());
+    extensionLeader.getConfigurator().apply(IntakeConstants.creatClosedLoopRampsConfigs());
+    extensionLeader
         .getConfigurator()
         .apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
 
-    extensionMotor.setPosition(0);
+    extensionFollower.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot0Configs());
+    extensionFollower.getConfigurator().apply(IntakeConstants.createExtensionMotorSlot1Configs());
+    extensionFollower
+        .getConfigurator()
+        .apply(IntakeConstants.createExtensionSoftwareLimitSwitchConfigs());
+    extensionFollower
+        .getConfigurator()
+        .apply(IntakeConstants.createExtensionFollowerMotorOutputConfigs());
+    extensionFollower.getConfigurator().apply(IntakeConstants.creatClosedLoopRampsConfigs());
+    extensionFollower
+        .getConfigurator()
+        .apply(IntakeConstants.createExtenstionMotorCurrentLimitsConfigs());
+
+    extensionLeader.setPosition(0);
+    extensionFollower.setPosition(0);
     extensionTarget = Rotations.of(0);
     extensionControl = new PositionVoltage(0);
     compliantMode = false;
+    homing = false;
   }
 
   @Override
@@ -86,18 +107,16 @@ public class IntakeSubsystem extends SubsystemBase {
         && aboveRollerSetpoint()
         && RobotModeTriggers.teleop().getAsBoolean()) compliantMode = true;
 
-    if (compliantMode && !belowComplaintCurrentLimit()) {
-      compliantMode = false;
-      CommandScheduler.getInstance()
-          .schedule(
-              stopRollerNoPID()
-                  .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)));
+    if (!homing) {
+      extensionLeader.setControl(
+          extensionControl
+              .withSlot(compliantMode ? 1 : 0)
+              .withPosition(extensionTarget.in(Rotations)));
+      extensionFollower.setControl(
+          extensionControl
+              .withSlot(compliantMode ? 1 : 0)
+              .withPosition(extensionTarget.in(Rotations)));
     }
-
-    extensionMotor.setControl(
-        extensionControl
-            .withSlot(compliantMode ? 1 : 0)
-            .withPosition(extensionTarget.in(Rotations)));
   }
 
   private void setRollerVoltage(double magnitude) {
@@ -130,19 +149,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Logged(name = "At Extension Setpoint", importance = Importance.CRITICAL)
   public boolean atExtensionSetpoint() {
-    return Math.abs(extensionMotor.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
+    return Math.abs(
+            extensionLeader.getPosition().getValueAsDouble() - extensionTarget.in(Rotations))
         < IntakeConstants.ALLOWABLE_EXTENSION_ERROR;
   }
 
   @Logged(name = "Below Complaint Current Limit", importance = Importance.CRITICAL)
   public boolean belowComplaintCurrentLimit() {
-    return extensionMotor.getStatorCurrent().getValueAsDouble()
+    return extensionLeader.getStatorCurrent().getValueAsDouble()
         < IntakePreferences.resistanceCurrentLimit.getValue();
   }
 
   @Logged(name = "Beyond Roller Setpoint", importance = Importance.CRITICAL)
   public boolean aboveRollerSetpoint() {
-    return extensionMotor.getPosition().getValueAsDouble() > IntakeConstants.START_ROLLER_SETPOINT;
+    return extensionLeader.getPosition().getValueAsDouble() > IntakeConstants.START_ROLLER_SETPOINT;
   }
 
   public Command extendCommand() {
@@ -209,13 +229,31 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command homeIntakeCommand() {
-    return runEnd(
-            () -> extensionMotor.set(IntakeConstants.SAFE_HOMING_EFFORT),
-            () -> extensionMotor.setPosition(IntakeConstants.INTAKE_REVERSE_LIMIT))
-        .until(
+    return runOnce(
             () -> {
-              return extensionMotor.getStatorCurrent().getValueAsDouble()
-                  > IntakeConstants.SAFE_STATOR_LIMIT;
-            });
+              homing = true;
+              extensionLeader.stopMotor();
+              extensionFollower.stopMotor();
+            })
+        .andThen(
+            runEnd(
+                    () -> {
+                      extensionLeader.set(IntakeConstants.SAFE_HOMING_EFFORT);
+                      extensionFollower.set(IntakeConstants.SAFE_HOMING_EFFORT);
+                    },
+                    () -> {
+                      extensionLeader.set(0);
+                      extensionFollower.set(0);
+                      extensionLeader.setPosition(0);
+                      extensionFollower.set(0);
+                    })
+                .until(
+                    () -> {
+                      return extensionLeader.getStatorCurrent().getValueAsDouble()
+                              > IntakeConstants.SAFE_STATOR_LIMIT
+                          && extensionFollower.getStatorCurrent().getValueAsDouble()
+                              > IntakeConstants.SAFE_STATOR_LIMIT;
+                    }))
+        .finallyDo(() -> homing = false);
   }
 }

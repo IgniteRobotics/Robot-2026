@@ -7,9 +7,10 @@
     "Basic Comp Paths - RIGHT",
     "Depot AUTO",
     "HP AUTO",
+    "HP Shoot Mid Pickup Paths",
     "Half Sweep Paths - LEFT",
     "Mid-field",
-    "Half Sweep Paths - RIGHT",
+    "New Folder",
     "Plus - Test",
     "Rotation + Translation Test",
     "Square Test",
@@ -17,7 +18,8 @@
   ],
   "autoFolders": [
     "Basic Comp Autons",
-    "Other Comp Autons",
+    "DCMP Autons",
+    "Other Autons",
     "Test Autons"
   ],
   "defaultMaxVel": 3.0,

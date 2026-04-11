@@ -8,20 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.915164051355206,
-        "y": 5.5811697574893016
+        "x": 6.4717180303798605,
+        "y": 5.496753627171533
       },
       "isLocked": false,
       "linkedName": "Second Sweep Start - LEFT"
     },
     {
       "anchor": {
-        "x": 6.730299572039942,
-        "y": 3.7180028530670475
+        "x": 7.739514978601996,
+        "y": 4.287303851640513
       },
       "prevControl": {
-        "x": 6.652667617689014,
-        "y": 4.3778744650499295
+        "x": 7.41658478793834,
+        "y": 4.857981310240865
+      },
+      "nextControl": {
+        "x": 8.068330894133897,
+        "y": 3.706225227070115
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.843024251069899,
+        "y": 2.3853209700427964
+      },
+      "prevControl": {
+        "x": 7.885393717949191,
+        "y": 3.330212599987806
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8218451749734781,
+      "waypointRelativePos": 1.65,
       "rotationDegrees": -90.0
     }
   ],
@@ -47,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 145.9228047198692
   },
   "reversed": false,
   "folder": "Half Sweep Paths - LEFT",

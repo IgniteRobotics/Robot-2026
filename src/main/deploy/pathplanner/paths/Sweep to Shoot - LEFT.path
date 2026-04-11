@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.8707156942736,
-        "y": 5.53601109267926
+        "x": 7.791269614835947,
+        "y": 5.619985734664765
       },
       "isLocked": false,
       "linkedName": "Half Sweep - LEFT"
@@ -20,8 +20,8 @@
         "y": 5.5811697574893016
       },
       "prevControl": {
-        "x": 1.6820231963019343,
-        "y": 5.620708072096979
+        "x": 2.243156117421407,
+        "y": 5.568973120532481
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6670201484623492,
+      "waypointRelativePos": 0.7,
       "rotationDegrees": 0.0
     }
   ],
@@ -38,7 +38,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -55,5 +55,5 @@
     "velocity": 0,
     "rotation": 30.9637565320736
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

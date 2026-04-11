@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.62679029957204,
-        "y": 4.067346647646221
+        "x": 7.830085592011411,
+        "y": 6.072838801711842
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.696449138942679,
-        "y": 3.395297593014463
+        "x": 7.89974443138205,
+        "y": 5.400789747080084
       },
       "isLocked": false,
       "linkedName": "Second Sweep End - RIGHT"
@@ -75,7 +75,7 @@
   "folder": "Half Sweep Paths- RIGHT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -132.79740183823407
   },
   "useDefaultConstraints": true
 }

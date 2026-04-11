@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.730299572039942,
-        "y": 3.7180028530670475
+        "x": 7.843024251069899,
+        "y": 2.3853209700427964
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.880004780757239,
-        "y": 3.9656603282056717
+        "x": 7.992729459787196,
+        "y": 2.632978445181421
       },
       "isLocked": false,
       "linkedName": "Second Sweep End - LEFT"
     },
     {
       "anchor": {
-        "x": 6.31626248216833,
-        "y": 5.361212553495007
+        "x": 5.979857346647646,
+        "y": 5.4647218259629105
       },
       "prevControl": {
-        "x": 6.716538623228855,
-        "y": 5.045205073710382
+        "x": 6.380133487708171,
+        "y": 5.148714346178285
       },
       "nextControl": {
-        "x": 5.824593437945791,
-        "y": 5.749372325249644
+        "x": 5.488188302425106,
+        "y": 5.8528815977175475
       },
       "isLocked": false,
       "linkedName": null
@@ -75,7 +75,7 @@
   "folder": "Half Sweep Paths - LEFT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 145.9228047198692
   },
   "useDefaultConstraints": true
 }

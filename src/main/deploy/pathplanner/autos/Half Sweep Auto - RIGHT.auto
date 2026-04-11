@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Half Sweep Start - RIGHT"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Half Sweep Start - RIGHT"
           }
         },
         {
@@ -67,7 +67,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 2.5
                 }
               }
             ]
@@ -80,15 +80,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Shot To Second Sweep Prep - RIGHT"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shot To Second Sweep Prep - RIGHT"
           }
         },
         {

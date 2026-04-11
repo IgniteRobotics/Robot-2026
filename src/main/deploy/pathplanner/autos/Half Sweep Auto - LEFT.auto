@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Overbump - LEFT"
+            "pathName": "Start to Sweep - LEFT"
           }
         },
         {
@@ -23,12 +23,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Stow Intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Sweep to Shoot - LEFT"
@@ -39,18 +33,86 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AutonShoot"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutonShoot"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 0.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Stow Intake"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 6.0
+                  "waitTime": 3.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shot to Second Sweep - LEFT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Second Sweep - LEFT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Second Sweep to Shot - LEFT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonShoot"
           }
         }
       ]

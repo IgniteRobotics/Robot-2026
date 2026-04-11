@@ -1,0 +1,86 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5732667617689007,
+        "y": 5.529415121255349
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.573266761768902,
+        "y": 5.529415121255349
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.809885877318117,
+        "y": 5.529415121255349
+      },
+      "prevControl": {
+        "x": 2.59179029957204,
+        "y": 5.322396576319543
+      },
+      "nextControl": {
+        "x": 3.0279814550641935,
+        "y": 5.7364336661911555
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.798716119828815,
+        "y": 5.529415121255349
+      },
+      "prevControl": {
+        "x": 5.06132890513552,
+        "y": 5.36768188302425
+      },
+      "nextControl": {
+        "x": 6.53610333452211,
+        "y": 5.691148359486448
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.898502139800283,
+        "y": 6.551569186875891
+      },
+      "prevControl": {
+        "x": 6.652667617689014,
+        "y": 6.448059914407987
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "First Sweep Start - LEFT"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": -40.0
+  },
+  "reversed": false,
+  "folder": "Half Sweep Paths - LEFT",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

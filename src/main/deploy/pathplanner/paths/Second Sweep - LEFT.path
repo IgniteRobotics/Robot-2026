@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4993580599144076,
+        "x": 5.915164051355206,
         "y": 5.5811697574893016
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4993580599144076,
+        "x": 6.915164051355206,
         "y": 5.5811697574893016
       },
       "isLocked": false,
-      "linkedName": "First Sweep Shot"
+      "linkedName": "Second Sweep Start - LEFT"
     },
     {
       "anchor": {
-        "x": 6.510342368045648,
-        "y": 6.719771754636234
+        "x": 6.730299572039942,
+        "y": 3.7180028530670475
       },
       "prevControl": {
-        "x": 7.066704707560626,
-        "y": 6.2539800285306715
+        "x": 6.652667617689014,
+        "y": 4.3778744650499295
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Second Sweep End - LEFT"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8218451749734781,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -52.90716270295848
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Half Sweep Paths - LEFT",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -49.23639479905874
+    "velocity": 2.0,
+    "rotation": -49.0
   },
   "useDefaultConstraints": true
 }

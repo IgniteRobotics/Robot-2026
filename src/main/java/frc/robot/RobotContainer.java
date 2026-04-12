@@ -226,10 +226,7 @@ public class RobotContainer {
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
-    operatorJoystick
-        .leftBumper()
-        .whileTrue(shooter.spinFlywheelCommand())
-        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+    operatorJoystick.leftBumper().whileTrue(drivetrain.setXCommand());
 
     operatorJoystick
         .rightBumper()

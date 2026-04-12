@@ -80,15 +80,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Collect Intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Shot To Second Sweep Prep - RIGHT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Collect Intake"
           }
         },
         {
@@ -98,15 +98,35 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Stow Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Second Sweep to Shoot - RIGHT"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Second Sweep to Shoot - RIGHT"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.7
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stow Intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

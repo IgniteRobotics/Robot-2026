@@ -12,10 +12,7 @@ public final class DrivePreferences {
       new DoublePreference("Drive/Rotation/kP", DriveConstants.ROTATION_ALIGN_KP);
   public static DoublePreference rotation_kD = new DoublePreference("Drive/Rotation/kD", 0);
 
-  public static DoublePreference onemeter_speed =
-      new DoublePreference("Drive/Speed for 1m (command)");
-
-  public static DoublePreference autoAim_kP = new DoublePreference("Drive/AutoAim/kP", 1);
+  public static DoublePreference autoAim_kP = new DoublePreference("Drive/AutoAim/kP", 5);
   public static DoublePreference autoAim_kD = new DoublePreference("Drive/AutoAim/kD", 0);
 
   public static DoublePreference autoAimMaxSpeed =

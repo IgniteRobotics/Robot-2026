@@ -48,7 +48,7 @@
   "folder": "HP AUTO",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

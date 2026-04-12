@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
-        "y": 7.0
+        "x": 2.66756062767475,
+        "y": 2.527646219686162
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9958522136214603,
-        "y": 6.920597462537711
+        "x": 3.678731901991036,
+        "y": 2.6497800850852227
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "First Sweep Shot - RIGHT"
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 7.0
+        "x": 5.979857346647646,
+        "y": 2.3594436519258206
       },
       "prevControl": {
-        "x": 1.2531300658879894,
-        "y": 7.039436475901525
+        "x": 5.763350995701536,
+        "y": 2.4844436519258206
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Second Sweep Start - RIGHT"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 1.5,
+    "rotation": 60.80251395393566
   },
   "reversed": false,
-  "folder": "Rotation + Translation Test",
+  "folder": "Half Sweep Paths- RIGHT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 49.251079235914915
   },
   "useDefaultConstraints": true
 }

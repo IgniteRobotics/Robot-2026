@@ -11,9 +11,6 @@ public class ShooterPreferences {
   public static DoublePreference hoodLaunchAngle =
       new DoublePreference("Shooter/Hood Launch Position", 3); // in rotations
 
-  public static DoublePreference hoodkP = new DoublePreference("Shooter/Hood/kP", 1);
-  public static DoublePreference hoodkD = new DoublePreference("Shooter/Hood/kD", 0);
-
   // unit is *radians per second** for velocity.
   public static DoublePreference tuningDefaultFlywheelRPS =
       new DoublePreference("Shooter/Tuning/FlywheelRPS", 1000.0 / 60.0 / 2 * Math.PI);
@@ -25,5 +22,5 @@ public class ShooterPreferences {
       new DoublePreference("Shooter/Tuning/HoodStepRotations", 0.2);
 
   public static DoublePreference passingFlywheelSpeed =
-      new DoublePreference("Shooter/Tuning/Flywheel Pass Speed", 62);
+      new DoublePreference("Shooter/Tuning/Flywheel Pass Speed", 75);
 }

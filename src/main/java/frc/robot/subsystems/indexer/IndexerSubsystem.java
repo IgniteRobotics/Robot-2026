@@ -78,8 +78,8 @@ public class IndexerSubsystem extends SubsystemBase {
   public Command startFullIndexingNoPID() {
     return runEnd(
         () -> {
-          indexerMotor.set(IndexerPreferences.indexerPercent.getValue());
-          acceleratorMotor.set(IndexerPreferences.acceleratorPercent.getValue());
+          indexerMotor.set(IndexerConstants.INDEXER_POWER);
+          acceleratorMotor.set(IndexerConstants.ACCELERATOR_POWER);
         },
         () -> {
           indexerMotor.set(0);
@@ -97,7 +97,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command startIndexerReverseNoPID() {
-    return runOnce(() -> indexerMotor.set(IndexerPreferences.indexerReversePercent.getValue()))
+    return runOnce(() -> indexerMotor.set(-1 * IndexerConstants.INDEXER_POWER))
         .withName("Set Indexer Reverse Percent");
   }
 

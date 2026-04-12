@@ -64,6 +64,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Basic Comp Autons",
+  "folder": "DCMP Autons",
   "choreoAuto": false
 }

@@ -6,16 +6,20 @@
     "Basic Comp Paths - LEFT",
     "Basic Comp Paths - RIGHT",
     "Depot AUTO",
+    "Half Sweep Paths- RIGHT",
     "HP AUTO",
+    "HP Shoot Mid Pickup Paths",
+    "Half Sweep Paths - LEFT",
     "Mid-field",
     "Plus - Test",
+    "Risky Paths",
     "Rotation + Translation Test",
-    "Square Test",
-    "Test Paths"
+    "Square Test"
   ],
   "autoFolders": [
     "Basic Comp Autons",
-    "Other Comp Autons",
+    "DCMP Autons",
+    "Other Autons",
     "Test Autons"
   ],
   "defaultMaxVel": 3.0,

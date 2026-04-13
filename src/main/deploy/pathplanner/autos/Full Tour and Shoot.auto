@@ -52,6 +52,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "Other Comp Autons",
+  "folder": "Other Autons",
   "choreoAuto": false
 }

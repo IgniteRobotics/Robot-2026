@@ -24,12 +24,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "HP to Shoot - HP SHOOT"
@@ -81,78 +75,53 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "HPShoot to Midfield"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Collect Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HP Mid Half"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopRoller"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Back to HP Shot"
-          }
-        },
-        {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "parallel",
+                "type": "path",
+                "data": {
+                  "pathName": "HP Shoot To Pickup"
+                }
+              },
+              {
+                "type": "sequential",
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "AutonShoot"
+                        "waitTime": 2.0
                       }
                     },
                     {
-                      "type": "sequential",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 3.0
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Stow Intake"
-                            }
-                          }
-                        ]
+                        "name": "Collect Intake"
                       }
                     }
                   ]
                 }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 6.0
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pickup to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonShoot"
           }
         }
       ]

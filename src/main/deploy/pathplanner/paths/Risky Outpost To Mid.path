@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
-        "y": 7.0
+        "x": 0.6491298145506419,
+        "y": 0.62
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9958522136214603,
-        "y": 6.920597462537711
+        "x": 1.649129814550642,
+        "y": 0.6200000000000001
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost_collect"
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 7.0
+        "x": 6.621535373263889,
+        "y": 1.666984664351852
       },
       "prevControl": {
-        "x": 1.2531300658879894,
-        "y": 7.039436475901525
+        "x": 3.5663039025144276,
+        "y": 5.016096192463973
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HP Middle Sweep"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 45.0
   },
   "reversed": false,
-  "folder": "Rotation + Translation Test",
+  "folder": "Risky Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

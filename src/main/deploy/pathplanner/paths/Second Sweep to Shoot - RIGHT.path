@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.737832059679766,
-        "y": 3.556
+        "x": 7.830085592011411,
+        "y": 6.072838801711842
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.819256802186744,
-        "y": 3.7923683805158217
+        "x": 7.89974443138205,
+        "y": 5.400789747080084
       },
       "isLocked": false,
-      "linkedName": "HPSweepEnd"
+      "linkedName": "Second Sweep End - RIGHT"
     },
     {
       "anchor": {
-        "x": 6.2350237268518525,
+        "x": 5.8892867332382295,
         "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 6.715850000082132,
-        "y": 2.503515651471796
+        "x": 7.0349759048816445,
+        "y": 3.1403637811263643
       },
       "nextControl": {
-        "x": 5.761439811985673,
-        "y": 2.55141332560184
+        "x": 5.349019367420577,
+        "y": 2.2387098213132326
       },
       "isLocked": false,
       "linkedName": null
@@ -36,22 +36,28 @@
         "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 2.9362601816642684,
-        "y": 2.6468766014014156
+        "x": 2.3447459067479537,
+        "y": 2.5422175119459376
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "First Sweep Shot - RIGHT"
     }
   ],
-  "rotationTargets": [
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [
     {
-      "waypointRelativePos": 1.7454931071049853,
-      "rotationDegrees": 0.0
+      "fieldPosition": {
+        "x": 4.6,
+        "y": 4.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.5,
+      "maxWaypointRelativePos": 1.5,
+      "name": "Point Towards Zone"
     }
   ],
-  "constraintZones": [],
-  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -66,10 +72,10 @@
     "rotation": 49.251079235914915
   },
   "reversed": false,
-  "folder": "HP AUTO",
+  "folder": "Half Sweep Paths- RIGHT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -132.79740183823407
   },
   "useDefaultConstraints": true
 }

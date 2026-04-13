@@ -25,9 +25,9 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.lemon_hunter.LemonHunterSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.ui.UISubsystem;
@@ -56,6 +56,9 @@ public class RobotContainer {
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
+  @Logged(name = "Hunter")
+  public final LemonHunterSubsystem hunter = new LemonHunterSubsystem();
+
   @Logged(name = "UI Feedback")
   public final UISubsystem uiFeedback =
       new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
@@ -75,7 +78,7 @@ public class RobotContainer {
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged())
-          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
+          .alongWith(new WaitCommand(0.5).andThen(indexer.startFullIndexingNoPID()));
 
   private final Command stopShotCommand =
       indexer
@@ -90,16 +93,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
+    NamedCommands.registerCommand("Collect Intake", intake.collectCommand());
     NamedCommands.registerCommand(
-        "Collect Intake",
-        intake
-            .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
-            .andThen(intake.startRollerNoPID()));
-    NamedCommands.registerCommand(
-        "Stow Intake",
-        intake
-            .setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
-            .andThen(intake.stopRollerNoPID()));
+        "Stow Intake", intake.stopRollerNoPID().andThen(intake.stowCommand()));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
@@ -124,6 +120,7 @@ public class RobotContainer {
                 .withName("Rumble & Set Pose"));
 
     configureSubsystemDefaultCommands();
+    drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public void configureSubsystemDefaultCommands() {
@@ -199,21 +196,19 @@ public class RobotContainer {
 
     driverJoystick
         .leftBumper()
-        .onTrue(
-            intake
-                .stopRollerNoPID()
-                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
-                .withName("Stow Intake"));
+        .onTrue(intake.stopRollerNoPID().andThen(intake.stowCommand()).withName("Stow Intake"));
 
     // stop the roller without retracting.
     driverJoystick.x().onTrue(intake.stopRollerNoPID());
+
+    driverJoystick.a().onTrue(intake.agitateCommand());
 
     // outtake fuel.  don't retract when done.
     driverJoystick
         .b()
         .onTrue(
             intake
-                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+                .extendCommand()
                 .andThen(
                     intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID()))
                 .withName("Outtake"))
@@ -224,21 +219,14 @@ public class RobotContainer {
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(
-            drivetrain
-                .setXCommand()
-                .alongWith(indexer.startFullIndexingNoPID())
-                .withName("Lock Wheels and Index"));
+        .whileTrue(indexer.startFullIndexingNoPID().withName("Lock Wheels and Index"));
 
     operatorJoystick
         .leftTrigger()
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
-    operatorJoystick
-        .leftBumper()
-        .whileTrue(shooter.spinFlywheelCommand())
-        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
+    operatorJoystick.leftBumper().whileTrue(drivetrain.setXCommand());
 
     operatorJoystick
         .rightBumper()
@@ -288,8 +276,6 @@ public class RobotContainer {
             uiFeedback
                 .manualRumbleCommand(driverJoystick.getHID())
                 .withName("Rumble Driver Controller"));
-
-    drivetrain.registerTelemetry(logger::telemeterize);
 
     SmartDashboard.putData(
         "Shooter/SysIdForwardQuasistatic", shooter.sysIdQuasistatic(Direction.kForward));

@@ -9,15 +9,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Start To HP - HP SHOOT"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Collect Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start To HP - HP SHOOT"
                 }
               }
             ]
@@ -30,60 +30,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "HP to Shoot - HP SHOOT"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AutonShoot"
-                      }
-                    },
-                    {
-                      "type": "sequential",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 3.0
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Stow Intake"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 6.0
-                }
-              }
-            ]
+            "name": "Stow Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HPShoot to Midfield"
+            "pathName": "Risky Outpost To Mid"
           }
         },
         {
@@ -144,12 +99,6 @@
                       }
                     }
                   ]
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 6.0
                 }
               }
             ]

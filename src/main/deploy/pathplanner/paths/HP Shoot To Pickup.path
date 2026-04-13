@@ -3,32 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
-        "y": 7.0
+        "x": 2.6538131140829693,
+        "y": 3.145543520287482
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9958522136214603,
-        "y": 6.920597462537711
+        "x": 3.301554921540655,
+        "y": 2.372382310984309
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HPShot"
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 7.0
+        "x": 7.674821683309556,
+        "y": 2.372382310984309
       },
       "prevControl": {
-        "x": 1.2531300658879894,
-        "y": 7.039436475901525
+        "x": 6.674821683309556,
+        "y": 2.372382310984309
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Mid Pickup"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.20254506892894947,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.9109225874867435,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -47.41950921665629
   },
   "reversed": false,
-  "folder": "Rotation + Translation Test",
+  "folder": "HP Shoot Mid Pickup Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 25.459293397367578
   },
   "useDefaultConstraints": true
 }

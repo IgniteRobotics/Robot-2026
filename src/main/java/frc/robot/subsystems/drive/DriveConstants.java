@@ -46,4 +46,6 @@ public class DriveConstants {
   public static final AngularAcceleration WHEEL_RADIUS_TEST_RAMP_RATE =
       RadiansPerSecondPerSecond.of(0.05);
   public static final Distance DRIVETRAIN_RADIUS = Inches.of(15.365);
+
+  public static final double SPIN_MOVE_PIVOT_CLEARANCE_METERS = 0.05;
 }

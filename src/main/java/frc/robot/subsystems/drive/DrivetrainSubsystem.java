@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
@@ -25,11 +26,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
 import frc.robot.generated.CommandSwerveDrivetrain;
 import frc.robot.generated.TunerConstants;
+import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.vision.VisionSubsystem.VisionMeasurement;
 import java.util.ArrayList;
+import java.util.function.DoubleSupplier;
 
 @Logged
 public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
@@ -266,6 +270,68 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
     double[] startingWheelPositions = new double[4];
     Rotation2d lastHeading = Rotation2d.kZero;
     double headingDelta = 0.0;
+  }
+
+  public Command spinMoveCommand(
+      boolean pivotLeft, DoubleSupplier vxSupplier, DoubleSupplier vySupplier) {
+    SwerveRequest.FieldCentric spinRequest =
+        new SwerveRequest.FieldCentric()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withDeadband(DriveConstants.MAX_DRIVE_SPEED * DriveConstants.DEADBAND_FACTOR);
+
+    var state =
+        new Object() {
+          double startY;
+          double targetLateral;
+          double autoVy;
+          double omegaSign;
+          double lateralDir;
+          double headingDelta;
+          Rotation2d lastHeading;
+        };
+
+    return Commands.sequence(
+        Commands.runOnce(
+            () -> {
+              double allianceSign =
+                  AllianceState.getInstance().getAlliance().equals(Alliance.Blue) ? 1.0 : -1.0;
+
+              state.lateralDir = (pivotLeft ? 1.0 : -1.0) * allianceSign;
+              state.omegaSign = (pivotLeft ? -1.0 : 1.0) * allianceSign;
+
+              double pivotDist =
+                  Constants.RobotConstants.robotCenterToEdge.in(Meters)
+                      + DriveConstants.SPIN_MOVE_PIVOT_CLEARANCE_METERS;
+              state.targetLateral = 2.0 * pivotDist;
+
+              double omega = DrivePreferences.spinMoveAngularSpeed.getValue();
+              state.autoVy = state.targetLateral * omega / (2.0 * Math.PI);
+
+              state.startY = driveState.getCurrentDriveStats().Pose.getY();
+              state.lastHeading = driveState.getCurrentDriveStats().Pose.getRotation();
+              state.headingDelta = 0.0;
+            }),
+        Commands.run(
+                () -> {
+                  Rotation2d currentHeading = driveState.getCurrentDriveStats().Pose.getRotation();
+                  state.headingDelta +=
+                      Math.abs(currentHeading.minus(state.lastHeading).getRadians());
+                  state.lastHeading = currentHeading;
+
+                  this.setControl(
+                      spinRequest
+                          .withVelocityX(vxSupplier.getAsDouble())
+                          .withVelocityY(state.autoVy * state.lateralDir + vySupplier.getAsDouble())
+                          .withRotationalRate(
+                              state.omegaSign * DrivePreferences.spinMoveAngularSpeed.getValue()));
+                },
+                this)
+            .until(
+                () -> {
+                  double currentY = driveState.getCurrentDriveStats().Pose.getY();
+                  return state.headingDelta >= 2 * Math.PI
+                      && Math.abs(currentY - state.startY) >= state.targetLateral;
+                }));
   }
 
   public Command setXCommand() {

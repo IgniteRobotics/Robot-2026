@@ -274,6 +274,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
   public Command spinMoveCommand(
       boolean pivotLeft, DoubleSupplier vxSupplier, DoubleSupplier vySupplier) {
+    // Intentionally local — do not lift to a field; CTRE's fluent API mutates in place.
     SwerveRequest.FieldCentric spinRequest =
         new SwerveRequest.FieldCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
@@ -283,6 +284,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
         new Object() {
           double startY;
           double targetLateral;
+          double omega;
           double autoVy;
           double omegaSign;
           double lateralDir;
@@ -304,8 +306,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
                       + DriveConstants.SPIN_MOVE_PIVOT_CLEARANCE_METERS;
               state.targetLateral = 2.0 * pivotDist;
 
-              double omega = DrivePreferences.spinMoveAngularSpeed.getValue();
-              state.autoVy = state.targetLateral * omega / (2.0 * Math.PI);
+              state.omega = DrivePreferences.spinMoveAngularSpeed.getValue();
+              state.autoVy = state.targetLateral * state.omega / (2.0 * Math.PI);
 
               state.startY = driveState.getCurrentDriveStats().Pose.getY();
               state.lastHeading = driveState.getCurrentDriveStats().Pose.getRotation();
@@ -322,14 +324,13 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
                       spinRequest
                           .withVelocityX(vxSupplier.getAsDouble())
                           .withVelocityY(state.autoVy * state.lateralDir + vySupplier.getAsDouble())
-                          .withRotationalRate(
-                              state.omegaSign * DrivePreferences.spinMoveAngularSpeed.getValue()));
+                          .withRotationalRate(state.omegaSign * state.omega));
                 },
                 this)
             .until(
                 () -> {
                   double currentY = driveState.getCurrentDriveStats().Pose.getY();
-                  return state.headingDelta >= 2 * Math.PI
+                  return state.headingDelta >= 2.0 * Math.PI
                       && Math.abs(currentY - state.startY) >= state.targetLateral;
                 }));
   }

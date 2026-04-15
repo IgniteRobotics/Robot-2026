@@ -282,7 +282,6 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
 
     var state =
         new Object() {
-          double startY;
           double targetLateral;
           double omega;
           double autoVy;
@@ -309,7 +308,6 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
               state.omega = DrivePreferences.spinMoveAngularSpeed.getValue();
               state.autoVy = state.targetLateral * state.omega / (2.0 * Math.PI);
 
-              state.startY = driveState.getCurrentDriveStats().Pose.getY();
               state.lastHeading = driveState.getCurrentDriveStats().Pose.getRotation();
               state.headingDelta = 0.0;
             }),
@@ -327,12 +325,7 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
                           .withRotationalRate(state.omegaSign * state.omega));
                 },
                 this)
-            .until(
-                () -> {
-                  double currentY = driveState.getCurrentDriveStats().Pose.getY();
-                  return state.headingDelta >= 2.0 * Math.PI
-                      && Math.abs(currentY - state.startY) >= state.targetLateral;
-                }));
+            .until(() -> state.headingDelta >= 2.0 * Math.PI));
   }
 
   public Command setXCommand() {

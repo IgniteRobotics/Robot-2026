@@ -80,7 +80,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "HP AUTO",
+  "folder": "Half Sweep Paths- RIGHT",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": 45.0

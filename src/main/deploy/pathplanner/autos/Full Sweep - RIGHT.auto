@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Overbump - LEFT"
+            "pathName": "Start to Overbump - RIGHT"
           }
         },
         {
@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Collect - LEFT"
+            "pathName": "Collect - RIGHT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Overbump to Shoot - LEFT"
+            "pathName": "Overbump to Shoot - RIGHT"
           }
         },
         {
@@ -64,6 +64,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "DCMP Autons",
+  "folder": "Full Sweep Autos",
   "choreoAuto": false
 }

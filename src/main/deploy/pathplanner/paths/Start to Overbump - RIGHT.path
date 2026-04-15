@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 2.975358021654578,
-        "y": 2.768382677570011
+        "y": 2.7683826775700116
       },
       "nextControl": {
         "x": 3.1592296718972888,
@@ -91,7 +91,7 @@
     "rotation": 40.0
   },
   "reversed": false,
-  "folder": "Basic Comp Paths - RIGHT",
+  "folder": "Full Sweep Paths - RIGHT",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": 0.0

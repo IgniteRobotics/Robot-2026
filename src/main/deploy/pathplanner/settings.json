@@ -3,13 +3,14 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Basic Comp Paths - LEFT",
-    "Basic Comp Paths - RIGHT",
+    "Full Sweep Paths - LEFT",
+    "Full Sweep Paths - RIGHT",
     "Half Sweep Paths - LEFT",
     "Half Sweep Paths- RIGHT"
   ],
   "autoFolders": [
-    "DCMP Autons"
+    "Full Sweep Autos",
+    "Half Sweep Autos"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

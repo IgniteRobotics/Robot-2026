@@ -139,6 +139,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "DCMP Autons",
+  "folder": "Half Sweep Autos",
   "choreoAuto": false
 }

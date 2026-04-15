@@ -80,7 +80,7 @@
     "rotation": -40.0
   },
   "reversed": false,
-  "folder": "Basic Comp Paths - RIGHT",
+  "folder": "Full Sweep Paths - RIGHT",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": 90.0

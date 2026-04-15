@@ -3,48 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6491298145506419,
-        "y": 0.62
+        "x": 7.737832059679766,
+        "y": 3.556
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4181930785815962,
-        "y": 0.6465859125422662
+        "x": 7.819256802186744,
+        "y": 3.7923683805158217
       },
       "isLocked": false,
-      "linkedName": "Outpost_collect"
+      "linkedName": "HPSweepEnd"
     },
     {
       "anchor": {
-        "x": 2.0696849981804952,
-        "y": 1.6340110421215424
+        "x": 6.2350237268518525,
+        "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 1.4562306118334007,
-        "y": 1.2890681843587357
+        "x": 6.715850000082132,
+        "y": 2.503515651471796
       },
       "nextControl": {
-        "x": 2.2875978887601542,
-        "y": 1.7565425569216848
+        "x": 5.761439811985673,
+        "y": 2.55141332560184
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6538131140829693,
-        "y": 3.145543520287482
+        "x": 2.66756062767475,
+        "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 2.723327106670737,
-        "y": 2.72862262842228
+        "x": 2.9362601816642684,
+        "y": 2.6468766014014156
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HPShot"
+      "linkedName": "First Sweep Shot - RIGHT"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.7454931071049853,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 25.459293397367578
+    "rotation": 49.251079235914915
   },
   "reversed": false,
-  "folder": "HP AUTO",
+  "folder": "Half Sweep Paths- RIGHT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

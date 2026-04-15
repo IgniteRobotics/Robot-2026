@@ -3,24 +3,14 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Basic Comp Paths - LEFT",
-    "Basic Comp Paths - RIGHT",
-    "Depot AUTO",
-    "Half Sweep Paths- RIGHT",
-    "HP AUTO",
-    "HP Shoot Mid Pickup Paths",
+    "Full Sweep Paths - LEFT",
+    "Full Sweep Paths - RIGHT",
     "Half Sweep Paths - LEFT",
-    "Mid-field",
-    "Plus - Test",
-    "Risky Paths",
-    "Rotation + Translation Test",
-    "Square Test"
+    "Half Sweep Paths- RIGHT"
   ],
   "autoFolders": [
-    "Basic Comp Autons",
-    "DCMP Autons",
-    "Other Autons",
-    "Test Autons"
+    "Full Sweep Autos",
+    "Half Sweep Autos"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

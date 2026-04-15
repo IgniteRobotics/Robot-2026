@@ -5,34 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Start To HP - HP SHOOT"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Collect Intake"
-                }
-              }
-            ]
+            "pathName": "Start to Overbump - LEFT"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
+            "name": "Collect Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HP to Shoot - HP SHOOT"
+            "pathName": "Collect - LEFT"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Overbump to Shoot - LEFT"
           }
         },
         {
@@ -71,6 +64,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Basic Comp Autons",
+  "folder": "Full Sweep Autos",
   "choreoAuto": false
 }

@@ -5,34 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Start To HP - HP SHOOT"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Collect Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "name": "Collect Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HP to Shoot - HP SHOOT"
+            "pathName": "Start to Sweep - LEFT"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "First Half Sweep - LEFT"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sweep to Shoot - LEFT"
           }
         },
         {
@@ -56,7 +49,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 3.0
+                              "waitTime": 0.5
                             }
                           },
                           {
@@ -74,35 +67,34 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 6.0
+                  "waitTime": 2.5
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "HPShoot to Midfield"
+            "pathName": "Shot to Second Sweep - LEFT"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Collect Intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "HP Mid Half"
-                }
-              }
-            ]
+            "name": "Collect Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Second Sweep - LEFT"
           }
         },
         {
@@ -112,22 +104,41 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Mid field park"
+                  "pathName": "Second Sweep to Shot - LEFT"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "StopRoller"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.3
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stow Intake"
+                      }
+                    }
+                  ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonShoot"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Basic Comp Autons",
+  "folder": "Half Sweep Autos",
   "choreoAuto": false
 }

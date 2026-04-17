@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.statemachines.LaunchState;
 
@@ -160,11 +161,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command stowHood() {
     return runOnce(
-        () -> {
-          lastHoodRot = hoodTarget.in(Rotations);
-          hoodTarget = Rotations.of(0);
-        })
-      .withName("Stow Hood");
+            () -> {
+              lastHoodRot = hoodTarget.in(Rotations);
+              hoodTarget = Rotations.of(0);
+            })
+        .withName("Stow Hood");
   }
 
   public Command increaseFlywheelCommand() {
@@ -244,12 +245,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command spinFlywheelRanged() {
-    return run(
-        () -> {
+    return run(() -> {
           velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
           hoodTarget = launchState.getLaunchRequest().getHoodTarget();
         })
-      .withName("Spin Flywheel Ranged");
+        .withName("Spin Flywheel Ranged");
   }
 
   public Command homeShooterCommand() {
@@ -261,16 +261,26 @@ public class ShooterSubsystem extends SubsystemBase {
               return hoodMotor.getStatorCurrent().getValueAsDouble()
                   > ShooterConstants.SAFE_STATOR_LIMIT.in(Amp);
             })
-      .withName("Home Hood");
+        .withName("Home Hood");
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutineFlywheel.quasistatic(direction)
-      .withName("SysID Quasistatic Flywheel Routine" + direction);
+    return m_sysIdRoutineFlywheel
+        .quasistatic(direction)
+        .withName("SysID Quasistatic Flywheel Routine" + direction);
   }
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutineFlywheel.dynamic(direction)
-      .withName("SysID Dynamic Flywheel Routine" + direction);
+    return m_sysIdRoutineFlywheel
+        .dynamic(direction)
+        .withName("SysID Dynamic Flywheel Routine" + direction);
+  }
+
+  public Command testCommand() {
+    return spinFlywheelPostCommand()
+        .andThen(new WaitCommand(2))
+        .andThen(stopFlywheelCommand())
+        .andThen(stowHood())
+        .withName("Shooter Test Command");
   }
 }

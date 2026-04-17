@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.statemachines.DriveState;
 import java.util.ArrayList;
@@ -93,7 +92,9 @@ public class LemonHunterSubsystem extends SubsystemBase {
     overlappingPairs = detectOverlaps(bestCluster, OVERLAP_THRESHOLD_M);
     overlappingPairCount = overlappingPairs.size();
 
-    lemonField.getObject("Lemon Positions").setPoses(lemonList.stream().map(Pose3d::toPose2d).toList());
+    lemonField
+        .getObject("Lemon Positions")
+        .setPoses(lemonList.stream().map(Pose3d::toPose2d).toList());
     lemonField.getObject("Cluster Centroid Position").setPose(getClusterCentroid(robotPose));
     // SmartDashboard.putData("Hunter Field Data", field);
   }

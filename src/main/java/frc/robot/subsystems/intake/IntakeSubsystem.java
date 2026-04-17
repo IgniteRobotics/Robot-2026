@@ -248,4 +248,8 @@ public class IntakeSubsystem extends SubsystemBase {
                     }))
         .finallyDo(() -> homing = false);
   }
+
+  public Command testCommand() {
+    return collectCommand().andThen(new WaitCommand(2)).andThen(agitateCommand());
+  }
 }

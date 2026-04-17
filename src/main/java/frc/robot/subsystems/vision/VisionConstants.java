@@ -30,7 +30,7 @@ public class VisionConstants {
   public static final double THETA_STD_DEV_COEFFICIENT = 0.03;
 
   // Center of Robot to Camera Transform
-  //TODO: Double check (seems to be some disagreement in logs)
+  // TODO: Double check (seems to be some disagreement in logs)
   public static final HashMap<String, Transform3d> cameraTransformMap =
       new HashMap<String, Transform3d>() {
         {

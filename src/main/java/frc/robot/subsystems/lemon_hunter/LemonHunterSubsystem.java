@@ -42,7 +42,7 @@ public class LemonHunterSubsystem extends SubsystemBase {
   private List<PhotonTrackedTarget> latestTargets = new ArrayList<>();
 
   @Logged(name = "Lemon Hunter/Lemon Field", importance = Importance.CRITICAL)
-  private Field2d lemonField;
+  private Field2d lemonField = new Field2d();
 
   @Logged(name = "Lemon Hunter/Results This Cycle", importance = Importance.CRITICAL)
   private int resultsThisCycle = 0;
@@ -93,11 +93,8 @@ public class LemonHunterSubsystem extends SubsystemBase {
     overlappingPairs = detectOverlaps(bestCluster, OVERLAP_THRESHOLD_M);
     overlappingPairCount = overlappingPairs.size();
 
-    lemonField = new Field2d();
-    FieldObject2d lemonsFieldObject = lemonField.getObject("Lemon Positions");
-    lemonsFieldObject.setPoses(lemonList.stream().map(Pose3d::toPose2d).toList());
-    FieldObject2d clusterCentroid = lemonField.getObject("Cluster Centroid Position");
-    clusterCentroid.setPose(getClusterCentroid(robotPose));
+    lemonField.getObject("Lemon Positions").setPoses(lemonList.stream().map(Pose3d::toPose2d).toList());
+    lemonField.getObject("Cluster Centroid Position").setPose(getClusterCentroid(robotPose));
     // SmartDashboard.putData("Hunter Field Data", field);
   }
 

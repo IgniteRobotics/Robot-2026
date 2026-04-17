@@ -163,7 +163,8 @@ public class ShooterSubsystem extends SubsystemBase {
         () -> {
           lastHoodRot = hoodTarget.in(Rotations);
           hoodTarget = Rotations.of(0);
-        });
+        })
+      .withName("Stow Hood");
   }
 
   public Command increaseFlywheelCommand() {
@@ -247,7 +248,8 @@ public class ShooterSubsystem extends SubsystemBase {
         () -> {
           velocityTarget = launchState.getLaunchRequest().getFlywheelVelocity();
           hoodTarget = launchState.getLaunchRequest().getHoodTarget();
-        });
+        })
+      .withName("Spin Flywheel Ranged");
   }
 
   public Command homeShooterCommand() {
@@ -258,14 +260,17 @@ public class ShooterSubsystem extends SubsystemBase {
             () -> {
               return hoodMotor.getStatorCurrent().getValueAsDouble()
                   > ShooterConstants.SAFE_STATOR_LIMIT.in(Amp);
-            });
+            })
+      .withName("Home Hood");
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutineFlywheel.quasistatic(direction);
+    return m_sysIdRoutineFlywheel.quasistatic(direction)
+      .withName("SysID Quasistatic Flywheel Routine" + direction);
   }
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutineFlywheel.dynamic(direction);
+    return m_sysIdRoutineFlywheel.dynamic(direction)
+      .withName("SysID Dynamic Flywheel Routine" + direction);
   }
 }

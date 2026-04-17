@@ -194,15 +194,6 @@ public class IntakeSubsystem extends SubsystemBase {
     return extendCommand().andThen(startRollerNoPID()).withName("Activate Intake Collection");
   }
 
-  public Command dislodgeCommand() {
-    return extendCommand()
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
-        .andThen(setIntakeExtensionCommand(IntakePreferences.dislodgePosition.getValue()))
-        .andThen(new WaitUntilCommand(() -> this.atExtensionSetpoint()))
-        .repeatedly()
-        .withName("Agitate Intake");
-  }
-
   public Command agitateCommand() {
     return setIntakeExtensionCommand(IntakePreferences.agitatePosition2.getValue())
         .andThen(
@@ -225,7 +216,8 @@ public class IntakeSubsystem extends SubsystemBase {
         .andThen(
             new WaitUntilCommand(() -> this.atExtensionSetpoint())
                 .withDeadline(new WaitCommand(0.5)))
-        .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT));
+        .andThen(setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
+        .withName("Agitate Intake");
   }
 
   public Command homeIntakeCommand() {
@@ -245,7 +237,7 @@ public class IntakeSubsystem extends SubsystemBase {
                       extensionLeader.set(0);
                       extensionFollower.set(0);
                       extensionLeader.setPosition(0);
-                      extensionFollower.set(0);
+                      extensionFollower.setPosition(0);
                     })
                 .until(
                     () -> {

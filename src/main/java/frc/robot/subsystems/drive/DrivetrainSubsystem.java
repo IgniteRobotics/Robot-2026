@@ -269,7 +269,8 @@ public class DrivetrainSubsystem extends CommandSwerveDrivetrain {
   }
 
   public Command setXCommand() {
-    return Commands.run(() -> this.setControl(new SwerveRequest.SwerveDriveBrake()));
+    return Commands.run(() -> this.setControl(new SwerveRequest.SwerveDriveBrake()))
+        .withName("Brake Drivetrain");
   }
 
   public Command wheelRadiusCharacterization() {

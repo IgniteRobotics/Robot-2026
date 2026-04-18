@@ -119,10 +119,15 @@ public class RobotContainer {
                                 .setTargetPose3d(Constants.FieldConstants.getHubTarget())))
                 .withName("Rumble & Set Pose"));
 
-    configureDefaultDrivetrainCommand();
+    // Adds SmartDashboard Testing/Tuning Commands
     addSubsystemTests();
     addShooterTuningCommands();
+    addSysIdRoutines();
+
+    // Binds controllers to commands
+    configureDefaultDrivetrainCommand();
     configureBindings();
+
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
@@ -164,6 +169,7 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.testCommand());
     SmartDashboard.putData(indexer.testCommand());
     SmartDashboard.putData(intake.testCommand());
+    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
   }
 
   public void addShooterTuningCommands() {
@@ -173,13 +179,14 @@ public class RobotContainer {
     SmartDashboard.putData(shooter.decreaseFlywheelCommand());
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
+  }
 
-    SmartDashboard.putData(
-        "Shooter/SysIdForwardQuasistatic", shooter.sysIdQuasistatic(Direction.kForward));
-    SmartDashboard.putData(
-        "Shooter/SysIdReverseQuasistatic", shooter.sysIdQuasistatic(Direction.kReverse));
-    SmartDashboard.putData("Shooter/SysIdForwardDynamic", shooter.sysIdDynamic(Direction.kForward));
-    SmartDashboard.putData("Shooter/SysIdReverseDynamic", shooter.sysIdDynamic(Direction.kReverse));
+  public void addSysIdRoutines() {
+    SmartDashboard.putData(shooter.sysIdQuasistatic(Direction.kForward));
+    SmartDashboard.putData(shooter.sysIdQuasistatic(Direction.kReverse));
+    SmartDashboard.putData(shooter.sysIdDynamic(Direction.kForward));
+    SmartDashboard.putData(shooter.sysIdDynamic(Direction.kReverse));
+
     SmartDashboard.putData("Start Logger", Commands.runOnce(SignalLogger::start));
     SmartDashboard.putData("Stop Logger", Commands.runOnce(SignalLogger::stop));
   }

@@ -6,11 +6,17 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import java.util.Vector;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +31,7 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.drive.DrivetrainSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.lemon_hunter.LemonHunterSubsystem;
@@ -56,8 +63,8 @@ public class RobotContainer {
   @Logged(name = "Vision")
   public final VisionSubsystem vision = new VisionSubsystem();
 
-  @Logged(name = "Hunter")
-  public final LemonHunterSubsystem hunter = new LemonHunterSubsystem();
+  @Logged(name = "Lemon Hunter")
+  public final LemonHunterSubsystem lemonHunter = new LemonHunterSubsystem();
 
   @Logged(name = "UI Feedback")
   public final UISubsystem uiFeedback =
@@ -73,12 +80,18 @@ public class RobotContainer {
           .alongWith(shooter.spinFlywheelRanged())
           .withName("Drive and Launch");
 
+    private final Command huntCommand =
+      drivetrain
+          .applyRequest(() -> getDriveToLemonRequest())
+          //.alongWith(intake.extendCommand())
+          .withName("Hunt");
+
   private final Command autonShootCommand =
       drivetrain
           .applyRequest(() -> getDriveAndLaunchRequest())
           // .alongWith(shooter.spinFlywheelCommand());
           .alongWith(shooter.spinFlywheelRanged())
-          .alongWith(new WaitCommand(0.5).andThen(indexer.startFullIndexingNoPID()));
+          .alongWith(new WaitCommand(1).andThen(indexer.pulsingIndexCommand()));
 
   private final Command stopShotCommand =
       indexer
@@ -93,9 +106,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutonShoot", autonShootCommand);
     NamedCommands.registerCommand("StopShot", stopShotCommand);
     NamedCommands.registerCommand("StopRoller", intake.stopRollerNoPID());
-    NamedCommands.registerCommand("Collect Intake", intake.collectCommand());
     NamedCommands.registerCommand(
-        "Stow Intake", intake.stopRollerNoPID().andThen(intake.stowCommand()));
+        "Collect Intake",
+        intake
+            .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
+            .andThen(intake.startRollerNoPID()));
+    NamedCommands.registerCommand(
+        "Stow Intake",
+        intake
+            .setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT)
+            .andThen(intake.stopRollerNoPID()));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
@@ -119,19 +139,10 @@ public class RobotContainer {
                                 .setTargetPose3d(Constants.FieldConstants.getHubTarget())))
                 .withName("Rumble & Set Pose"));
 
-    // Adds SmartDashboard Testing/Tuning Commands
-    addSubsystemTests();
-    addShooterTuningCommands();
-    addSysIdRoutines();
-
-    // Binds controllers to commands
-    configureDefaultDrivetrainCommand();
-    configureBindings();
-
-    drivetrain.registerTelemetry(logger::telemeterize);
+    configureSubsystemDefaultCommands();
   }
 
-  public void configureDefaultDrivetrainCommand() {
+  public void configureSubsystemDefaultCommands() {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain
@@ -165,33 +176,40 @@ public class RobotContainer {
             .withName("Teleop Drive"));
   }
 
-  public void addSubsystemTests() {
-    SmartDashboard.putData(shooter.testCommand());
-    SmartDashboard.putData(indexer.testCommand());
-    SmartDashboard.putData(intake.testCommand());
-    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
-  }
+  public void configureTestBindings() {
+    // Idle while the robot is disabled. This ensures the configured
+    // neutral mode is applied to the drive motors while disabled.
 
-  public void addShooterTuningCommands() {
+    final var idle = new SwerveRequest.Idle();
+    RobotModeTriggers.disabled()
+        .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
+
+    // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // Reset the field-centric heading on left bumper press.
+    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
     SmartDashboard.putData(shooter.startShooterTuningCommand());
     SmartDashboard.putData(shooter.stopShooterTuningCommand());
     SmartDashboard.putData(shooter.increaseFlywheelCommand());
     SmartDashboard.putData(shooter.decreaseFlywheelCommand());
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
+    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
+
+    driverJoystick
+        .a()
+        .whileTrue(indexer.startFullIndexingNoPID());
+
+    driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
+
+    driverJoystick.x().onTrue(intake.spinRollerCommand()).onFalse(intake.stopRollerCommand());
   }
 
-  public void addSysIdRoutines() {
-    SmartDashboard.putData(shooter.sysIdQuasistatic(Direction.kForward));
-    SmartDashboard.putData(shooter.sysIdQuasistatic(Direction.kReverse));
-    SmartDashboard.putData(shooter.sysIdDynamic(Direction.kForward));
-    SmartDashboard.putData(shooter.sysIdDynamic(Direction.kReverse));
-
-    SmartDashboard.putData("Start Logger", Commands.runOnce(SignalLogger::start));
-    SmartDashboard.putData("Stop Logger", Commands.runOnce(SignalLogger::stop));
-  }
-
-  public void configureBindings() {
+  public void configureTeleopBindings() {
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
@@ -199,19 +217,21 @@ public class RobotContainer {
 
     driverJoystick
         .leftBumper()
-        .onTrue(intake.stopRollerNoPID().andThen(intake.stowCommand()).withName("Stow Intake"));
+        .onTrue(
+            intake
+                .stopRollerCommand()
+                .andThen(intake.setIntakeExtensionCommand(IntakeConstants.INTAKE_REVERSE_LIMIT))
+                .withName("Stow Intake"));
 
     // stop the roller without retracting.
     driverJoystick.x().onTrue(intake.stopRollerNoPID());
-
-    driverJoystick.a().onTrue(intake.agitateCommand());
 
     // outtake fuel.  don't retract when done.
     driverJoystick
         .b()
         .onTrue(
             intake
-                .extendCommand()
+                .setIntakeExtensionCommand(IntakeConstants.INTAKE_FORWARD_LIMIT)
                 .andThen(
                     intake.startRollerReverseNoPID().alongWith(indexer.startIndexerReverseNoPID()))
                 .withName("Outtake"))
@@ -222,14 +242,21 @@ public class RobotContainer {
 
     operatorJoystick
         .rightTrigger()
-        .whileTrue(indexer.startFullIndexingNoPID().withName("Lock Wheels and Index"));
+        .whileTrue(
+            drivetrain
+                .setXCommand()
+                .alongWith(indexer.startFullIndexingNoPID())
+                .withName("Lock Wheels and Index"));
 
     operatorJoystick
         .leftTrigger()
         .whileTrue(driveAndLaunchCommand)
         .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
-    operatorJoystick.leftBumper().whileTrue(drivetrain.setXCommand());
+    operatorJoystick
+        .leftBumper()
+        .whileTrue(shooter.spinFlywheelCommand())
+        .onFalse(shooter.stopFlywheelCommand().andThen(shooter.stowHood()));
 
     operatorJoystick
         .rightBumper()
@@ -279,6 +306,17 @@ public class RobotContainer {
             uiFeedback
                 .manualRumbleCommand(driverJoystick.getHID())
                 .withName("Rumble Driver Controller"));
+
+    drivetrain.registerTelemetry(logger::telemeterize);
+
+    SmartDashboard.putData(
+        "Shooter/SysIdForwardQuasistatic", shooter.sysIdQuasistatic(Direction.kForward));
+    SmartDashboard.putData(
+        "Shooter/SysIdReverseQuasistatic", shooter.sysIdQuasistatic(Direction.kReverse));
+    SmartDashboard.putData("Shooter/SysIdForwardDynamic", shooter.sysIdDynamic(Direction.kForward));
+    SmartDashboard.putData("Shooter/SysIdReverseDynamic", shooter.sysIdDynamic(Direction.kReverse));
+    SmartDashboard.putData("Start Logger", Commands.runOnce(SignalLogger::start));
+    SmartDashboard.putData("Stop Logger", Commands.runOnce(SignalLogger::stop));
   }
 
   public Command getAutonomousCommand() {
@@ -307,6 +345,30 @@ public class RobotContainer {
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                 * DrivePreferences.autoAimMaxSpeed.getValue()) // Drive left with negative X (left)
+        .withRotationalRate(rotationalRate)
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
+  }
+  private SwerveRequest.FieldCentric getDriveToLemonRequest() {
+    Pose2d clusterPose = lemonHunter.getClusterCentroid(driveState.getCurrentDriveStats().Pose);
+    Translation2d translation = driveState.getCurrentDriveStats().Pose.minus(clusterPose).getTranslation();
+    AngularVelocity targetAngularVelocity = RadiansPerSecond.of(
+            translation.getAngle()
+                .minus(driveState.getPreviousDriveStats().Pose.getRotation())
+                .getRadians());
+    
+    double rotationalRate = 
+        targetAngularVelocity.in(RadiansPerSecond)
+        + DrivePreferences.autoAim_kP.getValue()
+            * translation.getAngle()
+                .minus(driveState.getCurrentDriveStats().Pose.getRotation())
+                    .getRadians()
+        + DrivePreferences.autoAim_kD.getValue()
+            * (targetAngularVelocity.in(RadiansPerSecond)
+                - driveState.getFieldVelocity().omegaRadiansPerSecond);
+
+    return DriveConstants.DEFAULT_DRIVE_REQUEST
+        .withVelocityX(-1 * DriveConstants.HUNT_SPEED) // Drive forward with negative Y (forward)
+        .withVelocityY(0) // Lock horizontal driving
         .withRotationalRate(rotationalRate)
         .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
   }

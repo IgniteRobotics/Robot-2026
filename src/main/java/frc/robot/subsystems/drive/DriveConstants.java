@@ -42,6 +42,8 @@ public class DriveConstants {
   public static final double TRANSLATION_ALIGN_KP = 1.25;
   public static final double ROTATION_ALIGN_KP = 6.28;
 
+  public static final double HUNT_SPEED = 1.5; //meters/s?
+
   public static final AngularVelocity WHEEL_RADIUS_TEST_MAX_VELOCITY = RadiansPerSecond.of(Math.PI);
   public static final AngularAcceleration WHEEL_RADIUS_TEST_RAMP_RATE =
       RadiansPerSecondPerSecond.of(0.05);

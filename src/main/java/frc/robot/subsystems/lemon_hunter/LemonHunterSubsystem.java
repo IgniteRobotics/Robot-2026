@@ -40,19 +40,19 @@ public class LemonHunterSubsystem extends SubsystemBase {
 
   private List<PhotonTrackedTarget> latestTargets = new ArrayList<>();
 
-  @Logged(name = "Lemon Hunter/Lemon Field", importance = Importance.CRITICAL)
+  @Logged(name = "Lemon Field", importance = Importance.CRITICAL)
   private Field2d lemonField = new Field2d();
 
-  @Logged(name = "Lemon Hunter/Results This Cycle", importance = Importance.CRITICAL)
+  @Logged(name = "Results This Cycle", importance = Importance.CRITICAL)
   private int resultsThisCycle = 0;
 
-  @Logged(name = "Lemon Hunter/Lemons Found This Cycle")
+  @Logged(name = "Lemons Found This Cycle")
   private int lemonsFoundThisCycle = 0;
 
-  @Logged(name = "Lemon Hunter/Best Cluster Size")
+  @Logged(name = "Best Cluster Size")
   private int bestClusterSize = 0;
 
-  @Logged(name = "Lemon Hunter/Overlapping Pairs")
+  @Logged(name = "Overlapping Pairs")
   private int overlappingPairCount = 0;
 
   public LemonHunterSubsystem() {}

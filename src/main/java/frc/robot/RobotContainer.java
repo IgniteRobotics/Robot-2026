@@ -119,11 +119,19 @@ public class RobotContainer {
                                 .setTargetPose3d(Constants.FieldConstants.getHubTarget())))
                 .withName("Rumble & Set Pose"));
 
-    configureSubsystemDefaultCommands();
+    // Adds SmartDashboard Testing/Tuning Commands
+    addSubsystemTests();
+    addShooterTuningCommands();
+    addSysIdRoutines();
+
+    // Binds controllers to commands
+    configureDefaultDrivetrainCommand();
+    configureBindings();
+
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  public void configureSubsystemDefaultCommands() {
+  public void configureDefaultDrivetrainCommand() {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain
@@ -157,38 +165,33 @@ public class RobotContainer {
             .withName("Teleop Drive"));
   }
 
-  public void configureTestBindings() {
-    // Idle while the robot is disabled. This ensures the configured
-    // neutral mode is applied to the drive motors while disabled.
+  public void addSubsystemTests() {
+    SmartDashboard.putData(shooter.testCommand());
+    SmartDashboard.putData(indexer.testCommand());
+    SmartDashboard.putData(intake.testCommand());
+    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
+  }
 
-    final var idle = new SwerveRequest.Idle();
-    RobotModeTriggers.disabled()
-        .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
-
-    // operatorJoystick.y().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // operatorJoystick.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // operatorJoystick.b().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // operatorJoystick.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // Reset the field-centric heading on left bumper press.
-    driverJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
+  public void addShooterTuningCommands() {
     SmartDashboard.putData(shooter.startShooterTuningCommand());
     SmartDashboard.putData(shooter.stopShooterTuningCommand());
     SmartDashboard.putData(shooter.increaseFlywheelCommand());
     SmartDashboard.putData(shooter.decreaseFlywheelCommand());
     SmartDashboard.putData(shooter.increaseHoodCommand());
     SmartDashboard.putData(shooter.decreaseHoodCommand());
-    SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
-
-    driverJoystick.a().whileTrue(indexer.startFullIndexingNoPID());
-
-    driverJoystick.b().onTrue(intake.testRollerNoPID()).onFalse(intake.stopRollerNoPID());
-
-    driverJoystick.x().onTrue(intake.startRollerNoPID()).onFalse(intake.stopRollerNoPID());
   }
 
-  public void configureTeleopBindings() {
+  public void addSysIdRoutines() {
+    SmartDashboard.putData(shooter.sysIdQuasistatic(Direction.kForward));
+    SmartDashboard.putData(shooter.sysIdQuasistatic(Direction.kReverse));
+    SmartDashboard.putData(shooter.sysIdDynamic(Direction.kForward));
+    SmartDashboard.putData(shooter.sysIdDynamic(Direction.kReverse));
+
+    SmartDashboard.putData("Start Logger", Commands.runOnce(SignalLogger::start));
+    SmartDashboard.putData("Stop Logger", Commands.runOnce(SignalLogger::stop));
+  }
+
+  public void configureBindings() {
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
@@ -276,15 +279,6 @@ public class RobotContainer {
             uiFeedback
                 .manualRumbleCommand(driverJoystick.getHID())
                 .withName("Rumble Driver Controller"));
-
-    SmartDashboard.putData(
-        "Shooter/SysIdForwardQuasistatic", shooter.sysIdQuasistatic(Direction.kForward));
-    SmartDashboard.putData(
-        "Shooter/SysIdReverseQuasistatic", shooter.sysIdQuasistatic(Direction.kReverse));
-    SmartDashboard.putData("Shooter/SysIdForwardDynamic", shooter.sysIdDynamic(Direction.kForward));
-    SmartDashboard.putData("Shooter/SysIdReverseDynamic", shooter.sysIdDynamic(Direction.kReverse));
-    SmartDashboard.putData("Start Logger", Commands.runOnce(SignalLogger::start));
-    SmartDashboard.putData("Stop Logger", Commands.runOnce(SignalLogger::stop));
   }
 
   public Command getAutonomousCommand() {

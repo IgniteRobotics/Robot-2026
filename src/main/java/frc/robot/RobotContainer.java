@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.WheelSlipTest;
 import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.LaunchState;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -62,6 +63,10 @@ public class RobotContainer {
   @Logged(name = "UI Feedback")
   public final UISubsystem uiFeedback =
       new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
+
+  /*
+  @Logged(name = "PDH")
+  public final PDHSubsystem pdh = new PDHSubsystem();*/
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();
@@ -170,6 +175,7 @@ public class RobotContainer {
     SmartDashboard.putData(indexer.testCommand());
     SmartDashboard.putData(intake.testCommand());
     SmartDashboard.putData(drivetrain.wheelRadiusCharacterization());
+    SmartDashboard.putData(new WheelSlipTest(drivetrain));
   }
 
   public void addShooterTuningCommands() {
@@ -195,14 +201,12 @@ public class RobotContainer {
     driverJoystick
         .rightBumper()
         // .whileTrue(intake.setExtendNoPID())
-        .onTrue(intake.collectCommand());
+        .onTrue(intake.collectCommand())
+        .onFalse(intake.stopRollerNoPID());
 
     driverJoystick
         .leftBumper()
         .onTrue(intake.stopRollerNoPID().andThen(intake.stowCommand()).withName("Stow Intake"));
-
-    // stop the roller without retracting.
-    driverJoystick.x().onTrue(intake.stopRollerNoPID());
 
     driverJoystick.a().onTrue(intake.agitateCommand());
 

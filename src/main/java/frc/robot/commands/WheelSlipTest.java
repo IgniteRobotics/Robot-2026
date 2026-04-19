@@ -35,6 +35,7 @@ public class WheelSlipTest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    this.withName("Wheel Slip Test");
 
     m_drive.seedFieldCentric();
     point.withModuleDirection(new Rotation2d(0.0));

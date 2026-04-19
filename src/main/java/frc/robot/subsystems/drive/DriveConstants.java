@@ -6,6 +6,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
+import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -20,21 +21,14 @@ public class DriveConstants {
   public static final SwerveRequest.FieldCentric DEFAULT_DRIVE_REQUEST =
       new FieldCentric()
           .withDeadband(MAX_DRIVE_SPEED * DEADBAND_FACTOR)
-          .withRotationalDeadband(MAX_ANGULAR_SPEED * DEADBAND_FACTOR)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+          .withRotationalDeadband(MAX_ANGULAR_SPEED * DEADBAND_FACTOR);
 
-  public static final SwerveRequest.FieldCentric AUTO_DRIVE_REQUEST =
-      new FieldCentric()
-          .withDriveRequestType(DriveRequestType.Velocity) // Closed Loop Translation
-          .withSteerRequestType(SteerRequestType.Position) // Closed Loop Steer (Default)
-          .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance); // Prevents "flips"
-
-  // request with only drive deadbands since we're auto steer.=
-  public static final SwerveRequest.FieldCentric AUTO_AIM_DRIVE_REQUEST =
-      new FieldCentric()
+  
+  public static final SwerveRequest.RobotCentric LEMON_HUNTING_REQUEST =
+      new RobotCentric()
           .withDeadband(MAX_DRIVE_SPEED * DEADBAND_FACTOR)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-          .withSteerRequestType(SteerRequestType.Position);
+          .withRotationalDeadband(MAX_ANGULAR_SPEED * DEADBAND_FACTOR);
+ 
 
   public static final double TRANSLATION_ALIGN_TOLERANCE = 0.01; // meters
   public static final double ROTATION_ALIGN_TOLERANCE = 0.1; // degrees

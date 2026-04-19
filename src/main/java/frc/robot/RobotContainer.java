@@ -334,7 +334,7 @@ public class RobotContainer {
   }
 
   private SwerveRequest.FieldCentric getDriveToLemonRequest() {
-    Pose2d clusterPose = lemonHunter.getClusterCentroid(driveState.getCurrentDriveStats().Pose);
+    Pose2d clusterPose = hunter.getClusterCentroid(driveState.getCurrentDriveStats().Pose);
     Translation2d translation = driveState.getCurrentDriveStats().Pose.minus(clusterPose).getTranslation();
     AngularVelocity targetAngularVelocity = RadiansPerSecond.of(
             translation.getAngle()

@@ -17,4 +17,7 @@ public final class DrivePreferences {
 
   public static DoublePreference autoAimMaxSpeed =
       new DoublePreference("Drive/AutoAim/MaxDriveSpeed", 2);
+
+  public static DoublePreference spinMoveAngularSpeed =
+      new DoublePreference("Drive/SpinMove/AngularSpeed", DriveConstants.MAX_ANGULAR_SPEED);
 }

@@ -33,6 +33,7 @@ import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.ui.UISubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import java.util.function.DoubleSupplier;
 
 @Logged
 public class RobotContainer {
@@ -222,7 +223,21 @@ public class RobotContainer {
         .onFalse(
             intake.stopRollerNoPID().andThen(indexer.stopIndexerNoPID()).withName("Stop Roller"));
 
-    driverJoystick.rightTrigger().onTrue(shooter.spinFlywheelCommand());
+    DoubleSupplier spinVx =
+        () ->
+            -Math.copySign(Math.pow(driverJoystick.getLeftY(), 2), driverJoystick.getLeftY())
+                * DriveConstants.MAX_DRIVE_SPEED;
+    DoubleSupplier spinVy =
+        () ->
+            -Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
+                * DriveConstants.MAX_DRIVE_SPEED;
+
+    driverJoystick
+        .leftTrigger()
+        .whileTrue(drivetrain.spinMoveCommand(true, spinVx, spinVy).withTimeout(3.0));
+    driverJoystick
+        .rightTrigger()
+        .whileTrue(drivetrain.spinMoveCommand(false, spinVx, spinVy).withTimeout(3.0));
 
     operatorJoystick
         .rightTrigger()

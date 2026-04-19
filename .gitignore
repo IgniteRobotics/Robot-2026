@@ -183,6 +183,8 @@ ctre_sim/
 /.cache
 compile_commands.json
 
+.claude/
+
 # Eclipse generated file for annotation processors
 .factorypath
 .java-version

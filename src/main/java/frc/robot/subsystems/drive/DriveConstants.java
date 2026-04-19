@@ -48,4 +48,6 @@ public class DriveConstants {
   public static final Distance DRIVETRAIN_RADIUS = Inches.of(15.365);
 
   public static final double SPIN_MOVE_PIVOT_CLEARANCE_METERS = 0.05;
+
+  public static final double HUNT_SPEED = 1.5; //meters/s?
 }

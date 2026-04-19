@@ -11,6 +11,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -326,6 +329,32 @@ public class RobotContainer {
             -1
                 * Math.copySign(Math.pow(driverJoystick.getLeftX(), 2), driverJoystick.getLeftX())
                 * DrivePreferences.autoAimMaxSpeed.getValue()) // Drive left with negative X (left)
+        .withRotationalRate(rotationalRate)
+        .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
+  }
+
+  private SwerveRequest.FieldCentric getDriveToLemonRequest() {
+    Pose2d clusterPose = lemonHunter.getClusterCentroid(driveState.getCurrentDriveStats().Pose);
+    Translation2d translation = driveState.getCurrentDriveStats().Pose.minus(clusterPose).getTranslation();
+    AngularVelocity targetAngularVelocity = RadiansPerSecond.of(
+            translation.getAngle()
+                .minus(driveState.getPreviousDriveStats().Pose.getRotation())
+                .getRadians());
+   
+    double rotationalRate =
+        targetAngularVelocity.in(RadiansPerSecond)
+        + DrivePreferences.autoAim_kP.getValue()
+            * translation.getAngle()
+                .minus(driveState.getCurrentDriveStats().Pose.getRotation())
+                    .getRadians()
+        + DrivePreferences.autoAim_kD.getValue()
+            * (targetAngularVelocity.in(RadiansPerSecond)
+                - driveState.getFieldVelocity().omegaRadiansPerSecond);
+
+
+    return DriveConstants.DEFAULT_DRIVE_REQUEST
+        .withVelocityX(-1 * DriveConstants.HUNT_SPEED) // Drive forward with negative Y (forward)
+        .withVelocityY(0) // Lock horizontal driving
         .withRotationalRate(rotationalRate)
         .withDeadband(DriveConstants.MAX_DRIVE_SPEED * 0.1);
   }

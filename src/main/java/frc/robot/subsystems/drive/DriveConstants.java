@@ -44,4 +44,6 @@ public class DriveConstants {
   public static final double SPIN_MOVE_PIVOT_CLEARANCE_METERS = 0.05;
 
   public static final double HUNT_SPEED = 1.5; //meters/s?
+
+  public static final int LINEAR_FILTER_AUTO_AIM_TAPS = 5;
 }

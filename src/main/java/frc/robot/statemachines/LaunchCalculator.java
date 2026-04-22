@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.statemachines.LaunchState.LaunchType;
+import frc.robot.subsystems.drive.DrivePreferences;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.MappedLaunchRequestBuilder;
 import frc.robot.subsystems.shooter.ParabolicLaunchRequestBuilder;
@@ -32,7 +33,7 @@ public class LaunchCalculator {
   private double loopPeriodSecs = 0.02;
 
   private final LinearFilter driveAngleFilter =
-      LinearFilter.movingAverage((int) (0.8 / loopPeriodSecs));
+      LinearFilter.movingAverage(DrivePreferences.autoAimFilterTaps.getValue());
 
   private static final double phaseDelay;
 
@@ -115,9 +116,6 @@ public class LaunchCalculator {
     Rotation2d targetRobotAngle =
         target.getTranslation().toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();
 
-    // Rotation2d targetRobotAngle = getDriveAngle(lookaheadPose,
-    // target.getTranslation().toTranslation2d());
-
     AngularVelocity targetRobotAngularVelocity =
         // RadiansPerSecond.of(
         //     driveAngleFilter.calculate(
@@ -148,20 +146,4 @@ public class LaunchCalculator {
               targetRobotAngle,
               Meters.of(launcherToTargetDistance));
   }
-
-  /*
-  private static Rotation2d getDriveAngle(Pose2d robotPose, Translation2d target) {
-    Rotation2d fieldToHubAngle = target.minus(robotPose.getTranslation()).getAngle();
-    Rotation2d hubAngle =
-        new Rotation2d(
-            Math.asin(
-                MathUtil.clamp(
-                    robotPose.getTranslation().getY()
-                        / target.getDistance(robotPose.getTranslation()),
-                    -1.0,
-                    1.0)));
-    Rotation2d driveAngle = fieldToHubAngle.plus(hubAngle).plus(robotPose.getRotation());
-    return driveAngle;
-  }
-  */
 }

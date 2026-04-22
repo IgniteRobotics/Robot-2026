@@ -10,14 +10,13 @@ import edu.wpi.first.units.measure.Power;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
 public class PDHSubsystem extends SubsystemBase {
 
-  private final PowerDistribution hub = new PowerDistribution(0, ModuleType.kRev);
+  private final PowerDistribution hub = new PowerDistribution();
 
   @Logged(name = "Bus Voltage", importance = Importance.CRITICAL)
   private Voltage busVoltage = Volts.of(0);

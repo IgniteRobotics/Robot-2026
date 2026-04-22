@@ -51,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerLeader = new TalonFX(IntakeConstants.ROLLER_MOTOR_ID);
     rollerFollower = new TalonFX(IntakeConstants.ROLLER_FOLLOWER_MOTOR_ID);
     extensionLeader = new TalonFX(IntakeConstants.EXTENSION_MOTOR_ID);
-    extensionFollower = new TalonFX(IntakeConstants.EXTENSION_FOLLOWER_MOTOR_ID, "DriveTrain");
+    extensionFollower = new TalonFX(IntakeConstants.EXTENSION_FOLLOWER_MOTOR_ID);
 
     rollerLeader.getConfigurator().apply(IntakeConstants.createRollerLeaderMotorOutputConfigs());
     rollerFollower

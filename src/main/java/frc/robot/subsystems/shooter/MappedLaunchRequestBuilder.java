@@ -83,7 +83,6 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
   public LaunchRequest createLaunchRequest(
       boolean passing,
       double distance,
-      AngularVelocity targetRobotAngularVelocity,
       Rotation2d targetRobotAngle,
       Distance targetDistance) {
 
@@ -101,7 +100,6 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     return new LaunchRequest(
         Rotations.of(hoodAngle),
         RotationsPerSecond.of(flywheelSpeed),
-        targetRobotAngularVelocity,
         targetRobotAngle,
         targetDistance,
         Utils.getCurrentTimeSeconds());

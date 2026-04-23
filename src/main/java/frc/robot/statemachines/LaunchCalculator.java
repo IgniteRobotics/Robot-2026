@@ -30,11 +30,6 @@ public class LaunchCalculator {
     return single_instance;
   }
 
-  private double loopPeriodSecs = 0.02;
-
-  private final LinearFilter driveAngleFilter =
-      LinearFilter.movingAverage(DrivePreferences.autoAimFilterTaps.getValue());
-
   private static final double phaseDelay;
 
   private static final InterpolatingDoubleTreeMap hubTimeOfFlightMap =
@@ -116,25 +111,11 @@ public class LaunchCalculator {
     Rotation2d targetRobotAngle =
         target.getTranslation().toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();
 
-    AngularVelocity targetRobotAngularVelocity =
-        // RadiansPerSecond.of(
-        //     driveAngleFilter.calculate(
-        //         targetRobotAngle
-        //
-        // .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
-        //                 .getRadians()
-        //             / loopPeriodSecs));
-        RadiansPerSecond.of(
-            targetRobotAngle
-                .minus(DriveState.getInstance().getPreviousDriveStats().Pose.getRotation())
-                .getRadians());
-
     if (builderType == LaunchType.MAPPED)
       return new MappedLaunchRequestBuilder()
           .createLaunchRequest(
               passing,
               lookaheadLauncherToTargetDistance,
-              targetRobotAngularVelocity,
               targetRobotAngle,
               Meters.of(launcherToTargetDistance));
     else
@@ -142,7 +123,6 @@ public class LaunchCalculator {
           .createLaunchRequest(
               passing,
               lookaheadLauncherToTargetDistance,
-              targetRobotAngularVelocity,
               targetRobotAngle,
               Meters.of(launcherToTargetDistance));
   }

@@ -8,7 +8,6 @@ public interface LaunchRequestBuilder {
   public LaunchRequest createLaunchRequest(
       boolean passing,
       double distance,
-      AngularVelocity targetRobotAngularVelocity,
       Rotation2d targetRobotAngle,
       Distance targetDistance);
 }

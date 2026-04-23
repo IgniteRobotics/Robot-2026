@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 
 /** Add your docs here. */
@@ -81,11 +80,7 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
   }
 
   public LaunchRequest createLaunchRequest(
-      boolean passing,
-      double distance,
-      AngularVelocity targetRobotAngularVelocity,
-      Rotation2d targetRobotAngle,
-      Distance targetDistance) {
+      boolean passing, double distance, Rotation2d targetRobotAngle, Distance targetDistance) {
 
     double hoodAngle, flywheelSpeed;
     if (passing) {
@@ -101,7 +96,6 @@ public class MappedLaunchRequestBuilder implements LaunchRequestBuilder {
     return new LaunchRequest(
         Rotations.of(hoodAngle),
         RotationsPerSecond.of(flywheelSpeed),
-        targetRobotAngularVelocity,
         targetRobotAngle,
         targetDistance,
         Utils.getCurrentTimeSeconds());

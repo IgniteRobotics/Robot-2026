@@ -14,9 +14,6 @@ public class LaunchRequest {
   @Logged(name = "Launch Flywheel Velocity", importance = Logged.Importance.CRITICAL)
   private AngularVelocity launchVelocity;
 
-  @Logged(name = "Target Robot Angular Velocity", importance = Logged.Importance.CRITICAL)
-  private AngularVelocity targetRobotAngularVelocity;
-
   @Logged(name = "Target Robot Angle", importance = Logged.Importance.CRITICAL)
   private Rotation2d targetRobotAngle;
 
@@ -28,13 +25,11 @@ public class LaunchRequest {
   public LaunchRequest(
       Angle launchHoodTarget,
       AngularVelocity launchVelocity,
-      AngularVelocity targetRobotAngularVelocity,
       Rotation2d targetRobotAngle,
       Distance targetDistance,
       double timestamp) {
     this.launchHoodTarget = launchHoodTarget;
     this.launchVelocity = launchVelocity;
-    this.targetRobotAngularVelocity = targetRobotAngularVelocity;
     this.targetRobotAngle = targetRobotAngle;
     this.targetDistance = targetDistance;
     this.timestamp = timestamp;
@@ -46,10 +41,6 @@ public class LaunchRequest {
 
   public AngularVelocity getFlywheelVelocity() {
     return launchVelocity;
-  }
-
-  public AngularVelocity getTargetRobotAngularVelocity() {
-    return targetRobotAngularVelocity;
   }
 
   public Rotation2d getTargetRobotAngle() {

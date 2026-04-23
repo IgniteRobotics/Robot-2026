@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -13,7 +11,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -310,15 +307,24 @@ public class RobotContainer {
   private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
     LaunchRequest launchRequest = launchState.getLaunchRequest();
     double rotationalRate =
-        launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
-            + DrivePreferences.autoAim_kP.getValue()
+        // kP * error
+        DrivePreferences.autoAim_kP.getValue()
                 * launchRequest
                     .getTargetRobotAngle()
                     .minus(driveState.getCurrentDriveStats().Pose.getRotation())
                     .getRadians()
+            // kD * rate of error ((target - currentAngle - (target - previousAngle))/period =
+            // (previousAngle - currentAngle)/period)
             + DrivePreferences.autoAim_kD.getValue()
-                * (launchRequest.getTargetRobotAngularVelocity().in(RadiansPerSecond)
-                    - driveState.getFieldVelocity().omegaRadiansPerSecond);
+                * driveState
+                    .getPreviousDriveStats()
+                    .Pose
+                    .getRotation()
+                    .minus(driveState.getCurrentDriveStats().Pose.getRotation())
+                    .getRadians()
+                / (driveState.getCurrentDriveStats().Timestamp
+                    - driveState.getPreviousDriveStats().Timestamp);
+
     return DriveConstants.DEFAULT_DRIVE_REQUEST
         .withVelocityX(
             -1
@@ -339,19 +345,21 @@ public class RobotContainer {
             .getTranslation()
             .minus(driveState.getCurrentDriveStats().Pose.getTranslation())
             .getAngle();
-    AngularVelocity targetAngularVelocity =
-        RadiansPerSecond.of(
-            targetAngle.minus(driveState.getPreviousDriveStats().Pose.getRotation()).getRadians());
 
     double rotationalRate =
-        targetAngularVelocity.in(RadiansPerSecond)
-            + DrivePreferences.autoAim_kP.getValue()
+        DrivePreferences.autoAim_kP.getValue()
                 * targetAngle
                     .minus(driveState.getCurrentDriveStats().Pose.getRotation())
                     .getRadians()
             + DrivePreferences.autoAim_kD.getValue()
-                * (targetAngularVelocity.in(RadiansPerSecond)
-                    - driveState.getFieldVelocity().omegaRadiansPerSecond);
+                * driveState
+                    .getPreviousDriveStats()
+                    .Pose
+                    .getRotation()
+                    .minus(driveState.getCurrentDriveStats().Pose.getRotation())
+                    .getRadians()
+                / (driveState.getCurrentDriveStats().Timestamp
+                    - driveState.getPreviousDriveStats().Timestamp);
 
     return DriveConstants.LEMON_HUNTING_REQUEST
         .withVelocityX(DriveConstants.HUNT_SPEED) // Drive forward with negative Y (forward)

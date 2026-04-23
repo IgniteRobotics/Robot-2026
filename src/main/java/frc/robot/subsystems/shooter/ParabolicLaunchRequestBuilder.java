@@ -17,11 +17,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
 
   public LaunchRequest createLaunchRequest(
-      boolean passing,
-      double distance,
-      AngularVelocity targetRobotAngularVelocity,
-      Rotation2d targetRobotAngle,
-      Distance targetDistance) {
+      boolean passing, double distance, Rotation2d targetRobotAngle, Distance targetDistance) {
     double y1 = ShooterConstants.SHOOTER_HEIGHT.in(Meters);
     double x2 = distance;
     double y2 = passing ? 0 : ShooterConstants.HUB_HEIGHT.in(Meters);
@@ -77,7 +73,6 @@ public class ParabolicLaunchRequestBuilder implements LaunchRequestBuilder {
     return new LaunchRequest(
         motorAngle,
         angularVelocity,
-        targetRobotAngularVelocity,
         targetRobotAngle,
         targetDistance,
         Utils.getCurrentTimeSeconds());

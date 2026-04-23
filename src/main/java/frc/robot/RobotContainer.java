@@ -314,11 +314,13 @@ public class RobotContainer {
   private SwerveRequest.FieldCentric getDriveAndLaunchRequest() {
     LaunchRequest launchRequest = launchState.getLaunchRequest();
     double rotationalRate =
+        //kP * error
         DrivePreferences.autoAim_kP.getValue()
                 * launchRequest
                     .getTargetRobotAngle()
                     .minus(driveState.getCurrentDriveStats().Pose.getRotation())
                     .getRadians()
+        //kD * rate of error ((target - currentAngle - (target - previousAngle))/period = (previousAngle - currentAngle)/period)
         + DrivePreferences.autoAim_kD.getValue()
             * driveState.getPreviousDriveStats().Pose.getRotation()
                 .minus(driveState.getCurrentDriveStats().Pose.getRotation())

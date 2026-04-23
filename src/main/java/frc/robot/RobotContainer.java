@@ -14,7 +14,6 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +33,7 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakePreferences;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.lemon_hunter.LemonHunterSubsystem;
+import frc.robot.subsystems.pdh.PDHSubsystem;
 import frc.robot.subsystems.shooter.LaunchRequest;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.ui.UISubsystem;
@@ -70,9 +70,8 @@ public class RobotContainer {
   public final UISubsystem uiFeedback =
       new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
 
-  /*
   @Logged(name = "PDH")
-  public final PDHSubsystem pdh = new PDHSubsystem();*/
+  public final PDHSubsystem pdh = new PDHSubsystem();
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();

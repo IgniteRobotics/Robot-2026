@@ -37,16 +37,16 @@ public class VisionConstants {
           put(
               photonCameraName_Front,
               new Transform3d(
-                  new Translation3d(0.13, 0, 0.696), new Rotation3d(0, Math.toRadians(-22), 0)));
+                  new Translation3d(0.064, 0, 0.696), new Rotation3d(0, Math.toRadians(-22), 0)));
           put(
               photonCameraName_Left,
               new Transform3d(
-                  new Translation3d(-0.252, 0.328, 0.715),
+                  new Translation3d(-0.328, 0.252, 0.715),
                   new Rotation3d(0, 0, Math.toRadians(160))));
           put(
               photonCameraName_Right,
               new Transform3d(
-                  new Translation3d(-0.252, -0.328, 0.715),
+                  new Translation3d(-0.328, -0.252, 0.715),
                   new Rotation3d(0, 0, Math.toRadians(-160))));
         }
       };

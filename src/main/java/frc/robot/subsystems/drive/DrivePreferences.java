@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drive;
 
 import frc.robot.preferences.DoublePreference;
-import frc.robot.preferences.IntegerPreference;
 
 public final class DrivePreferences {
 
@@ -21,6 +20,4 @@ public final class DrivePreferences {
 
   public static DoublePreference spinMoveAngularSpeed =
       new DoublePreference("Drive/SpinMove/AngularSpeed", DriveConstants.MAX_ANGULAR_SPEED);
-  
-  public static IntegerPreference autoAimFilterTaps = new IntegerPreference("Drive/AutoAim/FilterTaps", DriveConstants.LINEAR_FILTER_AUTO_AIM_TAPS);
 }

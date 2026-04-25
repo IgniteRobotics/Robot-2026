@@ -69,8 +69,10 @@ public class RobotContainer {
   public final UISubsystem uiFeedback =
       new UISubsystem(driverJoystick.getHID(), operatorJoystick.getHID());
 
+  /*
   @Logged(name = "PDH")
   public final PDHSubsystem pdh = new PDHSubsystem();
+  */
 
   private final DriveState driveState = DriveState.getInstance();
   private final LaunchState launchState = LaunchState.getInstance();

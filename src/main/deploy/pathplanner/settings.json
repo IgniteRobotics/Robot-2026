@@ -3,14 +3,19 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
+    "Delayed Swipe Paths - LEFT",
     "Full Sweep Paths - LEFT",
     "Full Sweep Paths - RIGHT",
     "Half Sweep Paths - LEFT",
-    "Half Sweep Paths- RIGHT"
+    "Half Sweep Paths- RIGHT",
+    "Delayed Swipe Paths - RIGHT",
+    "Side Wall Paths"
   ],
   "autoFolders": [
     "Full Sweep Autos",
-    "Half Sweep Autos"
+    "Half Sweep Autos",
+    "Delayed Swipe Autos",
+    "Side Wall Autos"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

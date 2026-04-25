@@ -20,4 +20,9 @@ public final class DrivePreferences {
 
   public static DoublePreference spinMoveAngularSpeed =
       new DoublePreference("Drive/SpinMove/AngularSpeed", DriveConstants.MAX_ANGULAR_SPEED);
+
+  public static DoublePreference sideWallWaitTime =
+      new DoublePreference("Side Wall Auton Wait Time", 5);
+  public static DoublePreference delayedSwipeWaitTime =
+      new DoublePreference("Delayed Swipe Autons", 5);
 }

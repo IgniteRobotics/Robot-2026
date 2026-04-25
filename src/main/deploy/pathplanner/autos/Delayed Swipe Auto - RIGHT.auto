@@ -5,27 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Start to Overbump - RIGHT"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Collect Intake"
+            "name": "Delayed Swipe Auton Wait"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect - RIGHT"
+            "pathName": "Delayed Swipe Start - RIGHT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Overbump to Shoot - RIGHT"
+            "pathName": "Delayed Swipe End - RIGHT"
           }
         },
         {
@@ -45,7 +39,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.5
                       }
                     },
                     {
@@ -64,6 +58,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Full Sweep Autos",
+  "folder": "Delayed Swipe Autos",
   "choreoAuto": false
 }

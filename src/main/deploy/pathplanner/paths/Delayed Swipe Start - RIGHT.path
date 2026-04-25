@@ -61,7 +61,12 @@
       "name": "Collect Intake",
       "waypointRelativePos": 1.1105651105650973,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Collect Intake"
+        }
+      }
     }
   ],
   "globalConstraints": {

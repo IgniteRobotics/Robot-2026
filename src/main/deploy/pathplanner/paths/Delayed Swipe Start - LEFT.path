@@ -20,8 +20,8 @@
         "y": 5.9364216867469874
       },
       "prevControl": {
-        "x": 6.489025386273843,
-        "y": 6.1419697346579305
+        "x": 6.489025386273844,
+        "y": 6.141969734657931
       },
       "nextControl": {
         "x": 5.756626506024096,
@@ -61,7 +61,12 @@
       "name": "Collect Intake",
       "waypointRelativePos": 1.1184275184274852,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Collect Intake"
+        }
+      }
     }
   ],
   "globalConstraints": {

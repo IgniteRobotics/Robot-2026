@@ -8,56 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8211137827172648,
-        "y": 2.610061009482289
+        "x": 4.571084337349397,
+        "y": 2.5276462196861615
       },
       "isLocked": false,
       "linkedName": "Start - RIGHT"
     },
     {
       "anchor": {
-        "x": 2.732253922967189,
-        "y": 2.501768901569187
+        "x": 6.040746987951807,
+        "y": 2.221
       },
       "prevControl": {
-        "x": 2.4827492419374533,
-        "y": 2.517498305380202
+        "x": 5.209806292833957,
+        "y": 2.5725518325498604
       },
       "nextControl": {
-        "x": 3.1995188436794417,
-        "y": 2.4723113435214934
+        "x": 6.6089879518072285,
+        "y": 1.980590361445783
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.643452211126961,
-        "y": 2.501768901569187
+        "x": 8.029590361445782,
+        "y": 0.5381325301204822
       },
       "prevControl": {
-        "x": 5.081971368313294,
-        "y": 2.761053242514323
-      },
-      "nextControl": {
-        "x": 5.903804637129825,
-        "y": 2.38154163459541
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.621535373263889,
-        "y": 1.666984664351852
-      },
-      "prevControl": {
-        "x": 5.872794616537907,
-        "y": 2.5597873377040536
+        "x": 7.067951807228916,
+        "y": 0.19937349397590404
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HP Middle Sweep"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -73,11 +57,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 45.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Half Sweep Paths- RIGHT",
+  "folder": "Side Wall Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

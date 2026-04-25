@@ -107,6 +107,7 @@ public class RobotContainer {
         "Stow Intake", intake.stopRollerNoPID().andThen(intake.stowCommand()));
     NamedCommands.registerCommand(
         "HP Reload", new WaitCommand(IntakePreferences.outpostReloadWait.getValue()));
+    NamedCommands.registerCommand("Side Wall Auton Wait", new WaitCommand(DrivePreferences.sideWallWaitTime.getValue()));
     autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
     SmartDashboard.putData("Auto Mode", autoChooser);
 

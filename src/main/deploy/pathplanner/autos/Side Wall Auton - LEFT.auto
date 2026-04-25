@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Side Wall Auton Wait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Side Wall - LEFT"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Side Wall Autos",
+  "choreoAuto": false
+}
